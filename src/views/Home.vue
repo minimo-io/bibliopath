@@ -3,10 +3,8 @@
   <ion-header>
     <ion-toolbar color="primary">
       <ion-title>
-        Vue Capacitor
-
+        Heyyy esto es lo que se llama el primitivo inicio de Bibliopath, la editorial abierta.
       </ion-title>
-
     </ion-toolbar>
   </ion-header>
 
