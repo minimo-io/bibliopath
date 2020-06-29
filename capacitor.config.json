@@ -1,0 +1,13 @@
+{
+  "appId": "com.bibliopath.app",
+  "appName": "Bibliopath",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "cordova": {}
+}
