@@ -1,53 +1,35 @@
 <template>
-  <ion-page>
-    <ion-header translucent="true">
-      <ion-toolbar color="primary">
-        <ion-buttons slot="primary">
-          <ion-button @click="clickedStar()">
-            <ion-icon slot="icon-only" name="star"></ion-icon>
-          </ion-button>
-        </ion-buttons>
-        <ion-title>Bibliopath</ion-title>
-        <ion-buttons slot="end">
-          <ion-menu-button auto-hide="false"></ion-menu-button>
+  <ion-app>
+  <ion-header>
+    <ion-toolbar color="primary">
+      <ion-title>
+        Vue Capacitor
 
-        </ion-buttons>
-      </ion-toolbar>
+      </ion-title>
 
-    </ion-header>
+    </ion-toolbar>
+  </ion-header>
 
-    <ion-content padding>
-          <ion-list>
-            <ion-item>
-              <ion-checkbox slot="start"></ion-checkbox>
-              <ion-label>
-                <h1>Create Idea</h1>
-                <ion-note>Run Idea by Brandy</ion-note>
-              </ion-label>
-              <ion-badge color="success" slot="end">5 Days</ion-badge>
-            </ion-item>
-          </ion-list>
-          <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-            <ion-fab-button @click="$router.push({ name: 'new-item' })">
-              <ion-icon name="add" />
-            </ion-fab-button>
-          </ion-fab>
-    </ion-content>
-
-
-  </ion-page>
+  <ion-content padding>
+    The world is your oyster.
+    <p>If you get lost, the <a href="https://ionicframework.com/docs">docs</a> will be your guide.</p>
+  </ion-content>
+  <ion-button @click="goToAbout" full>Go to About</ion-button>
+  </ion-app>
 </template>
 
 <script>
-import { add } from "ionicons/icons";
-import { addIcons } from "ionicons";
-addIcons({
-  "ios-add": add.ios,
-  "md-add": add.md
-});
+
 export default {
   name: 'Home',
+  methods: {
+    goToAbout () {
+      this.$router.push('about')
+    },
+
+  },
   components: {
+
   }
 }
 </script>

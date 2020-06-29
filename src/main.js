@@ -1,14 +1,14 @@
 import Vue from 'vue'
 import App from './App.vue'
-import Ionic from '@ionic/vue'
-import '@ionic/core/css/ionic.bundle.css';
 import router from './router'
 
-Vue.use(Ionic)
+import Ionic from '@ionic/vue';
+import '@ionic/core/css/ionic.bundle.css';
+
+Vue.use(Ionic);
+Vue.config.ignoredElements = [/^ion-/]
 
 Vue.config.productionTip = false
-
-
 
 new Vue({
   router,
