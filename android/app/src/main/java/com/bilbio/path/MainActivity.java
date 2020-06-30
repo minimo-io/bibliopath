@@ -1,4 +1,4 @@
-package com.bibliopath.app;
+package com.bilbio.path;
 
 import android.os.Bundle;
 

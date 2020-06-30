@@ -1,6 +1,6 @@
 {
-  "appId": "com.bibliopath.app",
-  "appName": "Bibliopath",
+  "appId": "com.bilbio.path",
+  "appName": "biblio",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "dist",
@@ -10,5 +10,5 @@
     }
   },
   "cordova": {},
-  "linuxAndroidStudioPath": "/home/devops/android-studio/bin/studio.sh"
+"linuxAndroidStudioPath": "/home/devops/android-studio/bin/studio.sh"
 }
