@@ -1,44 +1,62 @@
+<style> @import './assets/app.css';</style>
 <template>
   <div id="app">
     <ion-app>
 
       <ion-header translucent>
-        <ion-toolbar color="dark">
-          <ion-title>Bibliopath</ion-title>
+        <ion-toolbar color="dark" fixed>
+          <ion-row align-items-center class="row">
+            <ion-col size="auto">
+                <ion-title>Bibliopath</ion-title>
+            </ion-col>
+            <ion-col>
+              <ion-searchbar no-padding class="ion-hide-lg-down" :placeholder="this.searchplaceholder"></ion-searchbar>
+            </ion-col>
+            <ion-col size="auto">
+              <ion-buttons>
+                <ion-button @click="appLoading">Loading</ion-button>
+                <ion-button @click="presentActionSheet">
+                  <ion-icon slot="icon-only" name="more"></ion-icon>
+                </ion-button>
+
+              </ion-buttons>
+            </ion-col>
+          </ion-row>
           <!--
           <ion-buttons slot="start">
             <ion-back-button default-href="Home"></ion-back-button>
-          </ion-buttons>
-          -->
-
-          <ion-buttons slot="end">
-            <ion-button @click="appLoading">Loading</ion-button>
-            <ion-button @click="appSearch"><ion-icon name="search"></ion-icon></ion-button>
-            <ion-button @click="presentActionSheet">
-              <ion-icon slot="icon-only" name="more"></ion-icon>
-            </ion-button>
-
-          </ion-buttons>
-
+          </ion-buttons> -->
         </ion-toolbar>
+        <ion-searchbar no-padding class="ion-hide-lg-up" :placeholder="this.searchplaceholder"></ion-searchbar>
+
       </ion-header>
+
 
 
       <ion-vue-router />
 
+
+      <tabs></tabs>
+
     </ion-app>
   </div>
 </template>
-<style>
-ion-content{
-  --padding-top: 5rem !important;
-}
-</style>
+
 <script>
+// import Modal from '@/components/Modal.vue'
+import Tabs from '@/components/Tabs.vue'
 export default {
   name: "home",
+  components:{
+    Tabs
+  },
   props: {
     timeout: { type: Number, default: 1000 },
+  },
+  data(){
+    return {
+      searchplaceholder: "Search in catalog"
+    }
   },
   methods: {
     presentActionSheet() {
@@ -102,9 +120,23 @@ export default {
           return loading.present()
         })
     },
-    appSearch(){
-      alert("Oh search!");
-    }
+    // appSearch(){
+    //
+    //   return this.$ionic.modalController
+    //           .create({
+    //             component: Modal,
+    //             cssClass: 'my-custom-class',
+    //             componentProps: {
+    //               data: {
+    //                 content: 'New Content',
+    //               },
+    //               propsData: {
+    //                 title: 'Search',
+    //               },
+    //             },
+    //           })
+    //           .then(m => m.present())
+    // }
   }
 };
 </script>

@@ -1,0 +1,60 @@
+:root {
+  --color-selected: var(--ion-color-dark, #222428) !important;
+  --ripple-color: var(--ion-color-dark, #222428) !important;
+  /* --ion-safe-area-top: 4rem; */
+}
+ion-tab-bar{
+    --color-selected: var(--ion-color-dark, #222428) !important;
+}
+ion-badge{ background:var(--ion-color-dark, #222428) !important; }
+ion-content{
+  --padding-top: 7rem !important;
+}
+ion-header ion-toolbar {
+  margin: auto;
+}
+.tab-selected{
+  color:var(--ion-color-dark, #222428) !important;
+}
+.tab-selected:hover{
+  color:var(--ion-color-dark, #222428) !important;
+}
+
+
+.top-tabs{
+
+}
+
+
+
+@media (min-width: 960px) {
+  ion-content{
+    --padding-top: 5rem !important;
+  }
+
+  ion-navbar.toolbar,
+  ion-header ion-toolbar[fixed],
+  ion-footer ion-toolbar[fixed],
+  ion-tabs .tabbar {
+     margin: 0;
+     padding-right: calc((100% - 960px) / 2);
+     padding-left: calc((100% - 960px) / 2);
+  }
+  .grid-fixed {
+    width: var(--ion-grid-width-lg,var(--ion-grid-width,960px)) !important;
+  }
+
+  /* .top-tabs{
+    margin-top:3.5rem;
+    /* border-bottom: rgb(237,237,237);
+    border-bottom: red !important;
+
+  }
+  */
+}
+@media (min-width: 1200px){
+  .grid-fixed {
+      width: inherit !important;
+  }
+
+}

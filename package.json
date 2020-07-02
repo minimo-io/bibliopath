@@ -1,5 +1,5 @@
 {
-  "name": "biblio",
+  "name": "Bibliopath",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -32,8 +32,7 @@
       "node": true
     },
     "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended"
+      "plugin:vue/essential"
     ],
     "parserOptions": {
       "parser": "babel-eslint"
