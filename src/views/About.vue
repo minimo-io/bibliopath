@@ -1,18 +1,10 @@
 <template>
-<ion-app>
-<ion-header>
-  <ion-toolbar color="primary">
-    <ion-title>
-      Vue Capacitor | About
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
-<ion-content padding>
-This is the About page.
-<ion-button @click="goBackHome()" full>Go Back!</ion-button>
+  <ion-content padding>
 
-</ion-content>
-</ion-app>
+    This is the About page.
+    <ion-button @click="goBackHome()" full>Go Back!</ion-button>
+
+  </ion-content>
 </template>
 <script>
 export default {
@@ -20,7 +12,8 @@ export default {
   methods: {
       goBackHome () {
         this.$router.push('/')
-      }
+      },
+
     }
 }
 </script>
