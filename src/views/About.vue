@@ -1,7 +1,8 @@
 <template>
   <ion-content padding>
 
-    This is the About page.
+    <p>Hey! So this is the primitive Bibliopath:<br>The Open Editorial.</p>
+
     <ion-button @click="goBackHome()" full>Go Back!</ion-button>
 
   </ion-content>

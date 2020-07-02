@@ -1,14 +1,13 @@
 <template>
   <ion-content padding>
      <ion-grid fixed>
-
-      <router-link :to="{ path: '/book/seneca' }">
-        Seneca's Morals of a Happy Life, Benefits, Anger and Clemency
-      </router-link>
+      <ion-button @click="goToAbout" expand="block" color="dark" shape="round" fill="outline">Start here</ion-button>
+      <hr>
+      <router-link :to="{ path: '/book/seneca' }">Seneca's Morals of a Happy Life.</router-link>
+      <br>
       The world is your oyster.
-      <p>Heyyy esto es lo que se llama el primitivo inicio de Bibliopath, la editorial abierta.</p>
 
-      <ion-button @click="goToAbout" expand="block" color="dark" shape="round" fill="outline">Go to About</ion-button>
+
     </ion-grid>
 
   </ion-content>
