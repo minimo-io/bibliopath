@@ -7,14 +7,14 @@
         <ion-toolbar color="dark" fixed>
           <ion-row align-items-center class="row">
             <ion-col size="auto">
-                <ion-title>Bibliopath</ion-title>
+                <ion-title>BIBLIOPATH</ion-title>
             </ion-col>
             <ion-col>
               <ion-searchbar no-padding class="ion-hide-lg-down" :placeholder="this.searchplaceholder"></ion-searchbar>
             </ion-col>
             <ion-col size="auto">
               <ion-buttons>
-                <ion-button @click="appLoading">Loading</ion-button>
+                <ion-button @click="appLoading">Signup</ion-button>
                 <ion-button @click="presentActionSheet">
                   <ion-icon slot="icon-only" name="more"></ion-icon>
                 </ion-button>
