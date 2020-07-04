@@ -3,7 +3,10 @@
       <ion-toolbar color="dark" fixed>
         <ion-row align-items-center class="row">
           <ion-col size="auto">
-              <ion-title>BIBLIOPATH</ion-title>
+              <ion-title class="logo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 512 512"><title>ionicons-v5-h</title><path d="M352,48H160a48,48,0,0,0-48,48V464L256,336,400,464V96A48,48,0,0,0,352,48Z" style="fill:#FFF;stroke:#FFF;stroke-linecap:round;stroke-linejoin:round;stroke-width:32px"/></svg>
+                BIBLIOPATH
+              </ion-title>
           </ion-col>
           <ion-col>
             <ion-searchbar no-padding class="ion-hide-lg-down" :placeholder="this.searchplaceholder"></ion-searchbar>

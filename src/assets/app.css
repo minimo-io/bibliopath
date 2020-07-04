@@ -11,6 +11,7 @@ ion-tab-bar{
 ion-badge{ background:var(--ion-color-dark, #222428) !important; }
 ion-content{
   --padding-top: 7rem !important;
+  --padding-bottom: 3.5rem !important;
 }
 ion-header ion-toolbar {
   margin: auto;
@@ -22,8 +23,16 @@ ion-header ion-toolbar {
   color:var(--ion-color-dark, #222428) !important;
 }
 
+.logo img{
+  /* background:url('../assets/bookmark-outline.svg'); */
+  width: 25px;
+  height: 25px;
+  display: inline-block;
+}
 p.paragraph{
   font-family: 'Nunito', sans-serif;
+  text-align: justify;
+  font-size:1.3rem;
 }
 .top-tabs{
 

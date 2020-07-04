@@ -1,6 +1,6 @@
 {
   "appId": "com.bilbio.path",
-  "appName": "biblio",
+  "appName": "Bibliopath",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "dist",
