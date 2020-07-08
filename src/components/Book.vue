@@ -1,6 +1,7 @@
 <template>
     <ion-content>
       <ion-grid fixed>
+
           <ion-button id="prev" size="small" expand="block" color="light" @click="prevPage()">Previous</ion-button>
           <div id="book-area"></div>
           <ion-button id="next" size="small" expand="block" color="light" @click="nextPage()">Next</ion-button>
@@ -13,29 +14,35 @@
     margin:auto;
     max-width:700px;
   }
-  /* .epub-container {
-    min-width: 320px;
-    margin: 0 auto;
-    position: relative;
-  }
-
-  .epub-container .epub-view > iframe {
-      background: white;
-      box-shadow: 0 0 4px #ccc;
-  } */
 </style>
 <script>
 import ePub from 'epubjs';
+import Firebase from '@/firebase'
+
 export default {
   name: 'Book',
   data () {
     return {
-      rendition: null
-      // slug:this.$route.params.slug_brewery,
+      rendition: null,
+      bookSlug: this.$route.params.slug
     }
   },
-  created(){
-    this.loadBook("https://minimo.io/ebook.epub");
+  mounted(){
+    let booksRef = Firebase.database().ref("books");
+    let o_book = this;
+    booksRef.orderByChild('slug').equalTo(this.bookSlug).limitToLast(1).on("value", function(snapshot) {
+      snapshot.forEach(function(data) {
+        let bookData = data.val();
+        if (bookData){
+          let book = "https://minimo.io/epubs/" + bookData.book;
+          console.log(book);
+          o_book.loadBook(book);
+        }
+
+      });
+    });
+
+
   },
   methods: {
     nextPage(){
