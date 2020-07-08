@@ -35,8 +35,7 @@ export default {
     }
   },
   created(){
-    this.loadBook("pg10825.epub");
-    // this.loadBook("ebook.opf");
+    this.loadBook("https://minimo.io/ebook.epub");
   },
   methods: {
     nextPage(){
@@ -48,8 +47,8 @@ export default {
       document.querySelector('ion-content').scrollToTop(500);
     },
     loadBook: function(bookname){
-      let ebook = require("@/assets/books/"+bookname);
-      // let ebook = "https://s3.amazonaws.com/epubjs/books/alice/OPS/package.opf";
+      // let ebook = require("@/assets/books/"+bookname);
+      let ebook = bookname;
       var book = ePub(ebook, {});
       var rendition = book.renderTo("book-area", {
         // manager: "continuous",
