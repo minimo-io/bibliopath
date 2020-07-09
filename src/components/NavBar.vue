@@ -86,6 +86,13 @@ export default{
               },
             },
             {
+              text: 'Go to page',
+              icon: 'caret-forward-circle',
+              handler: () => {
+                console.log('Play clicked')
+              },
+            },
+            {
               text: 'Cancel',
               icon: 'close',
               role: 'cancel',
