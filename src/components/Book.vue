@@ -1,11 +1,14 @@
 <template>
     <ion-content>
       <ion-grid fixed>
-
-          <ion-button id="prev" size="small" expand="block" color="light" @click="prevPage()">Previous</ion-button>
+        <span
+          v-on:keyup.left="prevPage"
+          v-on:keyup.right="nextPage"
+          >
+          <!-- <ion-button id="prev" size="small" expand="block" color="light" @click="prevPage()">Previous</ion-button> -->
           <div id="book-area"></div>
-          <ion-button id="next" size="small" expand="block" color="light" @click="nextPage()">Next</ion-button>
-
+          <!-- <ion-button id="next" size="small" expand="block" color="light" @click="nextPage()">Next</ion-button> -->
+        </span>
         </ion-grid>
     </ion-content>
 </template>
@@ -102,7 +105,48 @@ export default {
       });
 
 
+      // Load gestures for swiping
+      rendition.hooks.content.register(function(contents){
+        var script = document.createElement('script');
+        script.onload = function() {
+            var scriptTouch = document.createElement('script');
+            scriptTouch.type = 'text/javascript';
+            scriptTouch.src = '/js/jquery.detect_swipe.min.js';
+            document.head.appendChild(scriptTouch);
+
+            scriptTouch.onload = function(){
+
+              (function($){
+
+
+                $("#book-area iframe").contents().on("swipeleft", function(){
+                    rendition.next();
+                });
+                $("#book-area iframe").contents().on("swiperight", function(){
+                    rendition.prev();
+                });
+
+
+
+               })(jQuery);
+
+
+            }
+        };
+        script.type = 'text/javascript';
+        // script.src = 'https://code.jquery.com/jquery-2.1.4.min.js';
+        // script.src = require('@/assets/js/jquery.min.js');
+        script.src = '/js/jquery.min.js';
+        document.head.appendChild(script);
+
+
+
+      });
+
       book.ready.then(() => {
+
+
+
 
         this.$store.commit("setNotLoading"); // app loading something
         // console.log("Book ready!");
@@ -110,6 +154,18 @@ export default {
 
       })
 
+
+    },
+    swipeHandlerLeft(){
+      this.rendition.next();
+
+      console.log("Swipe left");
+
+    },
+    swipeHandlerRight(){
+      this.rendition.prev();
+
+      console.log("Swipe right");
 
     }
   }

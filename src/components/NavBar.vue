@@ -13,7 +13,7 @@
           </ion-col>
           <ion-col size="auto">
             <ion-buttons>
-              <ion-button @click="appLoading">Sign In</ion-button>
+              <ion-button>Sign In</ion-button>
               <ion-button @click="presentActionSheet">
                 <ion-icon slot="icon-only" name="more"></ion-icon>
               </ion-button>
@@ -33,9 +33,6 @@
 <script>
 export default{
   name: "NavBar",
-  props: {
-    timeout: { type: Number, default: 1000 },
-  },
   data(){
     return {
       searchplaceholder: "Search in catalog"
@@ -103,20 +100,6 @@ export default{
         ],
       })
       .then(a => a.present())
-    },
-    appLoading() {
-      return this.$ionic.loadingController
-        .create({
-          cssClass: 'my-custom-class',
-          message: 'Please wait...',
-          duration: this.timeout,
-        })
-        .then(loading => {
-          setTimeout(function() {
-            loading.dismiss()
-          }, this.timeout)
-          return loading.present()
-        });
     },
     // appSearch(){
     //
