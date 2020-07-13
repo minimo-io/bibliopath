@@ -30,12 +30,13 @@ export default {
   mounted(){
     let booksRef = Firebase.database().ref("books");
     let o_book = this;
+    let o_store = this.$store;
+    this.$store.commit("setLoading"); // app loading something
     booksRef.orderByChild('slug').equalTo(this.bookSlug).limitToLast(1).on("value", function(snapshot) {
       snapshot.forEach(function(data) {
         let bookData = data.val();
         if (bookData){
           let book = "https://minimo.io/epubs/" + bookData.book;
-          console.log(book);
           o_book.loadBook(book);
         }
 
@@ -103,7 +104,9 @@ export default {
 
       book.ready.then(() => {
 
-          console.log("Book ready");
+        this.$store.commit("setNotLoading"); // app loading something
+        // console.log("Book ready!");
+
 
       })
 

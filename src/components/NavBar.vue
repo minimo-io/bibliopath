@@ -116,7 +116,7 @@ export default{
             loading.dismiss()
           }, this.timeout)
           return loading.present()
-        })
+        });
     },
     // appSearch(){
     //

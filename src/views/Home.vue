@@ -45,10 +45,12 @@ export default {
   },
   mounted(){
     let itemsRef = Firebase.database().ref("books");
+    this.$store.commit("setLoading"); // app loading something
     itemsRef.on("value", snapshot => {
        let data = snapshot.val();
        this.books = data;
        let messages = [];
+       this.$store.commit("setNotLoading"); // app loading something
        Object.keys(data).forEach(key => {
          // messages.push({
          //   id: key,
