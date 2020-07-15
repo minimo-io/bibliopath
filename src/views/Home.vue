@@ -1,9 +1,8 @@
 <template>
   <div class="mt-3">
-      <h1>Books</h1>
 
-      <ul id="example-1">
-        <li v-for="book in books" v-bind="books" :key="book.id">
+      <ul>
+        <li v-for="book in books" v-bind="books" :key="book.slug">
           <router-link :to="{ path: '/book/' + book.slug }">{{ book.title.rendered }} - {{ book._embedded.author[0].name }}</router-link>
         </li>
       </ul>
@@ -22,7 +21,7 @@ export default {
     }
   },
   mounted(){
-    this.$store.commit("setLoading"); 
+    this.$store.commit("setLoading");
     axios.get("https://alt.minimo.io/wp-json/wp/v2/posts?_embed").then((result) => {
       console.log(result.data);
       this.$store.commit("setNotLoading");

@@ -18,6 +18,9 @@
   font-weight: bold;
   font-size:1.2rem !important;
 }
+.app-logo a{
+  font-size:1rem !important;
+}
 .zoom:hover {
   transform: scale(1.1);
   -ms-transform: scale(1.1);
@@ -38,23 +41,29 @@
 }
 .book-content p{
   font-family: 'Roboto', sans-serif;
-  font-size:20px;
-  line-height:27px;
+  font-size:22px;
+  line-height:33px;
 }
 .spinner-grow{ vertical-align: unset;}
+
+main a:hover{
+  background: rgba(255,255,0,0.5);
+}
+
 /*  Bootstrap like breakpoints -------------- */
 @media (max-width: 576px) {
   .book-content{
     padding:0.5rem !important;
   }
   .book-content p{
-    font-size:15px;
-    line-height:20px;
+    font-size:18px;
+    line-height:26px;
   }
   .spinner-grow-sm{
     width: .6rem;
     height: .6rem
   }
+  .app-logo a{ font-size:.9rem !important; }
 }
 @media (max-width: 768px) {
 
