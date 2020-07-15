@@ -9,7 +9,7 @@
 
       <ul id="example-1">
         <li v-for="book in books" v-bind="books" :key="book.id">
-          <router-link :to="{ path: '/book/' + book.slug }">{{ book.title }} - {{ book.author }}</router-link>
+          <router-link :to="{ path: '/book/' + book.slug }">{{ book.title.rendered }} - {{ book._embedded.author[0].name }}</router-link>
         </li>
 
       </ul>
@@ -36,6 +36,7 @@
 </style>
 <script>
 import Firebase from '@/firebase'
+import axios from "axios";
 export default {
   name: 'Home',
   data(){
@@ -46,22 +47,25 @@ export default {
   mounted(){
     let itemsRef = Firebase.database().ref("books");
     this.$store.commit("setLoading"); // app loading something
-    itemsRef.on("value", snapshot => {
-       let data = snapshot.val();
-       this.books = data;
-       let messages = [];
-       this.$store.commit("setNotLoading"); // app loading something
-       Object.keys(data).forEach(key => {
-         // messages.push({
-         //   id: key,
-         //   username: data[key].username,
-         //   text: data[key].text
-         // });
-         // console.log(data[key].book);
+    axios.get("https://alt.minimo.io/wp-json/wp/v2/posts?_embed").then((result) => {
+      console.log(result.data);
+      this.$store.commit("setNotLoading");
+      this.books = result.data;
 
-       });
-       // viewMessage.messages = messages;
-   });
+    });
+
+
+   //  itemsRef.on("value", snapshot => {
+   //     let data = snapshot.val();
+   //     this.books = data;
+   //     let messages = [];
+   //     this.$store.commit("setNotLoading"); // app loading something
+   //     Object.keys(data).forEach(key => {
+   //
+   //
+   //     });
+   //     // viewMessage.messages = messages;
+   // });
   },
   methods: {
     goToAbout () {

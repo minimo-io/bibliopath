@@ -5,10 +5,12 @@ import router from './router'
 import Ionic from '@ionic/vue';
 import "@ionic/core/css/core.css";
 import '@ionic/core/css/ionic.bundle.css';
-import store from './store'
-import Vue2TouchEvents from 'vue2-touch-events'
 
-Vue.use(Vue2TouchEvents)
+import store from './store'
+// import Vue2TouchEvents from 'vue2-touch-events'
+
+// Vue.use(Vue2TouchEvents)
+
 Vue.use(Ionic);
 Vue.config.ignoredElements = [/^ion-/]
 

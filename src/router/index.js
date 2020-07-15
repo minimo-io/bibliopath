@@ -17,7 +17,7 @@ Vue.use(IonicVueRouter);
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    component: () => import(/* webpackChunkName: "About" */ '../views/About.vue')
   },
   {
     path: '/catalog',
@@ -25,7 +25,7 @@ Vue.use(IonicVueRouter);
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/Catalog.vue')
+    component: () => import(/* webpackChunkName: "Catalog" */ '../views/Catalog.vue')
   },
   {
     path: '/authors',
@@ -33,12 +33,12 @@ Vue.use(IonicVueRouter);
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/Authors.vue')
+    component: () => import(/* webpackChunkName: "Authors" */ '../views/Authors.vue')
   },
   {
     path: '/book/:slug',
     name: 'Book',
-    component: () => import(/* webpackChunkName: "about" */ '../components/Book.vue')
+    component: () => import(/* webpackChunkName: "Book2" */ '../components/Book2.vue')
   }
 ]
 
