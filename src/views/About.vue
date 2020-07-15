@@ -1,20 +1,5 @@
 <template>
-  <ion-content padding>
-
-    <p>Hey! So this is the primitive Bibliopath:<br>The Open Editorial.</p>
-
-    <ion-button @click="goBackHome()" full>Go Back!</ion-button>
-
-  </ion-content>
+  <div class="about">
+    <h1>This is an about page</h1>
+  </div>
 </template>
-<script>
-export default {
-  name: 'About',
-  methods: {
-      goBackHome () {
-        this.$router.push('/')
-      },
-
-    }
-}
-</script>

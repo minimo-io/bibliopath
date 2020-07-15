@@ -1,73 +1,69 @@
-@import url('https://fonts.googleapis.com/css?family=Nunito:400,700&display=swap');
 
+@font-face {
+    font-family: "Roboto";
+    src: url("/fonts/Roboto-Regular.eot");
+    src: url("/fonts/Roboto-Regular.eot?#iefix") format('embedded-opentype'),
+         url("/fonts/Roboto-Regular.woff2") format('woff2'),
+         url("/fonts/Roboto-Regular.woff") format('woff'),
+         url("/fonts/Roboto-Regular.ttf") format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
 :root {
-  --color-selected: var(--ion-color-dark, #222428) !important;
-  --ripple-color: var(--ion-color-dark, #222428) !important;
-  /* --ion-safe-area-top: 4rem; */
-}
-ion-tab-bar{
-    --color-selected: var(--ion-color-dark, #222428) !important;
-}
-ion-badge{ background:var(--ion-color-dark, #222428) !important; }
-ion-content{
-  --padding-top: 7rem !important;
-  --padding-bottom: 3.5rem !important;
-}
-ion-header ion-toolbar {
-  margin: auto;
-}
-.tab-selected{
-  color:var(--ion-color-dark, #222428) !important;
-}
-.tab-selected:hover{
-  color:var(--ion-color-dark, #222428) !important;
-}
-
-.logo img{
-  /* background:url('../assets/bookmark-outline.svg'); */
-  width: 25px;
-  height: 25px;
-  display: inline-block;
-}
-p.paragraph{
-  font-family: 'Nunito', sans-serif;
-  text-align: justify;
-  font-size:1.3rem;
-}
-.top-tabs{
 
 }
+.app-logo, .b-sidebar-header{
+  /* position:relative; */
+  font-family: Nunito, sans-serif;
+  font-weight: bold;
+  font-size:1.2rem !important;
+}
+.zoom:hover {
+  transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  -webkit-transform: scale(1.1)
+}
+#nprogress .bar {
+  background: var(--app-yellow-green) !important;
+}
+#nprogress .spinner-icon {
+  /* border-left-color: green !important;
+  border-top-color: yellow  !important; */
+  display:none;
+}
 
-
-
-@media (min-width: 960px) {
-  ion-content{
-    --padding-top: 5rem !important;
+.book-content{
+  padding:2rem;
+  text-align:justify;
+}
+.book-content p{
+  font-family: 'Roboto', sans-serif;
+  font-size:20px;
+  line-height:27px;
+}
+.spinner-grow{ vertical-align: unset;}
+/*  Bootstrap like breakpoints -------------- */
+@media (max-width: 576px) {
+  .book-content{
+    padding:0.5rem !important;
   }
-
-  ion-navbar.toolbar,
-  ion-header ion-toolbar[fixed],
-  ion-footer ion-toolbar[fixed],
-  ion-tabs .tabbar {
-     margin: 0;
-     padding-right: calc((100% - 960px) / 2);
-     padding-left: calc((100% - 960px) / 2);
+  .book-content p{
+    font-size:15px;
+    line-height:20px;
   }
-  .grid-fixed {
-    width: var(--ion-grid-width-lg,var(--ion-grid-width,960px)) !important;
+  .spinner-grow-sm{
+    width: .6rem;
+    height: .6rem
   }
-
-  /* .top-tabs{
-    margin-top:3.5rem;
-    /* border-bottom: rgb(237,237,237);
-    border-bottom: red !important;
-
-  }
-  */
 }
-@media (min-width: 1200px){
-  .grid-fixed {
-      width: inherit !important;
-  }
+@media (max-width: 768px) {
 
 }
+@media (max-width: 992px) {
+
+
+}
+@media (max-width: 1200px) {
+
+}
+/*  End of Bootstrap like breakpoints -------------- */

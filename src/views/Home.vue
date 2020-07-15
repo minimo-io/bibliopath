@@ -1,41 +1,18 @@
 <template>
-  <ion-content padding>
-     <ion-grid fixed>
-      <ion-button @click="goToAbout" expand="block" color="dark" shape="round" fill="outline">Start here</ion-button>
-      <hr>
-      <!-- <router-link :to="{ path: '/book/seneca' }">Seneca's Morals of a Happy Life.</router-link> -->
-      <br>
-      The world is your oyster.
+  <div class="mt-3">
+      <h1>Books</h1>
 
       <ul id="example-1">
         <li v-for="book in books" v-bind="books" :key="book.id">
           <router-link :to="{ path: '/book/' + book.slug }">{{ book.title.rendered }} - {{ book._embedded.author[0].name }}</router-link>
         </li>
-
       </ul>
+      <hr>
+      <b-button @click="goToAbout" size="sm" block pill>Start here</b-button>
 
-    </ion-grid>
-
-  </ion-content>
+  </div>
 </template>
-
-<style>
-@media (min-width: 1200px){
-  .grid-fixed {
-      width: inherit !important;
-  }
-
-}
-@media (min-width: 992px){
-  .grid-fixed {
-    width: var(--ion-grid-width-lg,var(--ion-grid-width,960px)) !important;
-  }
-}
-
-
-</style>
 <script>
-import Firebase from '@/firebase'
 import axios from "axios";
 export default {
   name: 'Home',
@@ -45,8 +22,7 @@ export default {
     }
   },
   mounted(){
-    let itemsRef = Firebase.database().ref("books");
-    this.$store.commit("setLoading"); // app loading something
+    this.$store.commit("setLoading"); 
     axios.get("https://alt.minimo.io/wp-json/wp/v2/posts?_embed").then((result) => {
       console.log(result.data);
       this.$store.commit("setNotLoading");
@@ -54,18 +30,6 @@ export default {
 
     });
 
-
-   //  itemsRef.on("value", snapshot => {
-   //     let data = snapshot.val();
-   //     this.books = data;
-   //     let messages = [];
-   //     this.$store.commit("setNotLoading"); // app loading something
-   //     Object.keys(data).forEach(key => {
-   //
-   //
-   //     });
-   //     // viewMessage.messages = messages;
-   // });
   },
   methods: {
     goToAbout () {

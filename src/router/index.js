@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import Home from '../views/Home.vue'
-
-import { IonicVueRouter } from '@ionic/vue';
-
-Vue.use(IonicVueRouter);
+import VueRouter from 'vue-router'
+import store from '@/store'
+// import { IonicVueRouter } from '@ionic/vue';
+Vue.use(VueRouter)
+// Vue.use(IonicVueRouter);
 
   const routes = [
   {
@@ -42,10 +43,27 @@ Vue.use(IonicVueRouter);
   }
 ]
 
-const router = new IonicVueRouter({
+const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
+  scrollBehavior (to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { x: 0, y: 0 }
+    }
+  },
   routes
+})
+
+router.beforeResolve((to, from, next) => {
+  if (to.name) {
+      store.commit("setLoading");
+  }
+  next()
+})
+router.afterEach((to, from) => {
+  store.commit("setNotLoading");
 })
 
 export default router
