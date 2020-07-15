@@ -49,7 +49,7 @@
         this.book.title = result.data[0].title.rendered;
         this.book.author.name = result.data[0]._embedded.author[0].name;
         this.book.author.slug = result.data[0]._embedded.author[0].slug;
-        this.book.author.avatar = result.data[0]._embedded.author[0].avatar_urls[24];
+        this.book.author.avatar = result.data[0]._embedded.author[0].avatar_urls[48];
         //this.book.presentation = result.data[0]._embedded["wp:featuredmedia"][0].source_url;
       });
     },
