@@ -34,7 +34,17 @@
   border-top-color: yellow  !important; */
   display:none;
 }
+.spinner-grow{ vertical-align: unset;}
 
+/* book & author stuff: could go in the book view? */
+.book-presentation, .author-view{
+  text-align:center;
+  font-family: 'Roboto', sans-serif;
+}
+
+.book-presentation h1, .book-presentation h2, .author-view h1{ font-family: "Nunito", sans-serif; font-weight: bold; }
+.book-presentation h1{ font-size:2rem;}
+.book-presentation h2{ font-size:1rem; }
 .book-content{
   padding:2rem;
   text-align:justify;
@@ -44,7 +54,21 @@
   font-size:22px;
   line-height:33px;
 }
-.spinner-grow{ vertical-align: unset;}
+.author-view{
+  background: rgb(250,255,181);
+  background: -moz-linear-gradient(0deg, rgba(250,255,181,0.2903536414565826) 0%, rgba(255,255,255,1) 100%);
+  background: -webkit-linear-gradient(0deg, rgba(250,255,181,0.2903536414565826) 0%, rgba(255,255,255,1) 100%);
+  background: linear-gradient(0deg, rgba(250,255,181,0.2903536414565826) 0%, rgba(255,255,255,1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#faffb5",endColorstr="#ffffff",GradientType=1);
+  border-bottom: 1px dotted rgba(0,0,0,.1);
+}
+.author-description{
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  line-height: 22px;
+}
+/* end of book & author stuff  */
+
 
 main a:hover{
   background: rgba(255,255,0,0.5);

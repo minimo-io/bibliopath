@@ -1,10 +1,10 @@
 <template>
-  <div class="mt-4">
+  <div>
       <div class="book-presentation mt-4 pt-4">
         <h1>{{ book.title }}</h1>
 
          <b-avatar variant="light" size="2.2rem" :src="book.author.avatar" class="mr-3"></b-avatar>
-         <span class="mr-auto"><b-link :to="{ path: '/author/' + book.author.slug }">{{ book.author.name }}</b-link></span>
+         <span class="mr-auto"><b-link :to="{ name: 'Author', params: { slug: book.author.slug } }">{{ book.author.name }}</b-link></span>
 
       </div>
       <img :src="book.presentation" />
@@ -12,21 +12,7 @@
       <div v-html="book.content" class="book-content"></div>
   </div>
 </template>
-
-<style>
-
-.book-presentation{
-  text-align:center;
-  font-family: 'Roboto', sans-serif;
-}
-
-.book-presentation h1, .book-presentation h2{ font-family: "Nunito", sans-serif; font-weight: bold; }
-.book-presentation h1{ font-size:2rem;}
-.book-presentation h2{ font-size:1rem; }
-
-</style>
 <script lang="ts">
-  // import { Component, Vue } from 'vue-property-decorator';
   import axios from "axios";
   export default{
     data(){

@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-3">
+  <div>
 
       <ul>
         <li v-for="book in books" v-bind="books" :key="book.slug">

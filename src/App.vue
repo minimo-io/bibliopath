@@ -5,7 +5,7 @@
 <template>
   <div id="app">
 
-      <navbar></navbar>
+      <navbar class="mb-5"></navbar>
 
       <main class="container mt-4 px-lg-0">
         <transition name="fade" mode="out-in">
