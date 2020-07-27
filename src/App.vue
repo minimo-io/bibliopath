@@ -15,7 +15,7 @@
 
       <footer
       class="alt-footer my-5 pt-5 text-muted text-center text-small">
-        <p class="mb-0">© 2020 <span class="text-uppercase">{{ this.$appDetails.appName }}</span><br>v. {{ require('../package.json').version || '1' }}</p>
+        <p class="mb-0">© 2020 <span class="text-uppercase">{{ this.$appDetails.appName }}</span><br>v. {{ this.$appDetails.appVersion }}</p>
         <ul class="list-inline">
           <li class="list-inline-item text-capitalize"><b-link :href="this.$appDetails.appDevName" class="app-text-grey text-nowrap" target="_blank">by <i class="fas fa-circle mr-1"></i>Mínimo</b-link></li>
         </ul>
