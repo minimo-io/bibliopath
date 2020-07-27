@@ -74,6 +74,12 @@ main a:hover{
   background: rgba(255,255,0,0.5);
 }
 
+.author-title{
+	font-size: 1.5rem;
+  font-family: Nunito, sans-serif;
+}
+.author-origin{ position:relative;top:-5px; }
+
 /*  Bootstrap like breakpoints -------------- */
 @media (max-width: 576px) {
   .book-content{
@@ -88,6 +94,11 @@ main a:hover{
     height: .6rem
   }
   .app-logo a{ font-size:.9rem !important; }
+
+  .author-title{
+    font-size: 1.3rem;
+  }
+
 }
 @media (max-width: 768px) {
 
