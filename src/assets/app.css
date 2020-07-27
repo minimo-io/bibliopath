@@ -49,10 +49,19 @@
   padding:2rem;
   text-align:justify;
 }
+.book-content h2{
+  font-family: 'Nunito', sans-serif;
+  font-weight: bold;
+  font-size: 1.5rem;
+  line-height: 1.8rem;
+  text-align:left;
+  margin-bottom:1rem !important;
+  margin-top:2rem !important;
+}
 .book-content p{
   font-family: 'Roboto', sans-serif;
-  font-size:22px;
-  line-height:33px;
+  font-size:1.1rem;
+  line-height:1.4;
 }
 .author-view{
   background: rgb(250,255,181);
@@ -79,7 +88,7 @@ main a:hover{
   font-family: Nunito, sans-serif;
 }
 .author-origin{ position:relative;top:-5px; }
-.product-desc{
+.author-desc{
 	font-size: .8rem;
 }
 /* .author-meta{ position:relative; top:-10px; } */
@@ -104,10 +113,6 @@ main a:hover{
   .book-content{
     padding:0.5rem !important;
   }
-  .book-content p{
-    font-size:18px;
-    line-height:26px;
-  }
   .spinner-grow-sm{
     width: .6rem;
     height: .6rem
@@ -117,7 +122,17 @@ main a:hover{
   .author-title{
     font-size: 1.3rem;
   }
-
+  .author-desc{
+  	font-size: .7rem;
+  }
+  .book-content h2{
+    font-size:1.2rem;
+    line-height: 1.6rem;
+  }
+  .book-content p{
+    font-size:17px;
+    line-height:26px;
+  }
 }
 @media (max-width: 768px) {
 

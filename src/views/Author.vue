@@ -18,7 +18,7 @@
                     <b-avatar class="no-shadow mr-1" size="1.2rem" :src="require('@/assets/flags/svg/'+author.countryCode+'.svg')"></b-avatar>USA
                   </div>
 
-        					<div class="product-desc text-center text-sm-left">
+        					<div class="author-desc text-center text-sm-left">
                     <p>{{ author.description }}(<b-link href="#info-tab">+More</b-link>).</p>
                   </div>
 
@@ -42,12 +42,12 @@
                     <i class="far fa-heart mr-2"></i>Follow
                     <b-badge pill variant="danger">28</b-badge>
                   </b-button>
-                  <b-button size="sm" variant="outline-dark" class="btn-sm-block mt-3 mt-sm-0 mr-3">
+                  <b-button disabled size="sm" variant="outline-dark" class="btn-sm-block mt-3 mt-sm-0 mr-3">
                     <i class="fas fa-coins mr-2"></i>Support
-                    <b-badge pill variant="dark">2</b-badge>
+                    <b-badge pill variant="dark">0</b-badge>
                   </b-button>
                   <b-button size="sm" variant="outline-success" class="btn-sm-block mt-3 mt-sm-0">
-                    <i class="fas fa-book mr-2"></i>Books <b-badge variant="success">22</b-badge>
+                    <i class="fas fa-book mr-2"></i>Read <b-badge variant="success">22</b-badge>
                   </b-button>
         				</div>
             </div>

@@ -102,7 +102,7 @@ export default{
   },
   destroyed () {
     window.removeEventListener('scroll', this.handleScroll);
-  },  
+  },
   // computed: {
   //   ...mapGetters({
   //     // map `this.user` to `this.$store.getters.user`
