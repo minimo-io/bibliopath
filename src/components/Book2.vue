@@ -28,7 +28,7 @@
     },
     mounted(){
       this.$store.commit("setLoading");
-      axios.get("https://alt.minimo.io/wp-json/wp/v2/posts?slug="+ this.book.slug +"&_embed").then((result) => {
+      axios.get(this.$appDetails.appAPIUri + "/wp-json/wp/v2/posts?slug="+ this.book.slug +"&_embed").then((result) => {
          console.log(result);
         this.$store.commit("setNotLoading");
         this.book.content = result.data[0].content.rendered;

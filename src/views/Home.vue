@@ -22,8 +22,8 @@ export default {
   },
   mounted(){
     this.$store.commit("setLoading");
-    axios.get("https://alt.minimo.io/wp-json/wp/v2/posts?_embed").then((result) => {
-      console.log(result.data);
+    axios.get(this.$appDetails.appAPIUri + "/wp-json/wp/v2/posts?_embed").then((result) => {
+
       this.$store.commit("setNotLoading");
       this.books = result.data;
 
