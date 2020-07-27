@@ -10,7 +10,7 @@ import store from './store'
 Vue.prototype.$appDetails = {
   appName: "Bibliopath",
   appVersion: require('../package.json').version || '1',
-  appDevNameUrl: "https://minimo.io/en/",
+  appDevUrl: "https://minimo.io/en/",
   appAPIUri: "https://api.bibliopath.net"
 }
 
