@@ -8,25 +8,20 @@
             <div class="row">
         				<div class="col-md-4">
         						<center>
-        							<b-img rounded="circle" :src="author.avatar" alt=""></b-img>
+        							<b-img rounded="circle" size="10rem" :src="author.avatar" alt=""></b-img>
         						</center>
         				</div>
         				<div class="col-md-7">
         					<div class="author-title text-center text-sm-left font-weight-bold">
                     {{ author.name }}
                   </div>
-                  <div class="beer-origin text-center text-sm-left">
+                  <div class="author-origin text-center text-sm-left">
                     De
                     <b-avatar class="no-shadow mr-1" size="1.2rem" :src="require('@/assets/flags/svg/uy.svg')"></b-avatar>Uruguay
                   </div>
-                  <!-- <div class="beer-meta softer mb-3 text-center text-sm-left">
-                    <b-badge variant="info mr-2">{{ beer.type.typeName }}</b-badge>
-                    <b-badge variant="primary mr-2">ABV: {{ beer.ABV }}%</b-badge>
-                    <b-badge variant="green">IBU: {{ beer.IBU }}</b-badge>
-                  </div> -->
 
         					<div class="product-desc text-center text-sm-left">
-                    <p>Una cervecería uruguaya de gran prestigo y calidad, conocida por su fuerte apuesta a la innovación en materia de variedades de cervezas artesanales (<b-link href="#info-tab">+Mas</b-link>).</p>
+                    <p>{{ author.description }}(<b-link href="#info-tab">+More</b-link>).</p>
                   </div>
 
         					<div class="product-rating mt-3 mb-3 text-center text-sm-left">
@@ -43,14 +38,18 @@
                       {{ beer.brewery.breweryName }}
                     </b-link>
                   </div> -->
-        					<hr>
-        					<div class="product-price text-center text-sm-left">627 seguidores</div>
         					<!-- <div class="product-stock">In Stock</div> -->
-        					<hr>
-                  <b-button size="sm" variant="outline-danger" class="btn-sm-block mr-3"><i class="far fa-heart mr-2"></i>Seguir</b-button>
-                  <b-button size="sm" variant="outline-dark" class="btn-sm-block mt-3 mt-sm-0 mr-3"><i class="far fa-thumbs-up mr-2"></i>Votar</b-button>
+        					<!-- <hr> -->
+                  <b-button size="sm" variant="outline-danger" class="btn-sm-block mr-3">
+                    <i class="far fa-heart mr-2"></i>Follow
+                    <b-badge pill variant="danger">28</b-badge>
+                  </b-button>
+                  <b-button size="sm" variant="outline-dark" class="btn-sm-block mt-3 mt-sm-0 mr-3">
+                    <i class="fas fa-coins mr-2"></i>Support
+                    <b-badge pill variant="dark">2</b-badge>
+                  </b-button>
                   <b-button size="sm" variant="outline-success" class="btn-sm-block mt-3 mt-sm-0">
-                    <i class="fas fa-beer mr-2"></i>Cervezas <b-badge variant="success">22</b-badge>
+                    <i class="fas fa-book mr-2"></i>Books <b-badge variant="success">22</b-badge>
                   </b-button>
         				</div>
             </div>
@@ -82,14 +81,18 @@
       </b-carousel>
 
       <b-card class="mt-3">
-        <b-card-title>Cervezas <b-badge variant="primary softer">22</b-badge></b-card-title>
+        <b-card-title>Books <b-badge variant="primary softer">22</b-badge></b-card-title>
         <b-card-text>
-
+          <ul class="mt-5">
+            <li v-for="book in author.books" v-bind="author" :key="book.id">
+              <router-link :to="{ path: '/book/' + book.slug }">{{ book.title.rendered }} - {{ book._embedded.author[0].name }}</router-link>
+            </li>
+          </ul>
         </b-card-text>
       </b-card>
 
       <b-card class="mt-3">
-        <b-card-title>Seguidores <b-badge variant="primary softer">285</b-badge></b-card-title>
+        <b-card-title>Followers <b-badge variant="primary softer">285</b-badge></b-card-title>
         <b-card-text>
           <b-avatar-group size="40px">
             <b-avatar></b-avatar>
@@ -159,8 +162,6 @@
     <div class="author-view mt-3 pt-0 pb-3">
       <b-avatar variant="light" size="5rem" :src="author.avatar" class="mr-3"></b-avatar>
       <h1>{{ author.name }}</h1>
-      <b-badge pill variant="danger" style="opacity:.5;"><i class="fas fa-user-check mr-1"></i>28 followers</b-badge>
-      <b-badge pill variant="warning" class="ml-1" style="opacity:.5;"><i class="fas fa-coins mr-1"></i>2 donors</b-badge>
 
        <div v-if="author.description" v-html="author.description" class="author-description mt-3 px-5"></div>
     </div>
@@ -195,12 +196,14 @@
     mounted(){
       this.$store.commit("setLoading");
       axios.get("https://alt.minimo.io/wp-json/wp/v2/users/?slug="+ this.author.slug +"&_embed").then((result) => {
-
+        
         this.$store.commit("setNotLoading");
         this.author.id = result.data[0].id;
         this.author.name = result.data[0].name;
         this.author.description = result.data[0].description;
+        this.author.avatar =  result.data[0].avatar_urls[96];
         this.authorLoadedOk = true;
+
         // this.book.title = result.data[0].title.rendered;
         // this.book.author.name = result.data[0]._embedded.author[0].name;
         // this.book.author.slug = result.data[0]._embedded.author[0].slug;
