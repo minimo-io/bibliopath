@@ -6,7 +6,7 @@
             <div class="row">
         				<div class="col-md-4">
         						<center>
-        							<b-img rounded="circle" size="10rem" :src="author.avatar" alt=""></b-img>
+        							<b-img rounded="circle" width="180px" :src="author.avatar" alt=""></b-img>
         						</center>
         				</div>
         				<div class="col-md-7">
@@ -14,8 +14,8 @@
                     {{ author.name }}
                   </div>
                   <div class="author-origin text-center text-sm-left">
-                    De
-                    <b-avatar class="no-shadow mr-1" size="1.2rem" :src="require('@/assets/flags/svg/uy.svg')"></b-avatar>Uruguay
+                    From
+                    <b-avatar class="no-shadow mr-1" size="1.2rem" :src="require('@/assets/flags/svg/'+author.countryCode+'.svg')"></b-avatar>USA
                   </div>
 
         					<div class="product-desc text-center text-sm-left">
@@ -55,7 +55,7 @@
         <!-- </div> -->
       </b-card>
 
-      <b-carousel
+      <!-- <b-carousel
         id="carousel-fade"
         style="text-shadow: 0px 0px 2px #000"
         fade
@@ -76,12 +76,12 @@
           caption="Third Slide"
           img-src="https://picsum.photos/1024/480/?image=22"
         ></b-carousel-slide>
-      </b-carousel>
+      </b-carousel> -->
 
       <b-card class="mt-3">
         <b-card-title>Books <b-badge variant="primary softer">22</b-badge></b-card-title>
         <b-card-text>
-          <ul class="mt-5">
+          <ul class="mt-4">
             <li v-for="book in author.books" v-bind="author" :key="book.id">
               <router-link :to="{ path: '/book/' + book.slug }">{{ book.title.rendered }} - {{ book._embedded.author[0].name }}</router-link>
             </li>
@@ -172,6 +172,7 @@
           name: null,
           description: null,
           avatar: null,
+          countryCode: 'un',
           books: []
         }
       }
@@ -179,12 +180,13 @@
     mounted(){
       this.$store.commit("setLoading");
       axios.get(this.$appDetails.appAPIUri + "/wp-json/wp/v2/users/?slug="+ this.author.slug +"&_embed").then((result) => {
-
+        console.log( result.data[0].acf.author_avatar );
         this.$store.commit("setNotLoading");
         this.author.id = result.data[0].id;
         this.author.name = result.data[0].name;
         this.author.description = result.data[0].description;
-        this.author.avatar =  result.data[0].avatar_urls[96];
+        this.author.avatar = result.data[0].acf.author_avatar;
+        this.author.countryCode = result.data[0].acf.author_country_code;
         this.authorLoadedOk = true;
 
         // this.book.title = result.data[0].title.rendered;

@@ -82,6 +82,7 @@ main a:hover{
 .product-desc{
 	font-size: .8rem;
 }
+/* .author-meta{ position:relative; top:-10px; } */
 
 .product-price{
 	font-size: 22px;
