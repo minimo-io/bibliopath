@@ -63,6 +63,16 @@
   font-size:1.1rem;
   line-height:1.6;
 }
+.book-card{
+  max-width:11rem;
+}
+.book-card-link{
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
 .author-view{
   background: rgb(250,255,181);
   background: -moz-linear-gradient(0deg, rgba(250,255,181,0.2903536414565826) 0%, rgba(255,255,255,1) 100%);
@@ -133,9 +143,14 @@ main a:hover{
     font-size:17px;
     line-height:26px;
   }
+  .book-card{
+    margin:auto !important;
+  }
 }
 @media (max-width: 768px) {
-
+  .book-card{
+    margin:inherit;
+  }
 }
 @media (max-width: 992px) {
 

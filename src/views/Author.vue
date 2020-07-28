@@ -81,11 +81,31 @@
       <b-card class="mt-3">
         <b-card-title>Books <b-badge variant="primary softer">22</b-badge></b-card-title>
         <b-card-text>
-          <ul class="mt-4">
-            <li v-for="book in author.books" v-bind="author" :key="book.id">
-              <router-link :to="{ path: '/book/' + book.slug }">{{ book.title.rendered }} - {{ book._embedded.author[0].name }}</router-link>
-            </li>
-          </ul>
+          <b-card-group deck>
+              <!-- <book-card
+                v-for="book in author.books"
+                v-bind="author"
+                :key="book.id"
+                :img-src="book.acf.book_cover.sizes.large"
+                :img-alt="book.acf.book_cover.alt"
+                >
+
+              </book-card> -->
+
+              <b-card
+              v-for="book in author.books"
+              v-bind="author"
+              :key="book.id"
+              :img-src="book.acf.book_cover.sizes.large"
+              :img-alt="book.acf.book_cover.alt"
+              img-top
+              class="book-card">
+                <b-link class="book-card-link" :to="'/book/'+book.slug"></b-link>
+                <b-card-text class="text-center" v-html="book.title.rendered"></b-card-text>
+
+              </b-card>
+            </b-card-group>
+
         </b-card-text>
       </b-card>
 
@@ -160,7 +180,7 @@
 </style>
 <script>
   import axios from 'axios'
-
+  import bookCard from '@/components/BookCard'
   export default{
     name: "Author",
     data(){
@@ -198,7 +218,7 @@
         axios.get(this.$appDetails.appAPIUri + "/wp-json/wp/v2/posts/?author="+ this.author.id +"&_embed").then((result) => {
 
           this.$store.commit("setNotLoading");
-
+          console.log(result.data);
           this.author.books = result.data;
 
 
