@@ -12,6 +12,8 @@
 :root {
 
 }
+.alt-aff-link::after{ font-size:.5rem; font-family: 'Nunito', sans-serif;}
+.alt-aff-link{ font-size:.8rem; }
 .app-logo, .b-sidebar-header{
   /* position:relative; */
   font-family: Nunito, sans-serif;

@@ -1,6 +1,6 @@
 <template>
   <div v-if="content">
-    <b-card class="py-3 py-md-5 mb-4 mb-sm-0"
+    <b-card class="pb-3 pt-0 pb-md-5 pt-md-3 mb-4 mb-sm-0"
     no-body>
 
       <b-card-body class="z-index-6000">
@@ -22,7 +22,11 @@
           <b-link href="#"><b-button variant="info" size="sm" class="mr-2"><i class="fas fa-plus mr-1"></i>Info</b-button></b-link>
           <b-link :to="{ name: 'Author', params: { slug: book.author.slug } }"><b-button variant="green" size="sm"><i class="fas fa-user mr-1"></i>Bio</b-button></b-link>
         </div>
-
+        <div class="book-buy text-center">
+          <!-- <a rel="noreferrer noopener" href="https://m.do.co/c/5deb27a66131" class="" target="_blank"><strong>Digitalocean</strong></a> -->
+          <b-link href="#" class="alt-aff-link softer">
+            <i class="fab fa-amazon mr-1"></i>Buy on Amazon for $25</b-link>
+        </div>
       </b-card-body>
       <div class="overlay overlay-dark"></div>
 
