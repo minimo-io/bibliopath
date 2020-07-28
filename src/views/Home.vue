@@ -1,20 +1,27 @@
 <template>
   <div>
-
-      <ul>
-        <li v-for="book in books" v-bind="books" :key="book.slug">
-          <router-link :to="{ path: '/book/' + book.slug }">{{ book.title.rendered }} - {{ book._embedded.author[0].name }}</router-link>
-        </li>
-      </ul>
-      <hr>
-      <b-button @click="goToAbout" size="sm" block pill>Start here</b-button>
-
+    <b-button @click="goToAbout" size="sm" block pill>Start here</b-button>
+    <br>
+    <b-card-group deck>
+        <book-card
+          v-for="book in books"
+          v-bind="books"
+          :key="book.id"
+          :imgSrc="book.acf.book_cover.sizes.large"
+          :imgAlt="book.acf.book_cover.alt"
+          :title="book.title.rendered"
+          :slug="book.slug"
+          >
+        </book-card>
+    </b-card-group>
   </div>
 </template>
 <script>
 import axios from "axios";
+import BookCard from "@/components/BookCard";
 export default {
   name: 'Home',
+  components: {"book-card": BookCard},
   data(){
     return {
       books: []

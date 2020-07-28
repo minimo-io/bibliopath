@@ -82,17 +82,18 @@
         <b-card-title>Books <b-badge variant="primary softer">22</b-badge></b-card-title>
         <b-card-text>
           <b-card-group deck>
-              <!-- <book-card
+              <book-card
                 v-for="book in author.books"
                 v-bind="author"
                 :key="book.id"
-                :img-src="book.acf.book_cover.sizes.large"
-                :img-alt="book.acf.book_cover.alt"
+                :imgSrc="book.acf.book_cover.sizes.large"
+                :imgAlt="book.acf.book_cover.alt"
+                :title="book.title.rendered"
+                :slug="book.slug"
                 >
+              </book-card>
 
-              </book-card> -->
-
-              <b-card
+              <!-- <b-card
               v-for="book in author.books"
               v-bind="author"
               :key="book.id"
@@ -103,7 +104,7 @@
                 <b-link class="book-card-link" :to="'/book/'+book.slug"></b-link>
                 <b-card-text class="text-center" v-html="book.title.rendered"></b-card-text>
 
-              </b-card>
+              </b-card> -->
             </b-card-group>
 
         </b-card-text>
@@ -183,6 +184,7 @@
   import bookCard from '@/components/BookCard'
   export default{
     name: "Author",
+    components:{ "book-card": bookCard},
     data(){
       return {
         authorLoadedOk: false,
