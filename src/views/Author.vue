@@ -1,7 +1,8 @@
 <template>
   <div>
     <div v-if="authorLoadedOk">
-      <b-card class="mt-4">
+      <b-card no-body class="mt-4">
+        <b-card-body class="z-index-6000">
     			<div class="container px-0">
             <div class="row">
         				<div class="col-md-4">
@@ -12,6 +13,7 @@
         				<div class="col-md-7">
         					<div class="author-title text-center text-sm-left font-weight-bold">
                     {{ author.name }}
+                    <sup><b-badge pill variant="danger" class="title-followers softer">28</b-badge></sup>
                   </div>
                   <div class="author-origin text-center text-sm-left">
                     From
@@ -52,6 +54,8 @@
         				</div>
             </div>
           </div>
+        </b-card-body>
+        <div class="overlay overlay-dark"></div>
         <!-- </div> -->
       </b-card>
 
@@ -111,7 +115,7 @@
       </b-card>
 
       <b-card class="mt-3">
-        <b-card-title>Followers <b-badge variant="primary softer">285</b-badge></b-card-title>
+        <b-card-title>Followers <b-badge variant="danger softer">28</b-badge></b-card-title>
         <b-card-text>
           <b-avatar-group size="40px">
             <b-avatar></b-avatar>

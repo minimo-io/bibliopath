@@ -45,19 +45,37 @@
 .book-presentation h1, .book-presentation h2, .author-view h1{ font-family: "Nunito", sans-serif; font-weight: bold; }
 .book-presentation h1{ font-size:2rem;}
 .book-presentation h2{ font-size:1rem; }
+.book-meta{
+  font-size:.9rem;
+  text-align:center !important;
+}
+.book-meta button{
+  font-size:.8rem;
+}
 .book-content{
   padding:2rem;
   text-align:justify;
 }
-.book-content h2{
+.book-content h2, .book-content h3{
   font-family: 'Nunito', sans-serif;
   font-weight: bold;
-  font-size: 1.5rem;
-  line-height: 1.8rem;
   text-align:left;
   margin-bottom:1rem !important;
   margin-top:2rem !important;
 }
+.book-content h2{
+  font-size: 1.5rem;
+  line-height: 1.8rem;
+}
+.book-content h3{
+  font-size: 1.3rem;
+  line-height: 1.5rem;
+}
+.title-followers{
+  font-size:.6rem;
+}
+
+
 .book-content p{
   font-family: 'Roboto', sans-serif;
   font-size:1.1rem;
@@ -66,6 +84,9 @@
 .book-card{
   max-width:11rem;
 }
+.book-card .card-text{
+  font-size:.7rem;
+}
 .book-card-link{
   position: absolute;
   top: 0;
@@ -73,6 +94,7 @@
   height: 100%;
   width: 100%;
 }
+
 .author-view{
   background: rgb(250,255,181);
   background: -moz-linear-gradient(0deg, rgba(250,255,181,0.2903536414565826) 0%, rgba(255,255,255,1) 100%);
@@ -89,7 +111,7 @@
 /* end of book & author stuff  */
 
 
-main a:hover{
+main a:hover:not(.book-card-link){
   background: rgba(255,255,0,0.5);
 }
 
@@ -101,7 +123,9 @@ main a:hover{
 .author-desc{
 	font-size: .8rem;
 }
-/* .author-meta{ position:relative; top:-10px; } */
+.author-meta{
+
+}
 
 .product-price{
 	font-size: 22px;
@@ -135,16 +159,27 @@ main a:hover{
   .author-desc{
   	font-size: .7rem;
   }
+  .book-presentation h1{ font-size:1.7rem;}
   .book-content h2{
     font-size:1.2rem;
     line-height: 1.6rem;
+  }
+  .book-content h3{
+    font-size: 1.1rem;
+    line-height: 1.3rem;
   }
   .book-content p{
     font-size:17px;
     line-height:26px;
   }
+  .book-meta button{
+    font-size:.6rem;
+  }
   .book-card{
     margin:auto !important;
+  }
+  .title-followers{
+    font-size:.5rem;
   }
 }
 @media (max-width: 768px) {
