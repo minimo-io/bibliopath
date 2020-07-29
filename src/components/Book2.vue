@@ -50,26 +50,14 @@
     </b-card>
 
 
+    <div class="book-box">
+      <nav aria-label="Secondary navigation" class="d-none d-lg-block pl-4 mt-3 mx-0">
+        <h2>CHAPTERS</h2>
+        <ul class="book-menu nav section-nav flex-column"></ul>
+      </nav>
+      <div v-html="content" class="book-content"></div>
 
-    <b-container class="book-box">
-      <b-row>
-        <b-col cols="8" class="px-0 mx-0">
-          <div v-html="content" class="book-content pl-0"></div>
-        </b-col>
-        <b-col class="align-top px-0">
-          <nav aria-label="Secondary navigation" class="col-xl-2 d-none d-xl-block pl-2 mx-0" style="max-width:100%;">
-            <h2>CHAPTERS</h2>
-            <ul class="book-menu nav section-nav flex-column pl-3 mx-0" Xstyle="border:1px solid red;">
-            </ul>
-          </nav>
-
-        </b-col>
-      </b-row>
-
-
-
-
-  </b-container>
+    </div>
 
   </div>
 </template>
@@ -101,6 +89,30 @@
         if(val){
           this.$nextTick(()=>{
             //$(".book-menu").empty();
+
+                $(document).on('click', 'a[href^="#"]', function (event) {
+                    //event.preventDefault();
+                    var hash_val = $.attr(this, 'href');
+                    if (hash_val == "#") return;
+
+                    $('html, body').animate({
+                        scrollTop: $(hash_val).offset().top - 80
+                    }, 500);
+                });
+                console.log($(".book-box nav").offset().top);
+                $(window).bind('scroll', function () {
+                  if ($(window).scrollTop() > $(".book-box nav").offset().top) {
+                      // $('.book-box nav').addClass('fixed');
+                  } else {
+                      // $('.book-box nav').removeClass('fixed');
+                  }
+                });
+            // $('.back-to-the-future').click(function() {
+            //     $("html, body").animate({
+            //         scrollTop: 0
+            //     }, 600);
+            //     return false;
+            // });
 
               $(".book-content h2, .book-content h3").each(function( key, value ) {
                 $(value).attr("id", "title-"+key);

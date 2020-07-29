@@ -38,6 +38,10 @@
 
           <b-link :to="{ path: '/store' }" title="STORE" class="alt-header__sign-in"><i class="fas fa-cog"></i></b-link>
 
+          <span class="alt-header__separator alt-separator">/</span>
+
+          <b-link :to="{ path: '/store' }" title="BOOK MENU" class="alt-header__sign-in"><i class="fas fa-bars"></i></b-link>
+
           <!-- <b-nav class="navbar-nav navbar-main ml-auto order-1 d-none d-sm-inline-block">
             <b-nav-item-dropdown
                   toggle-class="nav-link-custom"
