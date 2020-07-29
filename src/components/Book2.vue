@@ -51,11 +51,11 @@
 
 
     <div class="book-box">
-      <nav aria-label="Secondary navigation" class="d-none d-lg-block pl-4 mt-3 mx-0">
-        <h2>CHAPTERS</h2>
+      <nav aria-label="Secondary navigation" :class="{ 'd-lg-block': showIndex }" class="d-none pl-4 pt-3 mx-0">
+        <h2>CHAPTERS <a @click.prevent="toggleIndex" class="pointer">(Hide)</a></h2>
         <ul class="book-menu nav section-nav flex-column"></ul>
       </nav>
-      <div v-html="content" class="book-content"></div>
+      <div v-html="content" :class="{ 'padding-right-inherit': !showIndex }" class="book-content"></div>
 
     </div>
 
@@ -69,6 +69,7 @@
       return {
         isBookLoaded: false,
         content: null,
+        showIndex: true,
         book: {
           slug: this.$route.params.slug,
           title: null,
@@ -152,6 +153,13 @@
 
 
       });
+    },
+    methods:{
+      toggleIndex(){
+        this.showIndex = false;
+
+
+      }
     }
 
   }

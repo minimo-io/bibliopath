@@ -14,6 +14,10 @@
 }
 .alt-aff-link::after{ font-size:.5rem; font-family: 'Nunito', sans-serif;}
 .alt-aff-link{ font-size:.8rem; }
+.pointer{ cursor:pointer; }
+.padding-right-inherit{
+  padding-right: inherit !important;
+}
 .app-logo, .b-sidebar-header{
   /* position:relative; */
   font-family: Nunito, sans-serif;
@@ -84,6 +88,7 @@
 .is-h2{
   font-weight: bold;
 }
+
 .book-menu .is-h3{
   /* padding-left:1rem !important; */
 }
@@ -92,7 +97,7 @@
   position: sticky;
   max-width: 16rem !important;
   font-size:.7rem;
-  top: 3.5rem;
+  top: 3rem;
   right: 1px;
 }
 .book-content p{
