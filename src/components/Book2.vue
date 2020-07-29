@@ -22,10 +22,10 @@
           <b-link href="#"><b-button variant="info" size="sm" class="mr-2"><i class="fas fa-plus mr-1"></i>Info</b-button></b-link>
           <b-link :to="{ name: 'Author', params: { slug: book.author.slug } }"><b-button variant="green" size="sm"><i class="fas fa-user mr-1"></i>Bio</b-button></b-link>
         </div>
-        <div class="book-buy text-center">
+        <div v-if="book.aff.link" class="book-buy text-center">
           <!-- <a rel="noreferrer noopener" href="https://m.do.co/c/5deb27a66131" class="" target="_blank"><strong>Digitalocean</strong></a> -->
-          <b-link href="#" class="alt-aff-link softer">
-            <i class="fab fa-amazon mr-1"></i>Buy on Amazon for $25</b-link>
+          <b-link :href="book.aff.link" target="_blank" class="alt-aff-link softer">
+            <i class="fab fa-amazon mr-1"></i>Comprar libro de bolsillo</b-link>
         </div>
       </b-card-body>
       <div class="overlay overlay-dark"></div>
@@ -48,7 +48,29 @@
         </b-avatar-group>
       </b-card-text>
     </b-card>
-    <div v-html="content" class="book-content"></div>
+
+
+
+    <b-container class="book-box">
+      <b-row>
+        <b-col cols="8" class="px-0 mx-0">
+          <div v-html="content" class="book-content pl-0"></div>
+        </b-col>
+        <b-col class="align-top px-0">
+          <nav aria-label="Secondary navigation" class="col-xl-2 d-none d-xl-block pl-2 mx-0" style="max-width:100%;">
+            <h2>CHAPTERS</h2>
+            <ul class="book-menu nav section-nav flex-column pl-3 mx-0" Xstyle="border:1px solid red;">
+            </ul>
+          </nav>
+
+        </b-col>
+      </b-row>
+
+
+
+
+  </b-container>
+
   </div>
 </template>
 <script lang="ts">
@@ -66,7 +88,11 @@
           // content: null,
           presentation: null,
           modified: null,
-          license: null
+          license: null,
+          aff: {
+            link: null
+          },
+          menu: null
         }
       }
     },
@@ -74,13 +100,22 @@
       content: function (val) {
         if(val){
           this.$nextTick(()=>{
+            //$(".book-menu").empty();
 
-            // if (this.isBookInit == false){
-              let titlesCount = $(".book-content h2");
-              console.log("LENSSXPP: " + titlesCount.length);
+              $(".book-content h2, .book-content h3").each(function( key, value ) {
+                $(value).attr("id", "title-"+key);
+                var elemClass = "is-h2";
+                if ($(value).is("h3")) elemClass = "is-h3";
+                // $(this).attr("id", "title-"+key );
+                let txt2 = $("<a href='#title-"+key +"' class='nav-link mb-0 px-0 pb-0 "+ elemClass +"'></a>").append($(value).text());
+                let txt1 = $("<li class='nav-item mb-0'></li>").append(txt2);
+                //
+                $(".book-menu").append(txt1);
 
-              // finally set it to loaded
-            // }
+              });;
+
+
+
           })
         }
       },
@@ -96,6 +131,7 @@
         this.book.title = result.data[0].title.rendered;
         this.book.modified = result.data[0].modified;
         this.book.license = result.data[0].acf.book_license;
+        this.book.aff.link = result.data[0].acf.book_aff_link;
         this.book.author.name = result.data[0]._embedded.author[0].name;
         this.book.author.slug = result.data[0]._embedded.author[0].slug;
         this.book.author.avatar = result.data[0]._embedded.author[0].acf.author_avatar;

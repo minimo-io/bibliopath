@@ -55,7 +55,8 @@
   font-size:.8rem;
 }
 .book-content{
-  padding:2rem;
+  /* padding:2rem; */
+  padding:1rem;
   text-align:justify;
 }
 .book-content h2, .book-content h3{
@@ -77,11 +78,29 @@
   font-size:.6rem;
 }
 
+.book-box{
+  position:relative;
+}
+.book-box nav{
+  width:100%;
+  display:inline-block;
+  /* padding-top: 1.5rem; */
+  /* padding-bottom: 1.5rem; */
+  font-size: .7rem;
+  position: absolute;
+  /* vertical-align: top; */
+}
+.is-h2{
+  font-weight: bold;
+}
+.book-menu .is-h3{
+  padding-left:1rem !important;
+}
 
 .book-content p{
   font-family: 'Roboto', sans-serif;
   font-size:1.1rem;
-  line-height:1.6;
+  line-height:1.5;
 }
 .book-card{
   max-width:11rem;
