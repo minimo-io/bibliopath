@@ -204,6 +204,7 @@
       }
     },
     mounted(){
+      this.$store.commit("setIsBook", false);
       this.$store.commit("setLoading");
       axios.get(this.$appDetails.appAPIUri + "/wp-json/wp/v2/users/?slug="+ this.author.slug +"&_embed").then((result) => {
         console.log( result.data[0].acf.author_avatar );

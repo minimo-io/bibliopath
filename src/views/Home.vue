@@ -28,6 +28,7 @@ export default {
     }
   },
   mounted(){
+    this.$store.commit("setIsBook", false);
     this.$store.commit("setLoading");
     axios.get(this.$appDetails.appAPIUri + "/wp-json/wp/v2/posts?_embed").then((result) => {
 

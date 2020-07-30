@@ -49,9 +49,8 @@
       </b-card-text>
     </b-card>
 
-
     <div class="book-box">
-      <nav aria-label="Secondary navigation" :class="{ 'd-lg-block': showIndex }" class="d-none pl-4 pt-3 mx-0">
+      <nav aria-label="Index navigation" :class="{ 'd-lg-block': showIndex }" class="d-none pl-4 pt-3 mx-0">
         <h2>CHAPTERS <a @click.prevent="toggleIndex" class="pointer">(Hide)</a></h2>
         <ul class="book-menu nav section-nav flex-column"></ul>
       </nav>
@@ -70,6 +69,7 @@
         isBookLoaded: false,
         content: null,
         showIndex: true,
+        indexHtml: null,
         book: {
           slug: this.$route.params.slug,
           title: null,
@@ -92,28 +92,28 @@
             //$(".book-menu").empty();
 
                 $(document).on('click', 'a[href^="#"]', function (event) {
-                    //event.preventDefault();
+
                     var hash_val = $.attr(this, 'href');
                     if (hash_val == "#") return;
 
                     $('html, body').animate({
                         scrollTop: $(hash_val).offset().top - 80
                     }, 500);
+                    // event.preventDefault();
                 });
-                console.log($(".book-box nav").offset().top);
-                $(window).bind('scroll', function () {
-                  if ($(window).scrollTop() > $(".book-box nav").offset().top) {
-                      // $('.book-box nav').addClass('fixed');
-                  } else {
-                      // $('.book-box nav').removeClass('fixed');
-                  }
-                });
-            // $('.back-to-the-future').click(function() {
-            //     $("html, body").animate({
-            //         scrollTop: 0
-            //     }, 600);
-            //     return false;
-            // });
+                // $(window).bind('scroll', function () {
+                //   if ($(window).scrollTop() > $(".book-box nav").offset().top) {
+                //
+                //   } else {
+                //
+                //   }
+                // });
+                // $('.back-to-the-future').click(function() {
+                //     $("html, body").animate({
+                //         scrollTop: 0
+                //     }, 600);
+                //     return false;
+                // });
 
               $(".book-content h2, .book-content h3").each(function( key, value ) {
                 $(value).attr("id", "title-"+key);
@@ -122,11 +122,13 @@
                 // $(this).attr("id", "title-"+key );
                 let txt2 = $("<a href='#title-"+key +"' class='nav-link mb-0 px-0 pb-0 "+ elemClass +"'></a>").append($(value).text());
                 let txt1 = $("<li class='nav-item mb-0'></li>").append(txt2);
-                //
+
                 $(".book-menu").append(txt1);
 
-              });;
 
+              });
+              this.indexHtml = $(".book-menu").html();
+              this.$store.commit("setBookIndex", this.indexHtml );
 
 
           })
@@ -134,6 +136,7 @@
       },
     },
     mounted(){
+      this.$store.commit("setIsBook", true);
       this.$store.commit("setLoading");
       axios.get(this.$appDetails.appAPIUri + "/wp-json/wp/v2/posts?slug="+ this.book.slug +"&_embed").then((result) => {
          console.log(result.data[0].acf.book_license);
@@ -153,6 +156,9 @@
 
 
       });
+    },
+    update(){
+      this.$store.commit("setIsBook", true);
     },
     methods:{
       toggleIndex(){

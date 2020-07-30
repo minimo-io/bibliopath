@@ -7,7 +7,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     loading: false,
-    loadingObj : null
+    isBook: false,
+    bookIndex: null,
   },
   mutations: {
     setLoading(state){
@@ -19,13 +20,16 @@ export default new Vuex.Store({
       state.loading = false;
 
     },
-    setLoadingObj(state, o){
-      state.loadingObj = o;
+    setIsBook(state, isOn){
+      state.isBook = isOn;
+    },
+    setBookIndex(state, indexHtml){
+      state.bookIndex = indexHtml;
     }
   },
   getters:{
     isLoading: state => state.loading,
-    getLoadingObj: state => state.loadingObj
+    isBook: state => state.isBook,
   },
   actions: {
   },

@@ -57,6 +57,7 @@ const router = new VueRouter({
 })
 
 router.beforeResolve((to, from, next) => {
+
   if (to.name) {
       store.commit("setLoading");
   }

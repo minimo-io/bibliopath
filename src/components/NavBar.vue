@@ -38,9 +38,9 @@
 
           <b-link :to="{ path: '/store' }" title="STORE" class="alt-header__sign-in"><i class="fas fa-cog"></i></b-link>
 
-          <span class="alt-header__separator alt-separator">/</span>
+          <span v-if="showIndex" class="alt-header__separator alt-separator">/</span>
 
-          <b-link :to="{ path: '/store' }" title="BOOK MENU" class="alt-header__sign-in"><i class="fas fa-bars"></i></b-link>
+          <a v-if="showIndex" v-b-toggle.sidebar-index role="button" title="BOOK MENU" class="alt-header__sign-in"><i class="fas fa-bars"></i></a>
 
           <!-- <b-nav class="navbar-nav navbar-main ml-auto order-1 d-none d-sm-inline-block">
             <b-nav-item-dropdown
@@ -57,7 +57,7 @@
     </header>
 
     <!-- Sidebar -->
-    <b-sidebar id="sidebar-1" title="HOPMASTERS"  backdrop-variant="appyellow" lazy backdrop shadow>
+    <b-sidebar id="sidebar-1" title="BIBLIOPATH" lazy backdrop shadow>
 
 
       <div class="px-3 py-2 mt-2">
@@ -66,12 +66,23 @@
         <b-button v-else :to="{ path: '/login' }" block variant="outline-secondary" size="sm" class="mb-1">SIGNIN</b-button>
 
         <!-- <h2>Essential Links</h2> -->
-        <ul>
+        <ul class="mt-2">
           <li><b-link :to="{ path: '/' }"><i class="fas fa-home mr-1"></i>Home</b-link></li>
           <!-- <li><b-link :to="{ path: lg_build_path('/store') }"><i class="fas fa-shopping-cart mr-1"></i>{{ $t('nav.store.title') }}</b-link></li> -->
           <!-- <li><b-link :to="{ path: lg_build_path('/school') }"><i class="fab fa-leanpub mr-1"></i>{{ $t('nav.school.title') }}</b-link></li> -->
           <!-- <li><b-link :to="{ path: lg_build_path('/news') }"><i class="fas fa-newspaper mr-1"></i>{{ $t('nav.news.title') }}</b-link></li> -->
         </ul>
+
+      </div>
+    </b-sidebar>
+    <!-- Index -->
+    <b-sidebar id="sidebar-index" title="CHAPTERS" lazy backdrop shadow>
+
+      <div class="px-3 py-2 mt-0 pt-0">
+
+
+        <ul class="book-menu-main nav section-nav flex-column mb-4" v-html="bookIndex"></ul>
+
 
       </div>
     </b-sidebar>
@@ -86,7 +97,9 @@ export default{
       user:{
         loggedIn: false
       },
-      isLoading: true
+      isLoading: true,
+      showIndex: false,
+      bookIndex: null
     }
   },
   watch: {
@@ -99,7 +112,21 @@ export default{
 
         this.isLoading = false;
       }
-    }
+    },
+    '$store.state.isBook': function() {
+      if (this.$store.state.isBook){
+        this.showIndex = true;
+      }else{
+        this.showIndex = false;
+      }
+    },
+    '$store.state.bookIndex': function() {
+      if (this.$store.state.bookIndex){
+        this.bookIndex = this.$store.state.bookIndex;
+      }else{
+        this.bookIndex = '';
+      }
+    },
   },
   created () {
     window.addEventListener('scroll', this.handleScroll);
