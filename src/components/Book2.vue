@@ -51,7 +51,7 @@
 
     <div class="book-box mt-2">
       <nav aria-label="Index navigation" :class="{ 'd-lg-block': showIndex }" class="d-none pl-4 pt-3 mx-0">
-        <h2>CHAPTERS <a @click.prevent="toggleIndex" class="pointer">(Hide)</a></h2>
+        <h2 class="mb-2">CHAPTERS <a style="float:right; margin-right:5px;" @click.prevent="toggleIndex" class="pointer"><i class="fas fa-times mr-1"></i>Close</a></h2>
         <ul class="book-menu nav section-nav flex-column"></ul>
       </nav>
       <div v-html="content" :class="{ 'padding-right-inherit': !showIndex }" class="book-content"></div>
@@ -115,7 +115,7 @@
                 //     }, 600);
                 //     return false;
                 // });
-
+              // var last_h2 = 0;  
               $(".book-content h2, .book-content h3").each(function( key, value ) {
                 $(value).attr("id", "title-"+key);
                 var elemClass = "is-h2";
@@ -125,6 +125,7 @@
                 let txt1 = $("<li class='nav-item mb-0'></li>").append(txt2);
 
                 $(".book-menu").append(txt1);
+
 
 
               });

@@ -59,7 +59,7 @@
   text-align:center !important;
 }
 .book-meta button{
-  font-size:.8rem;
+  font-size:.7rem;
 }
 .book-content{
   /* padding:2rem; */
@@ -89,15 +89,14 @@
 
 
 .is-h2{
-  font-weight: bold;
+  /* font-weight: bold; */
 }
-
-.book-menu .is-h3{
-  /* padding-left:1rem !important; */
+.is-h3{
+  padding-left:1rem !important;
 }
 .book-menu-main{
   font-size:.7rem;
-  
+
 }
 .book-box nav{
   float: right;
@@ -125,7 +124,7 @@
   height: 100%;
   width: 100%;
 }
-
+.book-buy a{ font-size:.7rem; }
 .author-view{
   background: rgb(250,255,181);
   background: -moz-linear-gradient(0deg, rgba(250,255,181,0.2903536414565826) 0%, rgba(255,255,255,1) 100%);
@@ -142,7 +141,7 @@
 /* end of book & author stuff  */
 
 
-main a:hover:not(.book-card-link){
+main a:hover:not(.book-card-link), .book-menu-main a:hover{
   background: rgba(255,255,0,0.5);
 }
 
