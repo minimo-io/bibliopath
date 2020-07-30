@@ -36,7 +36,7 @@
 
           <span class="alt-header__separator alt-separator">/</span>
 
-          <b-link :to="{ path: '/store' }" title="STORE" class="alt-header__sign-in"><i class="fas fa-cog"></i></b-link>
+          <a @click.prevent="toggleConfig(true);" role="button" class="alt-header__sign-in"><i class="fas fa-cog"></i></a>
 
           <span v-if="showIndex" class="alt-header__separator alt-separator">/</span>
 
@@ -58,8 +58,6 @@
 
     <!-- Sidebar -->
     <b-sidebar id="sidebar-1" title="BIBLIOPATH" lazy backdrop shadow>
-
-
       <div class="px-3 py-2 mt-2">
 
         <b-button v-if="user.loggedIn"  block variant="outline-secondary" size="sm" class="mb-1">OUT</b-button>
@@ -86,6 +84,40 @@
 
       </div>
     </b-sidebar>
+
+    <!-- Config menu -->
+    <div id="fullscreen-menu" v-if="showConfig" class="pulse animated extrafast">
+      <div class="menu-inner">
+
+
+          <div class="menu-nav">
+              <b-card title="Font size" style="max-width:50%;margin:auto;">
+                <b-form-radio-group
+                   v-model="selectedFont"
+                   :options="optionsFonts"
+                   class="mb-3"
+                   value-field="item"
+                   text-field="name"
+                   disabled-field="notEnabled"
+                 ></b-form-radio-group>
+              </b-card>
+
+              <b-card class="mt-2" title="Configuration" style="max-width:50%;margin:auto;">
+                <b-form-group label="Inline switch style checkboxes">
+                   <b-form-checkbox-group
+                     v-model="selected"
+                     :options="options"
+                     switches
+                   ></b-form-checkbox-group>
+                 </b-form-group>
+
+               </b-card>
+          </div>
+
+
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -93,13 +125,28 @@
 export default{
   data(){
     return {
+      selected: [], // Must be an array reference!
+      options: [
+        { text: 'Red', value: 'red' },
+        { text: 'Green', value: 'green' },
+        { text: 'Yellow (disabled)', value: 'yellow', disabled: true },
+        { text: 'Blue', value: 'blue' }
+      ],
+      selectedFont: 'A',
+      optionsFonts: [
+        { item: 'A', name: 'Option A' },
+        { item: 'B', name: 'Option B' },
+        { item: 'D', name: 'Option C', notEnabled: true },
+        { item: { d: 1 }, name: 'Option D' }
+      ],
       hasScrolled : false,
       user:{
         loggedIn: false
       },
       isLoading: true,
       showIndex: false,
-      bookIndex: null
+      bookIndex: null,
+      showConfig: false
     }
   },
   watch: {
@@ -125,6 +172,13 @@ export default{
         this.bookIndex = this.$store.state.bookIndex;
       }else{
         this.bookIndex = '';
+      }
+    },
+    '$store.state.showConfig': function() {
+      if (this.$store.state.showConfig){
+        this.showConfig = true;
+      }else{
+        this.showConfig = false;
       }
     },
   },
@@ -155,6 +209,9 @@ export default{
       }
       // console.log(window.scrollY);
 
+    },
+    toggleConfig(b){
+      this.$store.commit('setShowConfig', b);
     },
     signOut() {
 

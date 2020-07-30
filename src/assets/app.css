@@ -12,6 +12,7 @@
 :root {
 
 }
+#fullscreen-menu{ display:block !important }
 .b-sidebar-outer{
   z-index:8000;
 }
