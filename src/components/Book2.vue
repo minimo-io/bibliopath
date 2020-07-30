@@ -31,7 +31,7 @@
       <div class="overlay overlay-dark"></div>
 
     </b-card>
-    <b-card class="mt-3">
+    <b-card class="mt-3" v-if="showInfo">
       <b-card-title>Other readers <b-badge variant="danger softer">252</b-badge></b-card-title>
       <b-card-text>
         <b-avatar-group size="40px">
@@ -49,7 +49,7 @@
       </b-card-text>
     </b-card>
 
-    <div class="book-box">
+    <div class="book-box mt-2">
       <nav aria-label="Index navigation" :class="{ 'd-lg-block': showIndex }" class="d-none pl-4 pt-3 mx-0">
         <h2>CHAPTERS <a @click.prevent="toggleIndex" class="pointer">(Hide)</a></h2>
         <ul class="book-menu nav section-nav flex-column"></ul>
@@ -69,6 +69,7 @@
         isBookLoaded: false,
         content: null,
         showIndex: true,
+        showInfo: false,
         indexHtml: null,
         book: {
           slug: this.$route.params.slug,
@@ -120,7 +121,7 @@
                 var elemClass = "is-h2";
                 if ($(value).is("h3")) elemClass = "is-h3";
                 // $(this).attr("id", "title-"+key );
-                let txt2 = $("<a href='#title-"+key +"' class='nav-link mb-0 px-0 pb-0 "+ elemClass +"'></a>").append($(value).text());
+                let txt2 = $("<a href='#title-"+key +"' class='nav-link mt-1 mb-0 px-0 pt-0 pb-0 "+ elemClass +"'></a>").append($(value).text());
                 let txt1 = $("<li class='nav-item mb-0'></li>").append(txt2);
 
                 $(".book-menu").append(txt1);
