@@ -12,7 +12,13 @@
 :root {
 
 }
-#fullscreen-menu{ display:block !important }
+#fullscreen-menu{ display:block !important; height:100% !important; }
+#fullscreen-menu label,
+#fullscreen-menu input,
+#fullscreen-menu button{ font-size:1rem; }
+#fullscreen-menu h4{
+    font-size:1rem;
+}
 .b-sidebar-outer{
   z-index:8000;
 }
@@ -171,6 +177,39 @@ main a:hover:not(.book-card-link), .book-menu-main a:hover{
 	font-size: 1.3rem;
 	margin-bottom: 25px;
 }
+.book-header{
+  border:none;
+  border-bottom: 1px dotted rgba(0,0,0,.125);
+}
+
+.appDark,
+.appDark .alt-header,
+.appDark .book-header,
+.appDark #fullscreen-menu,
+.appDark .b-sidebar-body {
+  background-color:black;
+}
+.appDark .book-content p,
+.appDark .book-content h2,
+.appDark .book-content h3,
+.appDark .book-content table,
+.appDark .app-logo a,
+.appDark .alt-header__right,
+.appDark .alt-header__config,
+.appDark .alt-header__search,
+.appDark .alt-header__sign-in,
+.appDark .book-header,
+.appDark .author-meta a,
+.appDark .book-buy a,
+.appDark .b-sidebar-body,
+.appDark .b-sidebar-body a{ color:white; }
+
+.appDark .alt-separator{ opacity:.7 }
+.appDark .book-header{
+  border:none;
+  border-bottom: 1px solid rgba(255,255,255,.125);
+  /* border: 1px solid rgba(255,255,255,.125); */
+}
 
 
 /*  Bootstrap like breakpoints -------------- */
@@ -211,6 +250,12 @@ main a:hover:not(.book-card-link), .book-menu-main a:hover{
   }
   .title-followers{
     font-size:.5rem;
+  }
+  #fullscreen-menu label,
+  #fullscreen-menu input,
+  #fullscreen-menu button{ font-size:.9rem; }
+  #fullscreen-menu h4{
+      font-size:.8rem;
   }
 }
 @media (max-width: 768px) {

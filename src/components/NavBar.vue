@@ -32,15 +32,15 @@
 
           <span class="alt-header__separator alt-separator">/</span>
 
-          <b-link href="#"><i class="fas fa-search"></i></b-link>
+          <b-link href="#" class="alt-header__search"><i class="fas fa-search"></i></b-link>
 
           <span class="alt-header__separator alt-separator">/</span>
 
-          <a @click.prevent="toggleConfig(true);" role="button" class="alt-header__sign-in"><i class="fas fa-cog"></i></a>
+          <a @click.prevent="toggleConfig(true);" role="button" class="alt-header__config"><i class="fas fa-cog"></i></a>
 
           <span v-if="showIndex" class="alt-header__separator alt-separator">/</span>
 
-          <a v-if="showIndex" v-b-toggle.sidebar-index role="button" title="BOOK MENU" class="alt-header__sign-in"><i class="fas fa-bars"></i></a>
+          <a v-if="showIndex" v-b-toggle.sidebar-index role="button" title="BOOK MENU" class="alt-header__index"><i class="fas fa-bars"></i></a>
 
           <!-- <b-nav class="navbar-nav navbar-main ml-auto order-1 d-none d-sm-inline-block">
             <b-nav-item-dropdown
@@ -74,44 +74,40 @@
       </div>
     </b-sidebar>
     <!-- Index -->
-    <b-sidebar id="sidebar-index" title="CHAPTERS" lazy backdrop shadow>
-
+    <b-sidebar id="sidebar-index" title="CHAPTERS" lazy backdrop shadow no-header>
       <div class="px-3 py-2 mt-0 pt-0">
-
-
+        <h3 class="mt-3">CHAPTERS.</h3>
         <ul class="book-menu-main nav section-nav flex-column mb-4" v-html="bookIndex"></ul>
-
-
       </div>
     </b-sidebar>
 
     <!-- Config menu -->
     <div id="fullscreen-menu" v-if="showConfig" class="pulse animated extrafast">
-      <div class="menu-inner">
-
-
+      <div class="container menu-inner">
           <div class="menu-nav">
-              <b-card title="Font size" style="max-width:50%;margin:auto;">
-                <b-form-radio-group
-                   v-model="selectedFont"
-                   :options="optionsFonts"
-                   class="mb-3"
-                   value-field="item"
-                   text-field="name"
-                   disabled-field="notEnabled"
-                 ></b-form-radio-group>
-              </b-card>
+            <b-card title="Font size" style="margin:auto;">
+              <b-form-radio-group
+                 v-model="selectedFont"
+                 :options="optionsFonts"
+                 class="mb-3"
+                 value-field="item"
+                 text-field="name"
+                 disabled-field="notEnabled"
+               ></b-form-radio-group>
+            </b-card>
 
-              <b-card class="mt-2" title="Configuration" style="max-width:50%;margin:auto;">
-                <b-form-group label="Inline switch style checkboxes">
-                   <b-form-checkbox-group
-                     v-model="selected"
-                     :options="options"
-                     switches
-                   ></b-form-checkbox-group>
-                 </b-form-group>
+            <b-card class="mt-2" title="Configuration" style="margin:auto;">
+                 <b-form-checkbox
+                   v-model="checkedDark"
+                   switch
+                 >Dark mode</b-form-checkbox>
 
-               </b-card>
+
+             </b-card>
+
+
+             <b-button class="mt-3" block variant="dark" @click="toggleConfig(false)">Close</b-button>
+
           </div>
 
 
@@ -125,19 +121,12 @@
 export default{
   data(){
     return {
-      selected: [], // Must be an array reference!
-      options: [
-        { text: 'Red', value: 'red' },
-        { text: 'Green', value: 'green' },
-        { text: 'Yellow (disabled)', value: 'yellow', disabled: true },
-        { text: 'Blue', value: 'blue' }
-      ],
+      checkedDark: false, // Must be an array reference!
       selectedFont: 'A',
       optionsFonts: [
-        { item: 'A', name: 'Option A' },
-        { item: 'B', name: 'Option B' },
-        { item: 'D', name: 'Option C', notEnabled: true },
-        { item: { d: 1 }, name: 'Option D' }
+        { item: 'A', name: 'Small' },
+        { item: 'B', name: 'Medium' },
+        { item: 'D', name: 'Big'/*, notEnabled: true*/ },
       ],
       hasScrolled : false,
       user:{
@@ -150,6 +139,17 @@ export default{
     }
   },
   watch: {
+    'checkedDark': function() {
+      //console.log(this.$store.state.config.appDarkMode);
+      //console.log(this.checkedDark);
+      if (this.checkedDark){
+        this.$store.commit("setDarkMode", "dark" );
+        //console.log("Set dark mode");
+      }else{
+        this.$store.commit("setDarkMode", "light" );
+        //console.log("Set light mode");
+      }
+    },
     '$store.state.loading': function() {
       if (this.$store.state.loading){
 

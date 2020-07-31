@@ -11,7 +11,10 @@ export default new Vuex.Store({
     showConfig: false,
     bookIndex: null,
     config: {
-      book: { fontSize: null }
+      appDarkMode: 'light', // or dark,
+      book: {
+        fontSize: null
+      }
     }
   },
   mutations: {
@@ -32,6 +35,9 @@ export default new Vuex.Store({
     },
     setBookIndex(state, indexHtml){
       state.bookIndex = indexHtml;
+    },
+    setDarkMode(state, mode){
+      state.config.appDarkMode = mode;
     }
   },
   getters:{
