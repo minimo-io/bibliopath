@@ -25,7 +25,7 @@
           <div class="alt-header__user alt-header__user--anonymous d-none d-sm-inline-block">
             <div class="alt-user-nav">
               <b-link v-if="user.loggedIn" title="OUT" class="alt-header__sign-in">OUT</b-link>
-              <b-link v-else :to="{ path: '/login' }" title="Signin" class="alt-header__sign-in">Signin</b-link>
+              <b-link v-else :to="{ path: '/login' }" title="Signin" class="alt-header__sign-in">Sign in</b-link>
 
             </div>
           </div>
@@ -57,20 +57,36 @@
     </header>
 
     <!-- Sidebar -->
-    <b-sidebar id="sidebar-1" title="BIBLIOPATH" lazy backdrop shadow>
+    <b-sidebar id="sidebar-1" backdrop-variant="light" title="BIBLIOPATH" lazy backdrop shadow>
       <div class="px-3 py-2 mt-2">
 
         <b-button v-if="user.loggedIn"  block variant="outline-secondary" size="sm" class="mb-1">OUT</b-button>
         <b-button v-else :to="{ path: '/login' }" block variant="outline-secondary" size="sm" class="mb-1">SIGNIN</b-button>
 
         <!-- <h2>Essential Links</h2> -->
-        <ul class="mt-2">
+        <ul class="mt-3">
           <li><b-link :to="{ path: '/' }"><i class="fas fa-home mr-1"></i>Home</b-link></li>
+          <li><b-link :to="{ path: '/' }"><i class="fas fa-book mr-1"></i>Books</b-link></li>
+          <li><b-link :to="{ path: '/' }"><i class="fas fa-user-edit mr-1"></i>Authors</b-link></li>
+          <li><b-link :to="{ path: '/' }"><i class="fas fa-volume-up mr-1"></i>Audiobooks</b-link></li>
           <!-- <li><b-link :to="{ path: lg_build_path('/store') }"><i class="fas fa-shopping-cart mr-1"></i>{{ $t('nav.store.title') }}</b-link></li> -->
           <!-- <li><b-link :to="{ path: lg_build_path('/school') }"><i class="fab fa-leanpub mr-1"></i>{{ $t('nav.school.title') }}</b-link></li> -->
           <!-- <li><b-link :to="{ path: lg_build_path('/news') }"><i class="fas fa-newspaper mr-1"></i>{{ $t('nav.news.title') }}</b-link></li> -->
         </ul>
 
+        <h2>Information</h2>
+        <ul>
+          <li><b-link :to="{ path: '/about' }">About us</b-link></li>
+          <li><b-link class="disabled" disabled to="#">F.A.Q</b-link></li>
+        </ul>
+
+
+        <h2>Socials</h2>
+        <ul>
+          <!-- <li><a disabled rel="nofollow" target="_blank" href="#"><i class="fab fa-instagram-square mr-1"></i>Instagram</a></li> -->
+          <!-- <li><a rel="nofollow" target="_blank" href="#"><i class="fab fa-facebook-square mr-1"></i>Facebook</a></li> -->
+          <li><a rel="nofollow" target="_blank" href="https://github.com/minimo-io/bibliopath"><i class="fab fa-github-square mr-1"></i>Github</a></li>
+        </ul>
       </div>
     </b-sidebar>
     <!-- Index -->

@@ -12,6 +12,10 @@
 :root {
 
 }
+.bg-black {
+  background: #000;
+  color: #fff;
+}
 #fullscreen-menu{ display:block !important; height:100% !important; }
 #fullscreen-menu label,
 #fullscreen-menu input,
@@ -211,6 +215,38 @@ main a:hover:not(.book-card-link), .book-menu-main a:hover{
   /* border: 1px solid rgba(255,255,255,.125); */
 }
 
+.hero-h1 {
+  font-size: 35px !important;
+  font-weight: 700;
+  color: #3c3c3c;
+  line-height: 1.35em;
+}
+.primary-container p,
+.primary-container .app-title,
+.primary-container .alert,
+.welcome-box .alert
+{ font-family: "Nunito", sans-serif;}
+.welcome-box h2{
+  font-size:1.1rem;
+  font-family: sans-serif;
+  text-align: center;
+}
+.welcome-box h3{
+  /* background-image: url("../homebrewing-adam-wilson.jpg") */
+  font-size:1.1rem;
+  font-family: "Space mono", monospace;
+  text-align: left;
+}
+.welcome-image-box{ text-align:right; }
+.welcome-image-box img{ width:170px; }
+
+.overlay-dark::after {
+    background: linear-gradient(to bottom left, transparent 20%, rgba(52, 58, 64, .8) 100%);
+}
+.overlay-dark:hover::after {
+  background: linear-gradient(to bottom left, transparent 20%, rgba(52, 58, 64, .8) 100%) !important;
+  opacity: unset;
+}
 
 /*  Bootstrap like breakpoints -------------- */
 @media (max-width: 576px) {
@@ -257,11 +293,19 @@ main a:hover:not(.book-card-link), .book-menu-main a:hover{
   #fullscreen-menu h4{
       font-size:.8rem;
   }
+  .welcome-box h3{
+    text-align: justify;
+    font-size:1rem;
+  }
+  .welcome-image-box{ text-align:center; }
+  .welcome-image-box img{ width:120px; }
+  .hero-h1{ font-size:1.4rem !important; }
 }
 @media (max-width: 768px) {
   .book-card{
     margin:inherit;
   }
+  .welcome-image-box{ text-align:center; }
 }
 @media (max-width: 992px) {
   .book-content{

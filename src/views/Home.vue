@@ -1,27 +1,33 @@
 <template>
   <div>
-    <b-button @click="goToAbout" size="sm" block pill>Start here</b-button>
-    <br>
-    <b-card-group deck>
-        <book-card
-          v-for="book in books"
-          v-bind="books"
-          :key="book.id"
-          :imgSrc="book.acf.book_cover.sizes.large"
-          :imgAlt="book.acf.book_cover.alt"
-          :title="book.title.rendered"
-          :slug="book.slug"
-          >
-        </book-card>
-    </b-card-group>
+    <welcome></welcome>
+    <div class="container">
+      <b-card-group deck>
+          <book-card
+            v-for="book in books"
+            v-bind="books"
+            :key="book.id"
+            :imgSrc="book.acf.book_cover.sizes.large"
+            :imgAlt="book.acf.book_cover.alt"
+            :title="book.title.rendered"
+            :slug="book.slug"
+            >
+          </book-card>
+      </b-card-group>
+    </div>
   </div>
 </template>
 <script>
 import axios from "axios";
 import BookCard from "@/components/BookCard";
+import Welcome from '@/components/Welcome.vue'
+
 export default {
   name: 'Home',
-  components: {"book-card": BookCard},
+  components: {
+    "book-card": BookCard,
+    'welcome': Welcome
+  },
   data(){
     return {
       books: []

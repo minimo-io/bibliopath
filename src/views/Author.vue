@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="authorLoadedOk">
-      <b-card no-body class="mt-4">
+      <b-card no-body class="mt-4 border-0">
         <b-card-body class="z-index-6000">
     			<div class="container px-0">
             <div class="row">
@@ -81,101 +81,101 @@
           img-src="https://picsum.photos/1024/480/?image=22"
         ></b-carousel-slide>
       </b-carousel> -->
+      <div class="container">
+        <b-card class="mt-3">
+          <b-card-title>Books <b-badge variant="primary softer">22</b-badge></b-card-title>
+          <b-card-text>
+            <b-card-group deck>
+                <book-card
+                  v-for="book in author.books"
+                  v-bind="author"
+                  :key="book.id"
+                  :imgSrc="book.acf.book_cover.sizes.large"
+                  :imgAlt="book.acf.book_cover.alt"
+                  :title="book.title.rendered"
+                  :slug="book.slug"
+                  >
+                </book-card>
 
-      <b-card class="mt-3">
-        <b-card-title>Books <b-badge variant="primary softer">22</b-badge></b-card-title>
-        <b-card-text>
-          <b-card-group deck>
-              <book-card
+                <!-- <b-card
                 v-for="book in author.books"
                 v-bind="author"
                 :key="book.id"
-                :imgSrc="book.acf.book_cover.sizes.large"
-                :imgAlt="book.acf.book_cover.alt"
-                :title="book.title.rendered"
-                :slug="book.slug"
-                >
-              </book-card>
+                :img-src="book.acf.book_cover.sizes.large"
+                :img-alt="book.acf.book_cover.alt"
+                img-top
+                class="book-card">
+                  <b-link class="book-card-link" :to="'/book/'+book.slug"></b-link>
+                  <b-card-text class="text-center" v-html="book.title.rendered"></b-card-text>
 
-              <!-- <b-card
-              v-for="book in author.books"
-              v-bind="author"
-              :key="book.id"
-              :img-src="book.acf.book_cover.sizes.large"
-              :img-alt="book.acf.book_cover.alt"
-              img-top
-              class="book-card">
-                <b-link class="book-card-link" :to="'/book/'+book.slug"></b-link>
-                <b-card-text class="text-center" v-html="book.title.rendered"></b-card-text>
+                </b-card> -->
+              </b-card-group>
 
-              </b-card> -->
-            </b-card-group>
+          </b-card-text>
+        </b-card>
 
-        </b-card-text>
-      </b-card>
+        <b-card class="mt-3">
+          <b-card-title>Followers <b-badge variant="danger softer">28</b-badge></b-card-title>
+          <b-card-text>
+            <b-avatar-group size="40px">
+              <b-avatar></b-avatar>
+              <b-avatar text="BV" variant="primary"></b-avatar>
+              <b-avatar src="https://placekitten.com/300/300" variant="info"></b-avatar>
+              <b-avatar text="OK" variant="danger"></b-avatar>
+              <b-avatar variant="warning"></b-avatar>
+              <b-avatar src="https://placekitten.com/320/320" variant="dark"></b-avatar>
+              <b-avatar icon="music-note" variant="success"></b-avatar>
+              <b-avatar variant="warning"></b-avatar>
+              <b-avatar src="https://placekitten.com/320/320" variant="dark"></b-avatar>
+              <b-avatar icon="music-note" variant="success"></b-avatar>
+            </b-avatar-group>
+          </b-card-text>
+        </b-card>
 
-      <b-card class="mt-3">
-        <b-card-title>Followers <b-badge variant="danger softer">28</b-badge></b-card-title>
-        <b-card-text>
-          <b-avatar-group size="40px">
-            <b-avatar></b-avatar>
-            <b-avatar text="BV" variant="primary"></b-avatar>
-            <b-avatar src="https://placekitten.com/300/300" variant="info"></b-avatar>
-            <b-avatar text="OK" variant="danger"></b-avatar>
-            <b-avatar variant="warning"></b-avatar>
-            <b-avatar src="https://placekitten.com/320/320" variant="dark"></b-avatar>
-            <b-avatar icon="music-note" variant="success"></b-avatar>
-            <b-avatar variant="warning"></b-avatar>
-            <b-avatar src="https://placekitten.com/320/320" variant="dark"></b-avatar>
-            <b-avatar icon="music-note" variant="success"></b-avatar>
-          </b-avatar-group>
-        </b-card-text>
-      </b-card>
-
-      <div class="mt-3">
-        <!-- TABS -->
-        <div class="container-fluid px-0">
+        <div class="mt-3">
+          <!-- TABS -->
+          <div class="container-fluid px-0">
 
 
-          <b-card no-body>
-            <b-tabs class="beer-tabs" card>
-              <b-tab id="info-tab" title="INFO" active>
-                <b-card-text>
-                  <section class="product-info mt-0 p-0 p-sm-3">
+            <b-card no-body>
+              <b-tabs class="beer-tabs" card>
+                <b-tab id="info-tab" title="INFO" active>
+                  <b-card-text>
+                    <section class="product-info mt-0 p-0 p-sm-3">
 
-                    The Corsair Gaming Series GS600 power supply is the ideal price-performance solution for building or upgrading a Gaming PC. A single +12V rail provides up to 48A of reliable, continuous power for multi-core gaming PCs with multiple graphics cards. The ultra-quiet, dual ball-bearing fan automatically adjusts its speed according to temperature, so it will never intrude on your music and games. Blue LEDs bathe the transparent fan blades in a cool glow. Not feeling blue? You can turn off the lighting with the press of a button.
-                    <br><br>
-                    <h3>Corsair Gaming Series GS600 Features:</h3>
-                    <li>It supports the latest ATX12V v2.3 standard and is backward compatible with ATX12V 2.2 and ATX12V 2.01 systems</li>
-                    <li>An ultra-quiet 140mm double ball-bearing fan delivers great airflow at an very low noise level by varying fan speed in response to temperature</li>
-                    <li>80Plus certified to deliver 80% efficiency or higher at normal load conditions (20% to 100% load)</li>
-                    <li>0.99 Active Power Factor Correction provides clean and reliable power</li>
-                    <li>Universal AC input from 90~264V — no more hassle of flipping that tiny red switch to select the voltage input!</li>
-                    <li>Extra long fully-sleeved cables support full tower chassis</li>
-                    <li>A three year warranty and lifetime access to Corsair’s legendary technical support and customer service</li>
-                    <li>Over Current/Voltage/Power Protection, Under Voltage Protection and Short Circuit Protection provide complete component safety</li>
-                    <li>Dimensions: 150mm(W) x 86mm(H) x 160mm(L)</li>
-                    <li>MTBF: 100,000 hours</li>
-                    <li>Safety Approvals: UL, CUL, CE, CB, FCC Class B, TÜV, CCC, C-tick</li>
-                  </section>
+                      The Corsair Gaming Series GS600 power supply is the ideal price-performance solution for building or upgrading a Gaming PC. A single +12V rail provides up to 48A of reliable, continuous power for multi-core gaming PCs with multiple graphics cards. The ultra-quiet, dual ball-bearing fan automatically adjusts its speed according to temperature, so it will never intrude on your music and games. Blue LEDs bathe the transparent fan blades in a cool glow. Not feeling blue? You can turn off the lighting with the press of a button.
+                      <br><br>
+                      <h3>Corsair Gaming Series GS600 Features:</h3>
+                      <li>It supports the latest ATX12V v2.3 standard and is backward compatible with ATX12V 2.2 and ATX12V 2.01 systems</li>
+                      <li>An ultra-quiet 140mm double ball-bearing fan delivers great airflow at an very low noise level by varying fan speed in response to temperature</li>
+                      <li>80Plus certified to deliver 80% efficiency or higher at normal load conditions (20% to 100% load)</li>
+                      <li>0.99 Active Power Factor Correction provides clean and reliable power</li>
+                      <li>Universal AC input from 90~264V — no more hassle of flipping that tiny red switch to select the voltage input!</li>
+                      <li>Extra long fully-sleeved cables support full tower chassis</li>
+                      <li>A three year warranty and lifetime access to Corsair’s legendary technical support and customer service</li>
+                      <li>Over Current/Voltage/Power Protection, Under Voltage Protection and Short Circuit Protection provide complete component safety</li>
+                      <li>Dimensions: 150mm(W) x 86mm(H) x 160mm(L)</li>
+                      <li>MTBF: 100,000 hours</li>
+                      <li>Safety Approvals: UL, CUL, CE, CB, FCC Class B, TÜV, CCC, C-tick</li>
+                    </section>
 
-                </b-card-text>
-              </b-tab>
-              <b-tab title="RESEÑAS" disabled>
-                <b-card-text>
-                  <section class="product-info mt-0 p-0 p-sm-3">
+                  </b-card-text>
+                </b-tab>
+                <b-tab title="RESEÑAS" disabled>
+                  <b-card-text>
+                    <section class="product-info mt-0 p-0 p-sm-3">
 
-                  </section>
-                </b-card-text>
-              </b-tab>
-            </b-tabs>
-          </b-card>
+                    </section>
+                  </b-card-text>
+                </b-tab>
+              </b-tabs>
+            </b-card>
+
+          </div>
 
         </div>
 
       </div>
-
-
     </div>
 
   </div>

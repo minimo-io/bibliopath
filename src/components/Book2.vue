@@ -1,5 +1,5 @@
 <template>
-  <div v-if="content">
+  <div class="container" v-if="content">
     <b-card class="book-header pb-4 pt-0 pt-md-3 pb-md-5 mb-4 mb-sm-0" no-body>
 
       <b-card-body class="z-index-6000">

@@ -7,7 +7,7 @@
 
       <navbar class="mb-5"></navbar>
 
-      <main class="container px-lg-0">
+      <main class="mt-4 px-lg-0">
         <transition name="fade" mode="out-in">
             <router-view></router-view>
         </transition>
