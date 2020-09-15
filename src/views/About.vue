@@ -3,7 +3,7 @@
     <div class="container primary-container pt-0 px-0 mt-3 mt-lg-5" no-body>
 
       <header class="alt-post-margins alt-top-title mx-0">
-        <b-link class="breadcrumb-back-button">
+        <b-link @click="$router.go(-1)" class="breadcrumb-back-button">
           <i class="fas fa-reply"></i>&nbsp;back
         </b-link>
 
@@ -16,7 +16,7 @@
 
           <div role="alert" aria-live="polite" aria-atomic="true" class="alert alert-warning">
             <!----><span><strong>Bibliopath</strong> in under development.</span><span>
-            Meanwhile we invite you to find out more about us in our <a href="https://www.instagram.com/hopmasters/" rel="noopener" target="_blank" class="text-nowrap"> <i class="fab fa-patreon mr-1"></i>Patreon</a> account. </span></div>
+            Meanwhile we invite you to find out more about us in our <a href="#" rel="noopener" target="_blank" class="text-nowrap"> <i class="fab fa-patreon mr-1"></i>Patreon</a> account. </span></div>
 
           <figure class="figure">
             <b-img src="@/assets/andrew-neel--FVaZbu6ZAE-unsplash.jpg" rounded fluid alt="book-image-unsplash"></b-img>
@@ -73,6 +73,11 @@
 
             In fact, Bibliopath was developed by <b-link href="https://minimo.io/en/" target="_blank" class="text-nowrap"><i class="fas fa-circle mr-1"></i>Mínimo</b-link>,
             a digital ideas laboratory based in Uruguay, with the initiative of contributing to the Open World.
+          </p>
+          <p>
+            More importantly Bibliopath is Free Software published at
+              <b-link to="https://github.com/minimo-io/bibliopath"><i class="fab fa-github mr-1"></i>Github</b-link>,
+              so if you know how code, your contributions are very welcome!
           </p>
         </div>
       </header>

@@ -9,9 +9,7 @@
 
       <b-card no-body class="p-0 pt-0 mt-0" style="border:0;">
 
-        <div class="overlay overlay-dark">
-          <!-- <img class="welcome-overlay-image" src=""> -->
-        </div>
+        <div class="overlay overlay-dark"></div>
 
         <b-card-body class="welcome-box-cover z-index-6000 text-center p-5">
         <center>

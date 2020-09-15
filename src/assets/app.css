@@ -257,7 +257,10 @@ main a:hover:not(.book-card-link), .book-menu-main a:hover{
   background: linear-gradient(to bottom left, transparent 20%, rgba(52, 58, 64, .8) 100%) !important;
   opacity: unset;
 }
-
+.about img{
+  -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+  filter: grayscale(100%); 
+}
 .welcome-box .overlay{
   /* position: absolute;
   top: 0;
@@ -267,22 +270,15 @@ main a:hover:not(.book-card-link), .book-menu-main a:hover{
   /* background-image:url('https://images.unsplash.com/photo-1597589619078-b633d1d07d0e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&dpr=1&auto=format%2Ccompress&fit=crop&w=5799&h=594%201x,%20https://images.unsplash.com/photo-1597589619078-b633d1d07d0e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&dpr=2&auto=format%2Ccompress&fit=crop&w=5799&h=594'); */
   background-image:url('keith-misner-h0Vxgz5tyXA-unsplash.jpg');
   background-size: cover;
+  -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+  filter: grayscale(100%);
 }
 
-.welcome-overlay-image{
-  display: block;
-  /* height: 100%; */
-  position: relative;
-  min-width:100%;
-}
 .welcome-box .post-subtitle{
-  /* color:#FFF !important; */
   color:#d1d1d1 !important;
 }
 .welcome-box .post-subtitle{  }
 .welcome-box a, .welcome-box h2{
-  /* background: rgba(255,255,0,0.5); */
-  /* opacity:1 !important; */
   color:#FFFFFF !important;
 }
 .welcome-box .overlay:after{
