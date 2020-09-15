@@ -12,6 +12,10 @@
 :root {
 
 }
+.alt-header .alt-container{
+  height:2.9rem;
+}
+
 .bg-black {
   background: #000;
   color: #fff;
@@ -240,12 +244,63 @@ main a:hover:not(.book-card-link), .book-menu-main a:hover{
 .welcome-image-box{ text-align:right; }
 .welcome-image-box img{ width:170px; }
 
+.primary-container .app-title{
+  text-transform: uppercase;
+  font-weight: bold;
+  display:block;
+}
+
 .overlay-dark::after {
     background: linear-gradient(to bottom left, transparent 20%, rgba(52, 58, 64, .8) 100%);
 }
 .overlay-dark:hover::after {
   background: linear-gradient(to bottom left, transparent 20%, rgba(52, 58, 64, .8) 100%) !important;
   opacity: unset;
+}
+
+.welcome-box .overlay{
+  /* position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%; */
+  /* background-image:url('https://images.unsplash.com/photo-1597589619078-b633d1d07d0e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&dpr=1&auto=format%2Ccompress&fit=crop&w=5799&h=594%201x,%20https://images.unsplash.com/photo-1597589619078-b633d1d07d0e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&dpr=2&auto=format%2Ccompress&fit=crop&w=5799&h=594'); */
+  background-image:url('keith-misner-h0Vxgz5tyXA-unsplash.jpg');
+  background-size: cover;
+}
+
+.welcome-overlay-image{
+  display: block;
+  /* height: 100%; */
+  position: relative;
+  min-width:100%;
+}
+.welcome-box .post-subtitle{
+  /* color:#FFF !important; */
+  color:#d1d1d1 !important;
+}
+.welcome-box .post-subtitle{  }
+.welcome-box a, .welcome-box h2{
+  /* background: rgba(255,255,0,0.5); */
+  /* opacity:1 !important; */
+  color:#FFFFFF !important;
+}
+.welcome-box .overlay:after{
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  /* background: linear-gradient(180deg,rgba(0,0,0,.38) 0,rgba(0,0,0,.38) 3.5%,rgba(0,0,0,.379) 7%,rgba(0,0,0,.377) 10.35%,rgba(0,0,0,.375) 13.85%,rgba(0,0,0,.372) 17.35%,rgba(0,0,0,.369) 20.85%,rgba(0,0,0,.366) 24.35%,rgba(0,0,0,.364) 27.85%,rgba(0,0,0,.361) 31.35%,rgba(0,0,0,.358) 34.85%,rgba(0,0,0,.355) 38.35%,rgba(0,0,0,.353) 41.85%,rgba(0,0,0,.351) 45.35%,rgba(0,0,0,.35) 48.85%,rgba(0,0,0,.353) 52.35%,rgba(0,0,0,.36) 55.85%,rgba(0,0,0,.371) 59.35%,rgba(0,0,0,.385) 62.85%,rgba(0,0,0,.402) 66.35%,rgba(0,0,0,.42) 69.85%,rgba(0,0,0,.44) 73.35%,rgba(0,0,0,.46) 76.85%,rgba(0,0,0,.48) 80.35%,rgba(0,0,0,.498) 83.85%,rgba(0,0,0,.515) 87.35%,rgba(0,0,0,.529) 90.85%,rgba(0,0,0,.54) 94.35%,rgba(0,0,0,.547) 97.85%,rgba(0,0,0,.55)); */
+
+
+  background: rgb(255,255,255);
+  background: -moz-linear-gradient(360deg, rgba(255,255,255,0.7903536414565826) 0%, rgba(28,28,29,1) 20%);
+  background: -webkit-linear-gradient(360deg, rgba(255,255,255,0.7903536414565826) 0%, rgba(28,28,29,1) 20%);
+  background: linear-gradient(360deg, rgba(255,255,255,0.7903536414565826) 0%, rgba(28,28,29,1) 20%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#1c1c1d",GradientType=1);
+  width: 100%;
+  height: 100%;
+
 }
 
 /*  Bootstrap like breakpoints -------------- */
@@ -300,6 +355,7 @@ main a:hover:not(.book-card-link), .book-menu-main a:hover{
   .welcome-image-box{ text-align:center; }
   .welcome-image-box img{ width:120px; }
   .hero-h1{ font-size:1.4rem !important; }
+  .welcome-box .post-subtitle{ text-align:center; }
 }
 @media (max-width: 768px) {
   .book-card{

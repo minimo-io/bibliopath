@@ -16,7 +16,7 @@
 
           <div role="alert" aria-live="polite" aria-atomic="true" class="alert alert-warning">
             <!----><span><strong>Bibliopath</strong> in under development.</span><span>
-            Meanwhile we invite you to find out more about us in our account <a href="https://www.instagram.com/hopmasters/" rel="noopener" target="_blank" class="text-nowrap"> <i class="fab fa-patreon mr-1"></i>Patreon</a> account. </span></div>
+            Meanwhile we invite you to find out more about us in our <a href="https://www.instagram.com/hopmasters/" rel="noopener" target="_blank" class="text-nowrap"> <i class="fab fa-patreon mr-1"></i>Patreon</a> account. </span></div>
 
           <figure class="figure">
             <b-img src="@/assets/andrew-neel--FVaZbu6ZAE-unsplash.jpg" rounded fluid alt="book-image-unsplash"></b-img>
@@ -32,7 +32,7 @@
             If you are an author <a href="#" rel="noopener" target="_blank" class=""><span class="text-nowrap"><i class="fas fa-upload mr-1"></i>Publish for free</span></a> and get some <a href="/#" class="router-link-exact-active router-link-active" target="_self" aria-current="page"><i class="fas fa-hand-holding-usd"></i></a> and <a href="/#" class="router-link-exact-active router-link-active" target="_self" aria-current="page"><i class="fas fa-heart"></i></a> from your followers.
           </p>
           <p>
-            We focus on having good quality public domain works & contemporary authors that see a potential in an open publishing model.
+            We focus on having good quality public domain works & contemporary authors that see a potential in our open publishing model.
 
           </p>
           <p>Our goal is to create a community of authors and readers that can grow based on Open Standards.</p>
@@ -52,11 +52,11 @@
               </li>
               <li>
                 <b-link to="#"><i class="fas fa-user mr-1"></i>USERS</b-link>
-                After signin up for free can download books for offline reading. Listen to available audiobooks. Follow authors. Highlight & comment fragments & participate in discussions + What anonymous user can do.
+                After signin up for free can download books for offline reading. Listen to available audiobooks. Follow & donate to authors. Highlight & comment fragments & participate in discussions + What anonymous user can do.
               </li>
               <li>
                 <b-link to="#"><i class='fas fa-graduation-cap mr-1'></i>BIBLIOPATHS</b-link>
-                These are the Patreon donors to the project. Bibliopaths can access to featured books & authors -published by Bibliopath- and get free paper books + What normal user can do.
+                These are the <a href="https://www.instagram.com/hopmasters/" rel="noopener" target="_blank" class="text-nowrap"><i class="fab fa-patreon mr-1"></i>Patreon</a> donors to the project. Bibliopaths can access to featured books & authors -published by Bibliopath- and get free paper books + What normal user can do.
 
               </li>
               <li>
@@ -72,7 +72,7 @@
           <p>
 
             In fact, Bibliopath was developed by <b-link href="https://minimo.io/en/" target="_blank" class="text-nowrap"><i class="fas fa-circle mr-1"></i>Mínimo</b-link>,
-            a digital ideas laboratory based in Uruguay, with the initiative of contributing to the open world.
+            a digital ideas laboratory based in Uruguay, with the initiative of contributing to the Open World.
           </p>
         </div>
       </header>
