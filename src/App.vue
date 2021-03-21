@@ -15,7 +15,11 @@
 
       <footer
       class="alt-footer pt-5 mb-0 pb-0 text-muted text-center text-small">
-        <p class="mb-0">2020 <span class="text-uppercase">{{ this.$appDetails.appName }}</span><br>v{{ this.$appDetails.appVersion }}</p>
+        <p class="mb-0">
+          <span class="text-uppercase">
+            <b-link href="https://github.com/minimo-io/bibliopath" class="app-text-grey text-nowrap" target="_blank"><i class="fab fa-github"></i></b-link>/{{ this.$appDetails.appVersion }}
+          </span>
+        </p>
         <ul class="list-inline mb-0">
           <li class="list-inline-item text-capitalize"><b-link :href="this.$appDetails.appDevUrl" class="app-text-grey text-nowrap" target="_blank">by <i class="fas fa-circle mr-1"></i>Mínimo</b-link></li>
         </ul>
