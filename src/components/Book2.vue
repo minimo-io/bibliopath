@@ -9,15 +9,20 @@
           </h1>
           <div class="author-meta mt-2">
             by <b-avatar variant="light" size="2.2rem" :src="book.author.avatar" class="mr-2 ml-2"></b-avatar>
-            <span class="mr-auto"><b-link :to="{ name: 'Author', params: { slug: book.author.slug } }">{{ book.author.name }}</b-link></span>
+            <span class="mr-auto">
+              <b-link :to="{ name: 'Author', params: { slug: book.author.slug } }">
+                {{ book.author.name }}
+                <sup><b-badge pill variant="danger" class="title-followers softer">28 followers</b-badge></sup>
+              </b-link>
+            </span>
           </div>
         </div>
         <img :src="book.presentation" />
         <div class="book-meta softer mb-3 text-center text-sm-left">
           <!-- <span class="badge badge-info mr-2">{{ book.license }}</span> -->
           <!-- <span class="badge badge-info mr-2">{{ book.modified }}</span> -->
-          <b-link href="#"><b-button variant="danger" size="sm" class="mr-2"><i class="far fa-heart mr-1"></i>Like<b-badge pill variant="light" class="ml-2 softer">252</b-badge></b-button></b-link>
-          <b-link href="#"><b-button variant="info" size="sm" class="mr-2"><i class="fas fa-plus mr-1"></i>Info</b-button></b-link>
+          <b-link href="#"><b-button disabled variant="danger" size="sm" class="mr-2"><i class="far fa-heart mr-1"></i>Like<b-badge pill variant="light" class="ml-2 softer">252</b-badge></b-button></b-link>
+          <b-link href="#"><b-button disabled variant="info" size="sm" class="mr-2"><i class="fas fa-plus mr-1"></i>Info</b-button></b-link>
           <b-link :to="{ name: 'Author', params: { slug: book.author.slug } }"><b-button variant="green" size="sm"><i class="fas fa-user mr-1"></i>Bio</b-button></b-link>
         </div>
         <div v-if="book.aff.link" class="book-buy text-center">

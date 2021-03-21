@@ -13,15 +13,15 @@
         				<div class="col-md-7">
         					<div class="author-title text-center text-sm-left font-weight-bold">
                     {{ author.name }}
-                    <sup><b-badge pill variant="danger" class="title-followers softer">28</b-badge></sup>
+                    <sup><b-badge pill variant="danger" class="title-followers softer">28 followers</b-badge></sup>
                   </div>
                   <div class="author-origin text-center text-sm-left">
                     From
-                    <b-avatar class="no-shadow mr-1" size="1.2rem" :src="require('@/assets/flags/svg/'+author.countryCode+'.svg')"></b-avatar>USA
+                    <b-avatar class="no-shadow mr-1" size="1.2rem" :src="require('@/assets/flags/svg/'+author.countryCode+'.svg')"></b-avatar>{{ author.countryCode }}
                   </div>
 
         					<div class="author-desc text-center text-sm-left">
-                    <p>{{ author.description }}(<b-link href="#info-tab">+More</b-link>).</p>
+                    <p>{{ author.description }}(<b-link href="#info-tab" class="d-none">+More</b-link>).</p>
                   </div>
 
         					<div class="product-rating mt-3 mb-3 text-center text-sm-left">
@@ -40,16 +40,16 @@
                   </div> -->
         					<!-- <div class="product-stock">In Stock</div> -->
         					<!-- <hr> -->
-                  <b-button size="sm" variant="outline-danger" class="btn-sm-block mr-3">
+                  <b-button disabled size="sm" variant="outline-danger" class="btn-sm-block mr-3">
                     <i class="far fa-heart mr-2"></i>Follow
-                    <b-badge pill variant="danger">28</b-badge>
+                    <b-badge pill variant="danger">0</b-badge>
                   </b-button>
                   <b-button disabled size="sm" variant="outline-dark" class="btn-sm-block mt-3 mt-sm-0 mr-3">
                     <i class="fas fa-coins mr-2"></i>Support
                     <b-badge pill variant="dark">0</b-badge>
                   </b-button>
-                  <b-button size="sm" variant="outline-success" class="btn-sm-block mt-3 mt-sm-0">
-                    <i class="fas fa-book mr-2"></i>Read <b-badge variant="success">22</b-badge>
+                  <b-button disabled size="sm" variant="outline-success" class="btn-sm-block mt-3 mt-sm-0">
+                    <i class="fas fa-book mr-2"></i>Read <b-badge variant="success">0</b-badge>
                   </b-button>
         				</div>
             </div>
@@ -83,7 +83,7 @@
       </b-carousel> -->
       <div class="container">
         <b-card class="mt-3">
-          <b-card-title>Books <b-badge variant="primary softer">22</b-badge></b-card-title>
+          <b-card-title>Books <b-badge variant="primary softer">{{ resultBookCount }}</b-badge></b-card-title>
           <b-card-text>
             <b-card-group deck>
                 <book-card
@@ -142,21 +142,7 @@
                 <b-tab id="info-tab" title="INFO" active>
                   <b-card-text>
                     <section class="product-info mt-0 p-0 p-sm-3">
-
-                      The Corsair Gaming Series GS600 power supply is the ideal price-performance solution for building or upgrading a Gaming PC. A single +12V rail provides up to 48A of reliable, continuous power for multi-core gaming PCs with multiple graphics cards. The ultra-quiet, dual ball-bearing fan automatically adjusts its speed according to temperature, so it will never intrude on your music and games. Blue LEDs bathe the transparent fan blades in a cool glow. Not feeling blue? You can turn off the lighting with the press of a button.
-                      <br><br>
-                      <h3>Corsair Gaming Series GS600 Features:</h3>
-                      <li>It supports the latest ATX12V v2.3 standard and is backward compatible with ATX12V 2.2 and ATX12V 2.01 systems</li>
-                      <li>An ultra-quiet 140mm double ball-bearing fan delivers great airflow at an very low noise level by varying fan speed in response to temperature</li>
-                      <li>80Plus certified to deliver 80% efficiency or higher at normal load conditions (20% to 100% load)</li>
-                      <li>0.99 Active Power Factor Correction provides clean and reliable power</li>
-                      <li>Universal AC input from 90~264V — no more hassle of flipping that tiny red switch to select the voltage input!</li>
-                      <li>Extra long fully-sleeved cables support full tower chassis</li>
-                      <li>A three year warranty and lifetime access to Corsair’s legendary technical support and customer service</li>
-                      <li>Over Current/Voltage/Power Protection, Under Voltage Protection and Short Circuit Protection provide complete component safety</li>
-                      <li>Dimensions: 150mm(W) x 86mm(H) x 160mm(L)</li>
-                      <li>MTBF: 100,000 hours</li>
-                      <li>Safety Approvals: UL, CUL, CE, CB, FCC Class B, TÜV, CCC, C-tick</li>
+                      More details here.
                     </section>
 
                   </b-card-text>
@@ -201,6 +187,11 @@
           countryCode: 'un',
           books: []
         }
+      }
+    },
+    computed: {
+      resultBookCount () {
+        return this.author.books && this.author.books.length;
       }
     },
     mounted(){
