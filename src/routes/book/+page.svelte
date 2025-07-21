@@ -14,7 +14,7 @@
 		RotateCcw
 	} from '@lucide/svelte';
 	import { page } from '$app/state';
-	import { changeTheme } from '$lib';
+	import { changeTheme, shareCurrentUrl } from '$lib';
 
 	interface Chapter {
 		title: string;
@@ -404,7 +404,7 @@
 					</div>
 				</div>
 
-				<button class="btn btn-ghost btn-circle" title="Share">
+				<button class="btn btn-ghost btn-circle" title="Share" onclick={() => shareCurrentUrl()}>
 					<Share2 size={20} />
 				</button>
 			</div>
