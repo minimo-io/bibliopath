@@ -194,7 +194,7 @@
 			<a
 				target="_blank"
 				rel="nofollow noopener"
-				href="https://primal.net/p/nprofile1qqs8wftkcz9achdy8ascqtnk0v3rrcevda2klm8wqyd6xrlk8skc22gekra89"
+				href="https://njump.me/nprofile1qqs8wftkcz9achdy8ascqtnk0v3rrcevda2klm8wqyd6xrlk8skc22gekra89"
 				class="btn btn-sm mx-auto my-5 flex w-fit items-center"
 			>
 				<Zap class="h-4 text-[#FACE3C]" fill="#FACE3C" />
