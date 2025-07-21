@@ -202,8 +202,10 @@
 			</a>
 			<!-- <div class="divider divider-horizontal">OR</div> -->
 			<a
+				target="_blank"
+				rel="nofollow noopener"
 				class="btn btn-sm btn-ghost"
-				href="https://github.com/minimo-io/bibliopath?tab=readme-ov-file#todo">Roadmap</a
+				href="https://github.com/minimo-io/bibliopath?tab=readme-ov-file#to-do">Roadmap</a
 			>
 		</div>
 	</div>

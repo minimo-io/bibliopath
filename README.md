@@ -14,6 +14,8 @@ Middleman API: https://api.allorigins.win
 
 ⚡️ Consider zapping a coffee — [Here](https://njump.me/nprofile1qqs8wftkcz9achdy8ascqtnk0v3rrcevda2klm8wqyd6xrlk8skc22gekra89)
 
+Have fun!
+
 ## To Do
 
 - Create a store for theme state, use it in all routes.
@@ -27,6 +29,13 @@ Middleman API: https://api.allorigins.win
 - Multi-lingual support via paraglidejs.
 - Shortcuts: CMD + K, etc.
 - Better homepage hero and menus, with config switcher.
+- Footer: Add version & better github link.
+- Add favicons (considering the PWA future).
+- Book downloading progress bar.
+- Make Bibliopath an open-repository hosted at the Futurewise org.
+- Create e-pub support (and consider moving from txt Gutemberg format to this, for better indexes and metadata).
+- Pre-render authors at the hompage.
+- Add more Nostr capabilities.
 
 - Bug: Fix the changeTheme function mess.
 - Bug: On mobile pagination should be "Prev - Next" with the input switcher also.
