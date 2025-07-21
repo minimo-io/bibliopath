@@ -1,8 +1,20 @@
-<!-- src/routes/+page.svelte -->
+<!-- src/routes/book/+page.svelte -->
 <script lang="ts">
 	import { onMount, tick } from 'svelte';
 	import { browser } from '$app/environment';
-	import { Bookmark, BookOpen, Share2, Menu, X, Settings } from '@lucide/svelte';
+	import {
+		Bookmark,
+		BookOpen,
+		Share2,
+		Menu,
+		X,
+		Settings,
+		ChevronLeft,
+		CircleX,
+		RotateCcw
+	} from '@lucide/svelte';
+	import { page } from '$app/state';
+	import { changeTheme } from '$lib';
 
 	interface Chapter {
 		title: string;
@@ -17,6 +29,7 @@
 	}
 
 	let loading = $state(true);
+	let error = $state(false);
 	let chapters: Chapter[] = $state([]);
 	let currentChapterIndex = $state(0);
 	let fontSize = $state(18);
@@ -35,9 +48,11 @@
 	// Load book content on mount
 	onMount(async () => {
 		try {
-			const response = await fetch(
-				'https://api.allorigins.win/raw?url=https://www.gutenberg.org/files/11/11-0.txt'
-			);
+			const bookGutembergUrl = page.url.searchParams.get('book');
+			const bookUrl = bookGutembergUrl;
+
+			const response = await fetch(`https://api.allorigins.win/raw?url=${bookUrl}`);
+
 			const text = await response.text();
 
 			// Restructure content into chapters
@@ -67,7 +82,7 @@
 
 			// Load saved state
 			if (browser) {
-				const savedTheme = localStorage.getItem('bookstr-theme') || 'light';
+				const savedTheme = localStorage.getItem('bibliopath-theme') || 'dark';
 				changeTheme(savedTheme, false);
 
 				const savedFontSize = localStorage.getItem('bookstr-fontsize');
@@ -94,8 +109,9 @@
 					}
 				}
 			}
-		} catch (error) {
-			console.error('Error loading book:', error);
+		} catch (err) {
+			console.error('Error loading book:', err);
+			error = true;
 			loading = false;
 		}
 	});
@@ -187,28 +203,27 @@
 
 	// --- Settings ---
 
-	function changeTheme(newTheme: string, save = true) {
-		theme = newTheme;
-		if (browser) {
-			document.documentElement.setAttribute('data-theme', newTheme);
-			if (save) {
-				localStorage.setItem('bookstr-theme', newTheme);
-			}
-		}
-	}
-
 	function changeFontSize(newSize: number) {
 		fontSize = newSize;
 		if (browser) {
 			localStorage.setItem('bookstr-fontsize', fontSize.toString());
 		}
 	}
+	function changeThemeX(newTheme: string, save = true) {
+		theme = newTheme;
+		if (browser) {
+			document.documentElement.setAttribute('data-theme', newTheme);
+			if (save) {
+				localStorage.setItem('bibliopath-theme', newTheme);
+			}
+		}
+	}
 
 	// Apply theme on mount
 	onMount(() => {
 		if (browser) {
-			const savedTheme = localStorage.getItem('bookstr-theme') || 'light';
-			changeTheme(savedTheme, false);
+			const savedTheme = localStorage.getItem('bibliopath-theme') || 'dark';
+			changeThemeX(savedTheme, false);
 		}
 	});
 </script>
@@ -231,6 +246,9 @@
 				<button class="btn btn-sm btn-ghost md:hidden" onclick={() => (showSidebar = false)}>
 					<X size={18} />
 				</button>
+				<a href="/" class="btn btn-sm btn-ghost">
+					<ChevronLeft size={18} /> Back
+				</a>
 			</div>
 
 			<!-- Chapter list -->
@@ -292,7 +310,25 @@
 				</label>
 
 				<div class="ml-4 flex-1 overflow-hidden">
-					<h1 class="truncate text-lg font-bold">{data.title}</h1>
+					<h1
+						onclick={() => my_modal_2.showModal()}
+						title={data.title}
+						class="line-clamp-2 cursor-pointer text-base leading-tight font-bold md:text-lg"
+					>
+						{data.title}
+					</h1>
+					<!-- Full info modal -->
+					<dialog id="my_modal_2" class="modal">
+						<div class="modal-box">
+							<p class="py-4">{data.title}</p>
+							by
+							<p class="py-4 text-sm italic">{data.author}</p>
+						</div>
+						<form method="dialog" class="modal-backdrop">
+							<button>close</button>
+						</form>
+					</dialog>
+
 					<p class="text-base-content/70 hidden truncate text-sm sm:block">by {data.author}</p>
 				</div>
 			</div>
@@ -304,6 +340,7 @@
 
 				<!-- Settings dropdown -->
 				<div class="dropdown dropdown-end">
+					<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 					<label tabindex="0" class="btn btn-ghost btn-circle">
 						<Settings size={20} />
 					</label>
@@ -315,19 +352,20 @@
 
 							<!-- Theme selector -->
 							<div class="form-control mb-4">
+								<!-- svelte-ignore a11y_label_has_associated_control -->
 								<label class="label">
 									<span class="label-text font-medium">Theme</span>
 								</label>
 								<div class="join join-horizontal w-full">
 									<button
 										class="btn join-item flex-1 {theme === 'light' ? 'btn-primary' : 'btn-outline'}"
-										onclick={() => changeTheme('light')}
+										onclick={() => changeThemeX('light')}
 									>
 										Light
 									</button>
 									<button
 										class="btn join-item flex-1 {theme === 'dark' ? 'btn-primary' : 'btn-outline'}"
-										onclick={() => changeTheme('dark')}
+										onclick={() => changeThemeX('dark')}
 									>
 										Dark
 									</button>
@@ -390,11 +428,11 @@
 			>
 				{#if loading}
 					<div class="flex h-full flex-col items-center justify-center gap-6">
-						<div class="loading loading-spinner loading-lg text-primary"></div>
 						<div class="flex flex-col items-center gap-2">
 							<BookOpen size={48} class="text-base-content/50" />
-							<p class="text-lg font-medium">Loading book...</p>
+							<p class="text-lg font-medium">Downloading book...</p>
 						</div>
+						<div class="loading loading-spinner loading-lg text-primary"></div>
 					</div>
 				{:else}
 					<div class="prose prose-lg max-w-none leading-relaxed">
@@ -410,6 +448,19 @@
 								{/each}
 							</div>
 						{/each}
+					</div>
+				{/if}
+
+				<!-- Error -->
+				{#if error}
+					<div class="flex h-full flex-col items-center justify-center gap-6">
+						<div class="flex flex-col items-center gap-2">
+							<CircleX size={48} class="text-base-content/50" />
+							<p class="text-lg font-medium">Error loading the book</p>
+							<button onclick={() => location.reload()} class="btn btn-sm btn-primary">
+								<RotateCcw size={18} /> Re-try
+							</button>
+						</div>
 					</div>
 				{/if}
 			</div>
@@ -431,15 +482,11 @@
 		font-family: 'Georgia', serif;
 	}
 
-	/* Smooth scrolling */
-	html {
-		scroll-behavior: smooth;
-	}
-
 	/* Custom line clamp utility */
 	.line-clamp-2 {
 		display: -webkit-box;
 		-webkit-line-clamp: 2;
+		line-clamp: 2;
 		-webkit-box-orient: vertical;
 		overflow: hidden;
 	}

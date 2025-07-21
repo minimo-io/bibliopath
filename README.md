@@ -1,6 +1,38 @@
-# sv
+# Bibliopath
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+It all started from this badly written note: https://primal.net/e/nevent1qqs2q6urpp9df4qt0xt85nd7ewqxw9u42duqmyqdrlgc04g5fny6m0s6wdrdm
+
+Powered by Sveltekit.
+
+Index by: https://gutendex.com/books
+<br>
+Gutemberg books: https://www.gutenberg.org/
+<br>
+Middleman API: https://api.allorigins.win
+
+🚨 We do plan to self-host the index and books at the [Futurewise](https://www.futurewise.lat/) platform.
+
+⚡️ Consider zapping a coffee — [Here](https://njump.me/nprofile1qqs8wftkcz9achdy8ascqtnk0v3rrcevda2klm8wqyd6xrlk8skc22gekra89)
+
+## To Do
+
+- Create a store for theme state, use it in all routes.
+- Once a book is downloaded offer to save it in indexDB.
+- Search should change the query parameter.
+- Nostr login
+- In book parameter, allow for github/nostrgit books written in markdown -- define a format standard.
+- Allow users to store their own books in the reader (indexDB?)
+- Info button to get book and author data.
+- Centralize types at src/lib & componentize the thing.
+- Multi-lingual support via paraglidejs.
+- Shortcuts: CMD + K, etc.
+- Better homepage hero and menus, with config switcher.
+
+- Bug: Fix the changeTheme function mess.
+- Bug: On mobile pagination should be "Prev - Next" with the input switcher also.
+- Bug: Book title on mobile gets too short.
+- Bug: Font-size not working on mobile.
+- Bug: No error message when downloading fails... no retry button.
 
 ## Creating a project
 
