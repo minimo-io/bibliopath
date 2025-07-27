@@ -12,11 +12,12 @@
 		ChevronLeft,
 		CircleX,
 		RotateCcw,
-		Volume2 // Import the Volume2 icon for the audio button
+		Volume2
 	} from '@lucide/svelte';
 	import { page } from '$app/state';
 	import { changeTheme, shareCurrentUrl } from '$lib';
 
+	// --- Types ---
 	interface BookmarkEntry {
 		id: number;
 		chapterIndex: number;
@@ -30,24 +31,35 @@
 		paragraphs: string[];
 	}
 
+	// --- Props ---
+	let { data }: { data: { title: string; author: string } } = $props();
+
+	// --- State (Reactive using Runes) ---
 	let loading = $state(true);
 	let error = $state(false);
 	let chapters: Chapter[] = $state([]);
 	let currentChapterIndex = $state(0);
 	let fontSize = $state(18);
-	let theme = $state('light');
+	// let theme = $state('light'); // Default, will be overridden by loadSavedState
+	let theme = $state(() => {
+		if (browser) {
+			const savedTheme = localStorage.getItem('bibliopath-theme') || 'dark';
+			// Apply theme immediately to prevent flash
+			changeTheme(savedTheme, false);
+			return savedTheme;
+		}
+		return 'dark'; // Default for SSR
+	});
+
 	let showSidebar = $state(false);
-	let showSettings = $state(false);
+	// let showSettings = $state(false); // REMOVED: Unused variable
 	let readingProgress = $state(0);
 	let bookmarks: BookmarkEntry[] = $state([]);
-	let readerContainer: HTMLDivElement | undefined;
-	let chapterElements: HTMLDivElement[] = [];
-	let { data }: { data: { title: string; author: string } } = $props();
+	let readerContainer: HTMLDivElement | null = $state(null); // Use null for clarity
+	let chapterElements: HTMLDivElement[] = $state([]); // Make reactive if needed for binding
+	let fileType: 'markdown' | 'text' = $state('markdown'); // Reactive state for file type
 
-	// Declare fileType as a reactive state variable so it's accessible in the template
-	let fileType = $state<'markdown' | 'text'>('markdown');
-
-	// Load book content on mount
+	// --- Lifecycle ---
 	onMount(async () => {
 		try {
 			// Stop any potential previous speech if component reloads
@@ -55,103 +67,42 @@
 				window.speechSynthesis.cancel();
 			}
 
+			// Get URL parameters
 			const bookUrl = page.url.searchParams.get('book');
-			// Assign the determined file type to the reactive state variable
-			fileType = (page.url.searchParams.get('type') || 'markdown') as 'markdown' | 'text'; // 'markdown' or 'text'
+			fileType = (page.url.searchParams.get('type') || 'markdown') as 'markdown' | 'text';
 
 			if (!bookUrl) {
 				throw new Error('No book URL provided');
 			}
 
+			// Fetch book content
 			let text: string;
-
-			// Fetch content based on file type
 			if (fileType === 'markdown') {
-				// Direct fetch for GitHub markdown files
 				const response = await fetch(bookUrl);
-				if (!response.ok) throw new Error('Failed to fetch book content');
+				if (!response.ok)
+					throw new Error(`Failed to fetch markdown book content: ${response.status}`);
 				text = await response.text();
 			} else {
 				// Use proxy for other files (like Project Gutenberg)
-				const response = await fetch(
-					`https://api.allorigins.win/raw?url=${encodeURIComponent(bookUrl)}`
-				);
-				if (!response.ok) throw new Error('Failed to fetch book content');
+				const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(bookUrl)}`;
+				const response = await fetch(proxyUrl);
+				if (!response.ok)
+					throw new Error(`Failed to fetch text book content via proxy: ${response.status}`);
 				text = await response.text();
 			}
 
+			// Parse content based on file type
 			let parsedChapters: Chapter[] = [];
-
 			if (fileType === 'markdown') {
-				// Parse all markdown headings (h1, h2, h3) as chapters
-				const headingRegex = /^(#{1,3})\s+(.*)$/gm;
-				const parts = text.split(headingRegex);
-
-				// If there's content before the first heading
-				if (parts[0]?.trim()) {
-					parsedChapters.push({
-						title: 'Introduction',
-						level: 0, // No heading level
-						paragraphs: formatParagraphs(parts[0])
-					});
-				}
-
-				// Process heading groups (level, title, content)
-				for (let i = 1; i < parts.length; i += 3) {
-					const levelMarker = parts[i]; // This is the '#' characters
-					const title = parts[i + 1];
-					const content = parts[i + 2];
-
-					// Determine level based on the number of '#' characters
-					const level = levelMarker ? levelMarker.length : 0;
-
-					if (title?.trim()) {
-						parsedChapters.push({
-							title: title.trim(),
-							level, // 1 for h1, 2 for h2, 3 for h3
-							paragraphs: content ? formatParagraphs(content) : []
-						});
-					}
-				}
+				parsedChapters = parseMarkdown(text);
 			} else {
-				// Handle plain text files with CHAPTER pattern
-				const chapterRegex = /^(CHAPTER [IVX]+\.?.*$)/gm;
-				const rawChapters = text.split(chapterRegex);
-
-				// The first element is the content before the first chapter
-				if (rawChapters[0].trim()) {
-					parsedChapters.push({
-						title: 'Beginning',
-						level: 0,
-						paragraphs: formatParagraphs(rawChapters[0])
-					});
-				}
-
-				for (let i = 1; i < rawChapters.length; i += 2) {
-					const title = rawChapters[i]?.trim();
-					const content = rawChapters[i + 1];
-					if (title && content?.trim()) {
-						parsedChapters.push({
-							title,
-							level: 0, // No specific level for CHAPTER headings
-							paragraphs: formatParagraphs(content)
-						});
-					}
-				}
+				parsedChapters = parsePlainText(text);
 			}
-
 			chapters = parsedChapters;
 
-			// Rest of your existing code remains the same...
-			// Load saved state
-			if (browser) {
-				const savedTheme = localStorage.getItem('bibliopath-theme') || 'dark';
-				changeTheme(savedTheme, false);
-				const savedFontSize = localStorage.getItem('bookstr-fontsize');
-				if (savedFontSize) fontSize = parseInt(savedFontSize);
-				const savedBookmarks = localStorage.getItem('bookstr-bookmarks');
-				if (savedBookmarks) bookmarks = JSON.parse(savedBookmarks);
-			}
+			// Load saved state from localStorage (includes theme)
+			// loadSavedState();
+			loadOtherSavedState();
 
 			loading = false;
 			await tick(); // Wait for DOM to render
@@ -160,15 +111,7 @@
 			setupIntersectionObserver();
 
 			// Restore reading position
-			if (browser) {
-				const savedPosition = localStorage.getItem('bookstr-position');
-				if (savedPosition) {
-					const savedChapterIndex = parseInt(savedPosition);
-					if (chapters[savedChapterIndex]) {
-						goToChapter(savedChapterIndex, 'auto');
-					}
-				}
-			}
+			restoreReadingPosition();
 		} catch (err) {
 			console.error('Error loading book:', err);
 			error = true;
@@ -176,19 +119,82 @@
 		}
 	});
 
-	function formatParagraphs(content: string) {
-		return content
-			.split(/\n\s*\n/) // FIXED: Split on blank lines (paragraph separators) - NOT /\s*/
-			.map((p) => p.trim().replace(/\s+/g, ' ')) // Normalize whitespace within each paragraph
-			.filter((p) => p.length > 0); // Remove empty paragraphs
+	// --- Helper Functions for Parsing ---
+	function parseMarkdown(text: string): Chapter[] {
+		const parsedChapters: Chapter[] = [];
+		const headingRegex = /^(#{1,3})\s+(.*)$/gm;
+		const parts = text.split(headingRegex);
+
+		// Content before first heading
+		if (parts[0]?.trim()) {
+			parsedChapters.push({
+				title: 'Introduction',
+				level: 0,
+				paragraphs: formatParagraphs(parts[0])
+			});
+		}
+
+		// Process heading groups (level marker, title, content)
+		for (let i = 1; i < parts.length; i += 3) {
+			const levelMarker = parts[i];
+			const title = parts[i + 1]?.trim();
+			const content = parts[i + 2];
+
+			if (title) {
+				const level = levelMarker ? levelMarker.length : 0;
+				parsedChapters.push({
+					title,
+					level,
+					paragraphs: content ? formatParagraphs(content) : []
+				});
+			}
+		}
+		return parsedChapters;
 	}
 
-	// Add this function for basic inline Markdown rendering
+	function parsePlainText(text: string): Chapter[] {
+		const parsedChapters: Chapter[] = [];
+		const chapterRegex = /^(CHAPTER [IVX]+\.?.*$)/gm;
+		const rawChapters = text.split(chapterRegex);
+
+		// Content before first chapter
+		if (rawChapters[0]?.trim()) {
+			parsedChapters.push({
+				title: 'Beginning',
+				level: 0,
+				paragraphs: formatParagraphs(rawChapters[0])
+			});
+		}
+
+		// Process chapter pairs (title, content)
+		for (let i = 1; i < rawChapters.length; i += 2) {
+			const title = rawChapters[i]?.trim();
+			const content = rawChapters[i + 1];
+
+			if (title && content?.trim()) {
+				parsedChapters.push({
+					title,
+					level: 0, // Plain text chapters don't have nested levels
+					paragraphs: formatParagraphs(content)
+				});
+			}
+		}
+		return parsedChapters;
+	}
+
+	function formatParagraphs(content: string) {
+		// FIXED: Split on blank lines (paragraph separators) - NOT /\s*/
+		return content
+			.split(/\n\s*\n/)
+			.map((p) => p.trim().replace(/\s+/g, ' '))
+			.filter((p) => p.length > 0);
+	}
+
+	// --- Inline Markdown Rendering ---
 	function renderMarkdownInline(text: string): string {
 		if (!text) return '';
 		// Correctly escape HTML entities FIRST
 		let escapedText = text.replace(/&/g, '&amp;').replace(/</g, '<').replace(/>/g, '>');
-
 		// Then apply Markdown transformations
 		return escapedText
 			.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Bold **text**
@@ -197,74 +203,134 @@
 			.replace(/_(.*?)_/g, '<em>$1</em>'); // Italic _text_
 	}
 
-	// Function to show the "Soon" alert for audio
-	function showAudioSoonAlert() {
-		alert('Audio feature coming soon!');
+	// --- State Management (LocalStorage) ---
+	function loadOtherSavedState() {
+		if (!browser) return;
+
+		const savedFontSize = localStorage.getItem('bookstr-fontsize');
+		if (savedFontSize) fontSize = parseInt(savedFontSize, 10);
+
+		const savedBookmarks = localStorage.getItem('bookstr-bookmarks');
+		if (savedBookmarks) {
+			try {
+				bookmarks = JSON.parse(savedBookmarks);
+			} catch (e) {
+				console.error('Failed to parse bookmarks from localStorage:', e);
+				bookmarks = []; // Reset on error
+			}
+		}
+	}
+	// function loadSavedState() {
+	// 	if (!browser) return;
+	// 	const savedTheme = localStorage.getItem('bibliopath-theme') || 'dark';
+	// 	// Use the imported changeTheme function for consistent theme application
+	// 	changeTheme(savedTheme, false);
+	// 	theme = savedTheme; // Update local state variable for UI reactivity (e.g., settings button)
+
+	// 	const savedFontSize = localStorage.getItem('bookstr-fontsize');
+	// 	if (savedFontSize) fontSize = parseInt(savedFontSize, 10);
+
+	// 	const savedBookmarks = localStorage.getItem('bookstr-bookmarks');
+	// 	if (savedBookmarks) {
+	// 		try {
+	// 			bookmarks = JSON.parse(savedBookmarks);
+	// 		} catch (e) {
+	// 			console.error('Failed to parse bookmarks from localStorage:', e);
+	// 			bookmarks = []; // Reset on error
+	// 		}
+	// 	}
+	// }
+
+	function saveBookmarks() {
+		if (browser) {
+			try {
+				localStorage.setItem('bookstr-bookmarks', JSON.stringify(bookmarks));
+			} catch (e) {
+				console.error('Failed to save bookmarks to localStorage:', e);
+			}
+		}
+	}
+
+	function saveReadingPosition(index: number) {
+		if (browser) {
+			try {
+				localStorage.setItem('bookstr-position', index.toString());
+			} catch (e) {
+				console.error('Failed to save reading position to localStorage:', e);
+			}
+		}
+	}
+
+	function restoreReadingPosition() {
+		if (!browser || chapters.length === 0) return;
+		const savedPosition = localStorage.getItem('bookstr-position');
+		if (savedPosition) {
+			const savedChapterIndex = parseInt(savedPosition, 10);
+			if (!isNaN(savedChapterIndex) && chapters[savedChapterIndex]) {
+				goToChapter(savedChapterIndex, 'auto');
+			}
+		}
 	}
 
 	// --- Scrolling and Chapter Tracking ---
 	function goToChapter(chapterIndex: number, behavior: ScrollBehavior = 'smooth') {
 		const targetElement = chapterElements[chapterIndex];
 		if (targetElement) {
-			const scrollOptions: ScrollIntoViewOptions = { behavior, block: 'start' };
-			targetElement.scrollIntoView(scrollOptions);
+			targetElement.scrollIntoView({ behavior, block: 'start' });
 			showSidebar = false;
 		}
 	}
 
-	let observer: IntersectionObserver;
-
+	let observer: IntersectionObserver | undefined; // Use undefined for clarity
 	function setupIntersectionObserver() {
-		if (observer) observer.disconnect();
+		if (observer) {
+			observer.disconnect();
+			observer = undefined; // Reset reference
+		}
+
+		if (!readerContainer) return;
 
 		const options = {
 			root: readerContainer,
-			rootMargin: '0px 0px -80% 0px',
+			rootMargin: '0px 0px -80% 0px', // Trigger when chapter top is at 20% viewport
 			threshold: 0.0
 		};
 
 		observer = new IntersectionObserver((entries) => {
 			entries.forEach((entry) => {
 				if (entry.isIntersecting) {
-					const index = parseInt((entry.target as HTMLElement).dataset.chapterIndex || '0');
-					currentChapterIndex = index;
-					if (browser) {
-						localStorage.setItem('bookstr-position', index.toString());
+					const indexStr = (entry.target as HTMLElement).dataset.chapterIndex;
+					const index = indexStr ? parseInt(indexStr, 10) : -1;
+					if (!isNaN(index) && index >= 0) {
+						currentChapterIndex = index;
+						saveReadingPosition(index);
 					}
 				}
 			});
 		}, options);
 
 		chapterElements.forEach((el) => {
-			if (el) observer.observe(el);
+			if (el) observer?.observe(el); // Optional chaining
 		});
 	}
 
 	function handleScroll() {
 		if (!readerContainer) return;
-
 		const { scrollTop, scrollHeight, clientHeight } = readerContainer;
 		const scrollableHeight = scrollHeight - clientHeight;
-
-		if (scrollableHeight > 0) {
-			readingProgress = (scrollTop / scrollableHeight) * 100;
-		} else {
-			readingProgress = 0;
-		}
+		readingProgress = scrollableHeight > 0 ? (scrollTop / scrollableHeight) * 100 : 0;
 	}
 
 	// --- Bookmarks ---
 	function addBookmark() {
-		const newBookmark = {
-			id: Date.now(),
+		const newBookmark: BookmarkEntry = {
+			id: Date.now(), // Consider using crypto.randomUUID() if available
 			chapterIndex: currentChapterIndex,
 			timestamp: new Date().toISOString(),
 			preview: chapters[currentChapterIndex]?.paragraphs[0]?.slice(0, 100) || 'Chapter start'
 		};
-		bookmarks = [...bookmarks, newBookmark];
-		if (browser) {
-			localStorage.setItem('bookstr-bookmarks', JSON.stringify(bookmarks));
-		}
+		bookmarks = [...bookmarks, newBookmark]; // Immutability
+		saveBookmarks();
 	}
 
 	function goToBookmark(bookmark: BookmarkEntry) {
@@ -273,37 +339,51 @@
 	}
 
 	function removeBookmark(bookmarkId: number) {
-		bookmarks = bookmarks.filter((b) => b.id !== bookmarkId);
-		if (browser) {
-			localStorage.setItem('bookstr-bookmarks', JSON.stringify(bookmarks));
-		}
+		bookmarks = bookmarks.filter((b) => b.id !== bookmarkId); // Immutability
+		saveBookmarks();
 	}
 
 	// --- Settings ---
 	function changeFontSize(newSize: number) {
 		fontSize = newSize;
 		if (browser) {
-			localStorage.setItem('bookstr-fontsize', fontSize.toString());
-		}
-	}
-
-	function changeThemeX(newTheme: string, save = true) {
-		theme = newTheme;
-		if (browser) {
-			document.documentElement.setAttribute('data-theme', newTheme);
-			if (save) {
-				localStorage.setItem('bibliopath-theme', newTheme);
+			try {
+				localStorage.setItem('bookstr-fontsize', fontSize.toString());
+			} catch (e) {
+				console.error('Failed to save font size to localStorage:', e);
 			}
 		}
 	}
 
-	// Apply theme on mount
-	onMount(() => {
-		if (browser) {
-			const savedTheme = localStorage.getItem('bibliopath-theme') || 'dark';
-			changeThemeX(savedTheme, false);
-		}
-	});
+	// This function name was changed to avoid conflict with imported `changeTheme`
+	// It now only updates the local state and calls the library function.
+	// Saving is handled by the library function or explicitly if needed.
+	function updateTheme(newTheme: string, save = true) {
+		theme = newTheme; // Update local state for UI reactivity
+		changeTheme(newTheme, save); // Apply theme via the imported lib function
+		// The lib function handles saving to localStorage if `save` is true.
+		// If you need to save the theme name specifically under 'bibliopath-theme',
+		// you can add that logic here, but `changeTheme` likely already does it.
+		// if (browser && save) {
+		// 	localStorage.setItem('bibliopath-theme', newTheme);
+		// }
+	}
+
+	// --- UI Interactions ---
+	function showAudioSoonAlert() {
+		alert('Audio feature coming soon!');
+		// Consider using a toast notification or a modal for better UX
+	}
+
+	// --- Cleanup (Optional but good practice) ---
+	// Svelte 5 handles cleanup of effects automatically, but manual cleanup
+	// like disconnecting observers is still good.
+	// onDestroy(() => {
+	//     if (observer) {
+	//         observer.disconnect();
+	//         observer = undefined;
+	//     }
+	// });
 </script>
 
 <svelte:head>
@@ -333,10 +413,9 @@
 			<div class="mb-6 space-y-1">
 				{#each chapters as chapter, index (index)}
 					<button
-						class="btn btn-ghost h-auto w-full justify-start px-4 py-3 text-left {index ===
-						currentChapterIndex
-							? 'btn-primary'
-							: ''} {chapter.level === 1
+						class="btn btn-ghost h-auto w-full justify-start px-4 py-3 text-left
+                               {index === currentChapterIndex ? 'btn-primary' : ''}
+                               {chapter.level === 1
 							? 'pl-4 font-bold'
 							: chapter.level === 2
 								? 'pl-8'
@@ -346,14 +425,6 @@
 						onclick={() => goToChapter(index)}
 					>
 						<span class="truncate">
-							<!-- Add visual indicators for heading levels -->
-							{chapter.level === 1
-								? '◗ ' // H1 indicator
-								: chapter.level === 2
-									? '◈ ' // H2 indicator
-									: chapter.level === 3
-										? '◇ ' // H3 indicator
-										: ''}
 							{chapter.title}
 						</span>
 					</button>
@@ -431,6 +502,7 @@
 				<button class="btn btn-ghost btn-circle" onclick={addBookmark} title="Add Bookmark">
 					<Bookmark size={20} />
 				</button>
+
 				<!-- Settings dropdown -->
 				<div class="dropdown dropdown-end">
 					<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
@@ -442,6 +514,7 @@
 					>
 						<div class="card-body">
 							<h3 class="card-title mb-4 text-base">Reading Settings</h3>
+
 							<!-- Theme selector -->
 							<div class="form-control mb-4">
 								<!-- svelte-ignore a11y_label_has_associated_control -->
@@ -450,27 +523,24 @@
 								</label>
 								<div class="join join-horizontal w-full">
 									<button
-										class="btn join-item flex-1 {theme === 'light' ? 'btn-primary' : 'btn-outline'}"
-										onclick={() => changeThemeX('light')}
+										class="btn join-item flex-1 {theme() === 'light'
+											? 'btn-primary'
+											: 'btn-outline'}"
+										onclick={() => updateTheme('light')}
 									>
 										Light
 									</button>
 									<button
-										class="btn join-item flex-1 {theme === 'dark' ? 'btn-primary' : 'btn-outline'}"
-										onclick={() => changeThemeX('dark')}
+										class="btn join-item flex-1 {theme() === 'dark'
+											? 'btn-primary'
+											: 'btn-outline'}"
+										onclick={() => updateTheme('dark')}
 									>
 										Dark
 									</button>
-									<!-- <button
-                                        class="btn join-item flex-1 {theme === 'coffee'
-                                            ? 'btn-primary'
-                                            : 'btn-outline'}"
-                                        onclick={() => changeThemeX('coffee')}
-                                    >
-                                        Sepia
-                                    </button> -->
 								</div>
 							</div>
+
 							<!-- Font size -->
 							<div class="form-control">
 								<label for="font-size-slider" class="label">
@@ -494,15 +564,17 @@
 						</div>
 					</div>
 				</div>
+
 				<button class="btn btn-ghost btn-circle" title="Share" onclick={() => shareCurrentUrl()}>
 					<Share2 size={20} />
 				</button>
 			</div>
+
 			<!-- Progress bar -->
 			<div class="bg-base-300 absolute right-0 bottom-0 left-0 h-1">
 				<div
 					class="bg-primary h-full transition-all duration-300 ease-out"
-					style="width: {readingProgress}%"
+					style="width: {readingProgress}%;"
 				></div>
 			</div>
 		</header>
@@ -528,7 +600,7 @@
 						<div class="flex flex-col items-center gap-2">
 							<CircleX size={48} class="text-base-content/50" />
 							<p class="text-lg font-medium">Error loading the book</p>
-							<button onclick={() => location.reload()} class="btn btn-sm btn-primary">
+							<button onclick={() => window.location.reload()} class="btn btn-sm btn-primary">
 								<RotateCcw size={18} /> Re-try
 							</button>
 						</div>
@@ -548,14 +620,6 @@
 													? 'text-xl'
 													: 'text-3xl'}"
 									>
-										<!-- Add visual indicators for heading levels -->
-										{chapter.level === 1
-											? '◗ ' // H1 indicator
-											: chapter.level === 2
-												? '◈ ' // H2 indicator
-												: chapter.level === 3
-													? '◇ ' // H3 indicator
-													: ''}
 										{chapter.title}
 									</h2>
 									<!-- Simple "Soon" audio button -->
@@ -568,23 +632,26 @@
 										<Volume2 size={18} />
 									</button>
 								</div>
-								{#each chapter.paragraphs as paragraph}
-									<p class="mb-6 text-justify indent-8 leading-relaxed">
-										<!-- Conditionally render Markdown based on fileType -->
-										{#if fileType === 'markdown'}
-											{@html renderMarkdownInline(paragraph)}
-										{:else}
-											{paragraph}
-										{/if}
-									</p>
+
+								{#if chapter.paragraphs.length > 0}
+									{#each chapter.paragraphs as paragraph, pIndex (pIndex)}
+										<!-- Added key -->
+										<p class="mb-6 text-justify indent-8 leading-relaxed">
+											{#if fileType === 'markdown'}
+												{@html renderMarkdownInline(paragraph)}
+											{:else}
+												{paragraph}
+											{/if}
+										</p>
+									{/each}
 								{:else}
 									<!-- Handle chapters with no paragraphs -->
-									{#if chapter.title === 'Introduction'}
-										<p class="mb-6 text-justify italic text-base-content/70">
-											No content before first heading
+									{#if chapter.title === 'Introduction' || chapter.title === 'Beginning'}
+										<p class="text-base-content/70 mb-6 text-justify italic">
+											No content for this section.
 										</p>
 									{/if}
-								{/each}
+								{/if}
 							</div>
 						{/each}
 					</div>

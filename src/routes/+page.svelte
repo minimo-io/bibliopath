@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import { changeTheme } from '$lib';
-	import { Search, Zap } from '@lucide/svelte';
+	import Header from '$lib/components/Header.svelte';
+	import Hero from '$lib/components/Hero.svelte';
 	import { onMount } from 'svelte';
 	import { fly } from 'svelte/transition';
 
@@ -14,8 +15,6 @@
 	let previousUrl = $state(null);
 	let searchQuery = $state('');
 	let searchTimeout: number | null | undefined = null;
-
-	// let pepe = $state()
 
 	const BASE_URL = 'https://gutendex.com/books';
 	const BOOKS_PER_PAGE = 32; // API returns up to 32 books per page
@@ -102,13 +101,18 @@
 		}
 	}
 
-	// Handle search
+	// Handle search - this will be passed to Header component
 	function handleSearch() {
 		clearTimeout(searchTimeout);
 		searchTimeout = setTimeout(() => {
 			currentPage = 1;
 			fetchBooks(BASE_URL, 1);
 		}, 500);
+	}
+
+	// Handle search input - this will be passed to Header component
+	function handleSearchInput() {
+		handleSearch();
 	}
 
 	// Format download count
@@ -184,52 +188,12 @@
 	/>
 </svelte:head>
 
+<!-- Pass search functionality to Header -->
+<Header bind:searchQuery {handleSearch} handleInput={handleSearchInput} {loading} />
+
 <div class="container mx-auto max-w-7xl p-4">
 	<!-- Header -->
-	<div class="mb-8 text-center">
-		<h1 class="text-base-content mb-2 text-4xl font-bold"><a href="/">Bibliopath</a></h1>
-		<p class="text-base-content/70 mx-auto text-sm md:w-1/2 md:text-base">
-			<strong>Books for the Open Web</strong> // Over 70,000 free ebooks from Project Gutenberg + Creative
-			Common books hostead at github/nostrgit as markdown. Discover, read, and connect with authors and
-			readers on a Nostr community-driven platform built for the future of publishing & reading.
-		</p>
-		<div class="mx-auto flex w-fit items-center justify-between gap-5">
-			<a
-				target="_blank"
-				rel="nofollow noopener"
-				href="https://njump.me/nprofile1qqs8wftkcz9achdy8ascqtnk0v3rrcevda2klm8wqyd6xrlk8skc22gekra89"
-				class="btn btn-sm mx-auto my-5 flex w-fit items-center"
-			>
-				<Zap class="h-4 text-[#FACE3C]" fill="#FACE3C" />
-				<span> Consider zapping a coffee</span>
-			</a>
-			<!-- <div class="divider divider-horizontal">OR</div> -->
-			<a
-				target="_blank"
-				rel="nofollow noopener"
-				class="btn btn-sm btn-ghost"
-				href="https://github.com/minimo-io/bibliopath?tab=readme-ov-file#to-do">Roadmap</a
-			>
-		</div>
-	</div>
-
-	<!-- Search Bar -->
-	<div class="mx-5 mt-2 mb-6 flex flex-row justify-center">
-		<div class="form-control w-full">
-			<div class="input-group flex min-w-full justify-center">
-				<input
-					type="text"
-					placeholder="Search books, authors, subjects..."
-					class="input input-lg input-bordered mr-2 w-full max-w-md rounded-full placeholder:pl-1 placeholder:text-sm md:placeholder:pl-3 md:placeholder:text-base"
-					bind:value={searchQuery}
-					oninput={handleSearch}
-				/>
-				<button class="btn btn-lg btn-square btn-primary rounded-full" onclick={handleSearch}>
-					<Search class="h-5" />
-				</button>
-			</div>
-		</div>
-	</div>
+	<Hero />
 
 	<!-- Curated books -->
 	<div class="hero-content flex-col lg:flex-row-reverse">
@@ -243,13 +207,21 @@
 			<a
 				href="/book?type=markdown&{`book=${'https://raw.githubusercontent.com/mlschmitt/classic-books-markdown/main/Adam%20Smith/The%20Wealth%20of%20Nations.md&title=The%20Wealth%20of Nations&author=Adam%20Smith'}`}"
 			>
-				The Wealth of Nations - Adam Smith
+				The Wealth of Nations (1776) - Adam Smith
 			</a>
 		</li>
 		<li>
 			<a
-				href="/book?type=markdown&book=https://raw.githubusercontent.com/mlschmitt/classic-books-markdown/refs/heads/main/A.W.%20Tozer/The%20Pursuit%20of%20God.md&title=The%20Pursuit%20of%20God&author=A.W. Tozer"
-				>The Pursuit of God - A.W. Tozer</a
+				href="/book?type=markdown&{`book=${'https://raw.githubusercontent.com/mlschmitt/classic-books-markdown/refs/heads/main/Alexis%20de%20Tocqueville/Democracy%20in%20America.md&title=Democracy%20in%20America&author=Alexis%20de%20Tocqueville'}`}"
+			>
+				Democracy in America (1835) - Alexis de Tocqueville
+			</a>
+		</li>
+
+		<li>
+			<a
+				href="/book?type=markdown&book=https://raw.githubusercontent.com/mlschmitt/classic-books-markdown/refs/heads/main/Ayn%20Rand/Anthem.md&title=Anthem&author=Ayn Rand"
+				>Anthem - Ayn Rand</a
 			>
 		</li>
 	</ul>
@@ -391,16 +363,6 @@
 								</a>
 							{/if}
 						</div>
-						<!-- <div class="card-actions mt-4 justify-end">
-							<a
-								href={getReadableFormat(book)}
-								target="_blank"
-								rel="noopener noreferrer"
-								class="btn btn-primary btn-sm"
-							>
-								Read
-							</a>
-						</div> -->
 					</div>
 				</div>
 			{/each}
