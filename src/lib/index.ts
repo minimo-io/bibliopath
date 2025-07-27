@@ -30,6 +30,6 @@ export async function shareCurrentUrl() {
 			'Web Share API is not supported in this browser. You can manually copy the URL: ' +
 				window.location.href
 		);
-		console.log('Web Share API not supported.');
+		console.error('Web Share API not supported.');
 	}
 }

@@ -18,11 +18,14 @@ Have fun!
 
 ## To Do
 
+- Create a http proxy on our Futurewise API to handle the fetch, rate limiting, etc.
 - Create a store for theme state, use it in all routes.
-- Once a book is downloaded offer to save it in indexDB.
+- Once a book is downloaded offer to save it in indexDB and bookmark it.
 - Search should change the query parameter.
 - Nostr login
-- In book parameter, allow for github/nostrgit books written in markdown -- define a format standard.
+- Allow for github/nostrgit books written in markdown
+  - Create a selection of curated books, with audio books.
+
 - Allow users to store their own books in the reader (indexDB?)
 - Info button to get book and author data.
 - Centralize types at src/lib & componentize the thing.
@@ -36,6 +39,8 @@ Have fun!
 - Create e-pub support (and consider moving from txt Gutemberg format to this, for better indexes and metadata).
 - Pre-render authors at the hompage.
 - Add more Nostr capabilities.
+- AI
+  - Enable read a chapter using something like ElevenLabs (paid).
 
 - Bug: Fix the changeTheme function mess.
 - Bug: On mobile pagination should be "Prev - Next" with the input switcher also.

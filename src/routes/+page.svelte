@@ -15,6 +15,8 @@
 	let searchQuery = $state('');
 	let searchTimeout: number | null | undefined = null;
 
+	// let pepe = $state()
+
 	const BASE_URL = 'https://gutendex.com/books';
 	const BOOKS_PER_PAGE = 32; // API returns up to 32 books per page
 
@@ -76,8 +78,9 @@
 			author: book.authors.length > 0 ? book.authors[0].name : 'Unknown Author',
 			id: book.id.toString()
 		});
+		const finalUrl = `/book?type=text&${params.toString()}`;
 
-		return `/book?${params.toString()}`;
+		return finalUrl;
 	}
 
 	// Handle pagination
@@ -225,6 +228,36 @@
 					<Search class="h-5" />
 				</button>
 			</div>
+		</div>
+	</div>
+
+	<!-- Curated books -->
+	<div class="hero-content flex-col lg:flex-row-reverse">
+		<div>
+			<h2 class="text-5xl font-bold">Curated books</h2>
+			<p class="py-6 text-center">This will be markdown Github books</p>
+		</div>
+	</div>
+	<ul class="text-center">
+		<li>
+			<a
+				href="/book?type=markdown&{`book=${'https://raw.githubusercontent.com/mlschmitt/classic-books-markdown/main/Adam%20Smith/The%20Wealth%20of%20Nations.md&title=The%20Wealth%20of Nations&author=Adam%20Smith'}`}"
+			>
+				The Wealth of Nations - Adam Smith
+			</a>
+		</li>
+		<li>
+			<a
+				href="/book?type=markdown&book=https://raw.githubusercontent.com/mlschmitt/classic-books-markdown/refs/heads/main/A.W.%20Tozer/The%20Pursuit%20of%20God.md&title=The%20Pursuit%20of%20God&author=A.W. Tozer"
+				>The Pursuit of God - A.W. Tozer</a
+			>
+		</li>
+	</ul>
+
+	<div class="hero-content mt-10 flex-col lg:flex-row-reverse">
+		<div>
+			<h2 class="text-5xl font-bold">Gutemberg books</h2>
+			<p class="py-6">Books below are fetched from the Project Gutemberg library.</p>
 		</div>
 	</div>
 
