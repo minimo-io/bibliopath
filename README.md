@@ -40,6 +40,7 @@ Have fun!
 - Create e-pub support (and consider moving from txt Gutemberg format to this, for better indexes and metadata).
 - Pre-render authors at the hompage.
 - Add more Nostr capabilities.
+- Add changelog from git commits.
 - AI
   - Enable read a chapter using something like ElevenLabs (paid).
 
@@ -47,8 +48,55 @@ Have fun!
 - Bug: On mobile pagination should be "Prev - Next" with the input switcher also.
 - Bug: Font-size not working on mobile.
 - Bug: No error message when downloading fails... no retry button.
+- Progress bar:
 
-## Creating a project
+```
+<progress id="progress" value="0" max="100"></progress>
+<pre id="output"></pre>
+
+<script>
+async function downloadWithProgress(url) {
+	const response = await fetch(url);
+	const contentLength = response.headers.get('Content-Length');
+
+	if (!response.ok) throw new Error('Network error');
+	if (!contentLength) console.warn('No content length — progress may be inaccurate');
+
+	const total = parseInt(contentLength, 10) || 0;
+	const reader = response.body.getReader();
+	const decoder = new TextDecoder();
+	let received = 0;
+	let result = '';
+
+	while (true) {
+		const { done, value } = await reader.read();
+		if (done) break;
+
+		received += value.length;
+		result += decoder.decode(value, { stream: true });
+
+		// Update progress bar
+		if (total) {
+			document.getElementById('progress').value = (received / total) * 100;
+		}
+	}
+
+	// Final decode
+	result += decoder.decode();
+	document.getElementById('output').textContent = result;
+}
+
+downloadWithProgress('https://raw.githubusercontent.com/sindresorhus/awesome/main/readme.md');
+</script>
+🧠 Notes
+Content-Length header is essential for accurate progress; if the server doesn’t provide it, you can still show indeterminate progress (e.g. spinner).
+
+Works for any streamable text, including .txt, .md, .csv, etc.
+
+If you want to download and save the file with progress, use [Streams API + File System API] or blobs + URL.createObjectURL.
+```
+
+##
 
 If you're seeing this, you've probably already done this step. Congrats!
 
