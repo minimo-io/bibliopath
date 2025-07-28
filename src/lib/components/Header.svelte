@@ -74,7 +74,7 @@
 			class:input-disabled={loading}
 			bind:value={searchQuery}
 			onkeydown={onSearchKeydown}
-			disabled={loading}
+			disabled={loading && searchCount > 1}
 		/>
 		<button
 			class="btn btn-ghost btn-sm btn-square absolute top-1/2 right-2 z-10 -translate-y-1/2"

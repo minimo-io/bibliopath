@@ -18,6 +18,7 @@ Have fun!
 
 ## To Do
 
+- Ability to add your own books (from a raw github url or local epub upload)
 - Create a http proxy on our Futurewise API to handle the fetch, rate limiting, etc.
 - Create a store for theme state, use it in all routes.
 - Once a book is downloaded offer to save it in indexDB and bookmark it.
@@ -25,8 +26,8 @@ Have fun!
 - Nostr login
 - Allow for github/nostrgit books written in markdown
   - Create a selection of curated books, with audio books.
-
 - Allow users to store their own books in the reader (indexDB?)
+- Disclaimer (only Creative Commons work)
 - Info button to get book and author data.
 - Centralize types at src/lib & componentize the thing.
 - Multi-lingual support via paraglidejs.
@@ -44,7 +45,6 @@ Have fun!
 
 - Bug: Fix the changeTheme function mess.
 - Bug: On mobile pagination should be "Prev - Next" with the input switcher also.
-- Bug: Book title on mobile gets too short.
 - Bug: Font-size not working on mobile.
 - Bug: No error message when downloading fails... no retry button.
 
