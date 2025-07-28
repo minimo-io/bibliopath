@@ -56,10 +56,6 @@
 	</div>
 
 	<div class="flex flex-shrink-0 items-center gap-2">
-		<button aria-label="Mobile search" class="btn btn-ghost btn-circle sm:hidden">
-			<Search class="h-5" />
-		</button>
-
 		<button aria-label="Notifications" class="btn btn-ghost btn-circle">
 			<div class="indicator">
 				<Bell class="h-5" />
