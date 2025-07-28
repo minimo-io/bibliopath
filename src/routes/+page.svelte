@@ -8,13 +8,13 @@
 
 	let books = $state([]);
 	let loading = $state(false);
-	let error = $state(null);
+	let error: string | null = $state(null);
 	let currentPage = $state(1);
 	let totalCount = $state(0);
 	let nextUrl = $state(null);
 	let previousUrl = $state(null);
 	let searchQuery = $state('');
-	let searchTimeout: number | null | undefined = null;
+	let searchCount = $state(0);
 
 	const BASE_URL = 'https://gutendex.com/books';
 	const BOOKS_PER_PAGE = 32; // API returns up to 32 books per page
@@ -54,7 +54,8 @@
 				currentPage = parseInt(urlParams.get('page') || '1');
 			}
 		} catch (err) {
-			error = err.message;
+			const message = err instanceof Error ? err.message : String(err);
+			error = message;
 			console.error('Error fetching books:', err);
 		} finally {
 			loading = false;
@@ -99,20 +100,6 @@
 		if (previousUrl) {
 			fetchBooks(previousUrl);
 		}
-	}
-
-	// Handle search - this will be passed to Header component
-	function handleSearch() {
-		clearTimeout(searchTimeout);
-		searchTimeout = setTimeout(() => {
-			currentPage = 1;
-			fetchBooks(BASE_URL, 1);
-		}, 500);
-	}
-
-	// Handle search input - this will be passed to Header component
-	function handleSearchInput() {
-		handleSearch();
 	}
 
 	// Format download count
@@ -170,13 +157,29 @@
 		fetchBooks();
 	}
 
+	// ✨ 1. This is now our single, immediate search function.
+	function executeSearch() {
+		currentPage = 1;
+		searchCount++;
+		fetchBooks(BASE_URL, 1);
+	}
+
+	// ✨ 2. Add a function to handle the 'Enter' key press.
+	function handleSearchKeydown(event: KeyboardEvent) {
+		if (event.key === 'Enter') {
+			executeSearch();
+		}
+	}
+
 	onMount(() => {
 		if (browser) {
 			const savedTheme = localStorage.getItem('bibliopath-theme') || 'dark';
 			theme = changeTheme(savedTheme, false);
 		}
 		// fetch books from index
-		fetchBooks();
+
+		// fetchBooks();
+		executeSearch();
 	});
 </script>
 
@@ -189,7 +192,14 @@
 </svelte:head>
 
 <!-- Pass search functionality to Header -->
-<Header bind:searchQuery {handleSearch} handleInput={handleSearchInput} {loading} />
+<!-- <Header bind:searchQuery {handleSearch} handleInput={handleSearchInput} {loading} /> -->
+<Header
+	bind:searchQuery
+	onSearchClick={executeSearch}
+	onSearchKeydown={handleSearchKeydown}
+	{loading}
+	{searchCount}
+/>
 
 <div class="container mx-auto max-w-7xl p-4">
 	<!-- Header -->
@@ -199,7 +209,7 @@
 	<div class="hero-content flex-col lg:flex-row-reverse">
 		<div>
 			<h2 class="text-5xl font-bold">Curated books</h2>
-			<p class="py-6 text-center">This will be markdown Github books</p>
+			<p class="py-6 text-center">👇 This will be markdown Github books</p>
 		</div>
 	</div>
 	<ul class="text-center">
@@ -221,8 +231,22 @@
 		<li>
 			<a
 				href="/book?type=markdown&book=https://raw.githubusercontent.com/mlschmitt/classic-books-markdown/refs/heads/main/Ayn%20Rand/Anthem.md&title=Anthem&author=Ayn Rand"
-				>Anthem - Ayn Rand</a
+				>Anthem (1938) - Ayn Rand</a
 			>
+		</li>
+		<li>
+			<a
+				href="/book?type=markdown&book=https://raw.githubusercontent.com/mlschmitt/classic-books-markdown/refs/heads/main/Charles%20Baudelaire/Les%20Fleurs%20du%20mal.md&title=Les Fleurs du mal&author=Charles Baudelaire"
+				>Les Fleurs du mal (1857) - Charles Baudelaire</a
+			>
+		</li>
+
+		<li>
+			<a
+				href="/book?type=markdown&{`book=${'https://raw.githubusercontent.com/mlschmitt/classic-books-markdown/refs/heads/main/H.P.%20Lovecraft/The%20Call%20of%20Cthulhu.md&title=The Call of Cthulhu&author= H.P. Lovecraft'}`}"
+			>
+				The Call of Cthulhu (1926) - H.P. Lovecraft
+			</a>
 		</li>
 	</ul>
 

@@ -12,7 +12,8 @@
 		ChevronLeft,
 		CircleX,
 		RotateCcw,
-		Volume2
+		Volume2,
+		Info
 	} from '@lucide/svelte';
 	import { page } from '$app/state';
 	import { changeTheme, shareCurrentUrl } from '$lib';
@@ -40,16 +41,7 @@
 	let chapters: Chapter[] = $state([]);
 	let currentChapterIndex = $state(0);
 	let fontSize = $state(18);
-	// let theme = $state('light'); // Default, will be overridden by loadSavedState
-	let theme = $state(() => {
-		if (browser) {
-			const savedTheme = localStorage.getItem('bibliopath-theme') || 'dark';
-			// Apply theme immediately to prevent flash
-			changeTheme(savedTheme, false);
-			return savedTheme;
-		}
-		return 'dark'; // Default for SSR
-	});
+	let theme = $state('dark'); // Default, will be overridden by loadSavedState
 
 	let showSidebar = $state(false);
 	// let showSettings = $state(false); // REMOVED: Unused variable
@@ -66,6 +58,19 @@
 			if (typeof window !== 'undefined' && window.speechSynthesis) {
 				window.speechSynthesis.cancel();
 			}
+			if (browser) {
+				// Load theme first to prevent flash and apply immediately
+				const savedTheme = localStorage.getItem('bibliopath-theme') || 'dark';
+				// Apply theme immediately using the imported function
+				changeTheme(savedTheme, false); // false means don't save again, we just loaded it
+				theme = savedTheme; // Update local state variable for UI reactivity
+			}
+			// if (browser) {
+			// 	theme = localStorage.getItem('bibliopath-theme') || 'dark';
+
+			// 	// Apply theme immediately to prevent flash
+			// 	// changeTheme(savedTheme, false);
+			// }
 
 			// Get URL parameters
 			const bookUrl = page.url.searchParams.get('book');
@@ -474,14 +479,7 @@
 					<Menu size={20} />
 				</label>
 				<div class="ml-4 flex-1 overflow-hidden">
-					<!-- svelte-ignore a11y_click_events_have_key_events -->
-					<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-					<h1
-						onclick={() =>
-							(document.getElementById('my_modal_2') as HTMLDialogElement | null)?.showModal()}
-						title={data.title}
-						class="line-clamp-2 cursor-pointer text-base leading-tight font-bold md:text-lg"
-					>
+					<h1 title={data.title} class="line-clamp-2 text-base leading-tight font-bold md:text-lg">
 						{data.title}
 					</h1>
 					<!-- Full info modal -->
@@ -498,7 +496,7 @@
 					<p class="text-base-content/70 hidden truncate text-sm sm:block">by {data.author}</p>
 				</div>
 			</div>
-			<div class="navbar-end gap-2">
+			<div class="navbar-end gap-0 md:gap-2">
 				<button class="btn btn-ghost btn-circle" onclick={addBookmark} title="Add Bookmark">
 					<Bookmark size={20} />
 				</button>
@@ -523,17 +521,13 @@
 								</label>
 								<div class="join join-horizontal w-full">
 									<button
-										class="btn join-item flex-1 {theme() === 'light'
-											? 'btn-primary'
-											: 'btn-outline'}"
+										class="btn join-item flex-1 {theme === 'light' ? 'btn-primary' : 'btn-outline'}"
 										onclick={() => updateTheme('light')}
 									>
 										Light
 									</button>
 									<button
-										class="btn join-item flex-1 {theme() === 'dark'
-											? 'btn-primary'
-											: 'btn-outline'}"
+										class="btn join-item flex-1 {theme === 'dark' ? 'btn-primary' : 'btn-outline'}"
 										onclick={() => updateTheme('dark')}
 									>
 										Dark
@@ -567,6 +561,14 @@
 
 				<button class="btn btn-ghost btn-circle" title="Share" onclick={() => shareCurrentUrl()}>
 					<Share2 size={20} />
+				</button>
+				<button
+					onclick={() =>
+						(document.getElementById('my_modal_2') as HTMLDialogElement | null)?.showModal()}
+					class="btn btn-ghost btn-circle"
+					title="Share"
+				>
+					<Info size={20} />
 				</button>
 			</div>
 

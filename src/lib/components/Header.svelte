@@ -1,13 +1,19 @@
-<!-- src/lib/components/Header.svelte -->
-<script>
+<script lang="ts">
 	import { Bell, Menu, Origami, Search } from '@lucide/svelte';
+	import { onMount } from 'svelte';
 
-	// Props to receive functions from parent (Svelte 5 syntax)
-	let { searchQuery = $bindable(''), handleSearch, handleInput, loading = false } = $props();
+	let {
+		searchQuery = $bindable(''),
+		onSearchClick,
+		onSearchKeydown,
+		loading = false,
+		searchCount
+	} = $props();
+
+	onMount(() => {});
 </script>
 
 <div class="bg-base-100 flex h-16 items-center justify-between px-4 shadow-sm">
-	<!-- Left (menu + brand) -->
 	<div class="flex flex-shrink-0 items-center">
 		<div class="dropdown">
 			<div tabindex="0" role="button" aria-label="Open menu" class="btn btn-ghost btn-circle">
@@ -23,7 +29,6 @@
 		</a>
 	</div>
 
-	<!-- Center (desktop search) - flexible -->
 	<div class="hidden flex-1 justify-center sm:flex">
 		<div class="form-control w-full max-w-5xl">
 			<div class="relative">
@@ -34,13 +39,13 @@
 					class="input input-bordered input-sm md:input-md w-full pr-12"
 					class:input-disabled={loading}
 					bind:value={searchQuery}
-					oninput={handleInput}
-					disabled={loading}
+					onkeydown={onSearchKeydown}
+					disabled={loading && searchCount > 1}
 				/>
 				<button
 					class="btn btn-ghost btn-sm btn-square absolute top-1/2 right-2 z-10 -translate-y-1/2"
 					class:btn-disabled={loading}
-					onclick={handleSearch}
+					onclick={onSearchClick}
 					disabled={loading}
 					aria-label="Execute search"
 				>
@@ -50,7 +55,6 @@
 		</div>
 	</div>
 
-	<!-- Right (icons) -->
 	<div class="flex flex-shrink-0 items-center gap-2">
 		<button aria-label="Mobile search" class="btn btn-ghost btn-circle sm:hidden">
 			<Search class="h-5" />
@@ -65,7 +69,6 @@
 	</div>
 </div>
 
-<!-- Mobile search (below navbar) -->
 <div class="p-4 sm:hidden">
 	<div class="relative w-full">
 		<input
@@ -74,13 +77,13 @@
 			class="input input-bordered w-full pr-12"
 			class:input-disabled={loading}
 			bind:value={searchQuery}
-			oninput={handleInput}
+			onkeydown={onSearchKeydown}
 			disabled={loading}
 		/>
 		<button
 			class="btn btn-ghost btn-sm btn-square absolute top-1/2 right-2 z-10 -translate-y-1/2"
 			class:btn-disabled={loading}
-			onclick={handleSearch}
+			onclick={onSearchClick}
 			disabled={loading}
 			aria-label="Execute mobile search"
 		>
