@@ -17,6 +17,7 @@
 	} from '@lucide/svelte';
 	import { page } from '$app/state';
 	import { changeTheme, shareCurrentUrl } from '$lib';
+	import { HTTP_STATUS_TEXT } from '$lib/types';
 
 	// --- Types ---
 	interface BookmarkEntry {
@@ -85,8 +86,15 @@
 			let text: string;
 			if (fileType === 'markdown') {
 				const response = await fetch(bookUrl);
-				if (!response.ok)
-					throw new Error(`Failed to fetch markdown book content: ${response.status}`);
+				if (!response.ok) {
+					const statusText = HTTP_STATUS_TEXT[response.status] || 'Unknown Error';
+
+					// const statusText = statusTexts[response.status] || 'Unknown Error';
+
+					throw new Error(
+						`Failed to fetch markdown book content: ${response.status} ${statusText}`
+					);
+				}
 				text = await response.text();
 			} else {
 				// Use proxy for other files (like Project Gutenberg)
@@ -605,7 +613,10 @@
 							<CircleX size={48} class="text-base-content/50" />
 							<div class="text-center">
 								<p class="text-lg font-medium">Error loading the book</p>
-								<p class="text-xs">Details: {errorDetails.replaceAll('Error:', '')}</p>
+								{#if errorDetails}
+									<p class="text-xs">{errorDetails}</p>
+									<!-- <p class="text-xs">Details: {errorDetails.replaceAll('Error:', '')}</p> -->
+								{/if}
 							</div>
 							<button onclick={() => window.location.reload()} class="btn btn-sm btn-primary">
 								<RotateCcw size={18} /> Re-try
