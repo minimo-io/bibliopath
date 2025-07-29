@@ -1,13 +1,13 @@
 <script>
+	import { AppConfig } from '$lib';
 	import { Zap } from '@lucide/svelte';
 </script>
 
 <!-- Header -->
 <div class="mb-8 text-center">
-	<p class="text-base-content/70 mx-auto text-sm md:w-1/2 md:text-base">
-		<strong>Books for the Open Web</strong> // Over 70,000 free ebooks from Project Gutenberg + Creative
-		Common books hostead at github/nostrgit as markdown. Discover, read, and connect with authors and
-		readers on a Nostr community-driven platform built for the future of publishing & reading.
+	<p class="text-base-content/70 mx-auto text-sm md:w-1/2 md:text-lg">
+		<strong>Books for the Open Web</strong> > Discover, read, and connect with authors and readers on
+		a Nostr community-driven platform built for the future of publishing & reading.
 	</p>
 	<div class="mx-auto flex w-fit items-center justify-between gap-5">
 		<a
@@ -24,7 +24,7 @@
 			target="_blank"
 			rel="nofollow noopener"
 			class="btn btn-sm btn-ghost"
-			href="https://github.com/minimo-io/bibliopath?tab=readme-ov-file#to-do">Roadmap</a
+			href={AppConfig.links.about}>About</a
 		>
 	</div>
 </div>

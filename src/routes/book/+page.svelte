@@ -38,6 +38,7 @@
 	// --- State (Reactive using Runes) ---
 	let loading = $state(true);
 	let error = $state(false);
+	let errorDetails = $state('');
 	let chapters: Chapter[] = $state([]);
 	let currentChapterIndex = $state(0);
 	let fontSize = $state(18);
@@ -120,6 +121,7 @@
 		} catch (err) {
 			console.error('Error loading book:', err);
 			error = true;
+			errorDetails = err as string;
 			loading = false;
 		}
 	});
@@ -601,7 +603,10 @@
 					<div class="flex h-full flex-col items-center justify-center gap-6">
 						<div class="flex flex-col items-center gap-2">
 							<CircleX size={48} class="text-base-content/50" />
-							<p class="text-lg font-medium">Error loading the book</p>
+							<div class="text-center">
+								<p class="text-lg font-medium">Error loading the book</p>
+								<p class="text-xs">Details: {errorDetails.replaceAll('Error:', '')}</p>
+							</div>
 							<button onclick={() => window.location.reload()} class="btn btn-sm btn-primary">
 								<RotateCcw size={18} /> Re-try
 							</button>

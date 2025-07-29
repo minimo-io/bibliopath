@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { AppConfig } from '$lib';
 	import { Bell, Menu, Origami, Search } from '@lucide/svelte';
 	import { onMount } from 'svelte';
 
@@ -21,6 +22,10 @@
 			</div>
 			<ul class="menu menu-sm dropdown-content bg-base-100 rounded-box z-10 mt-3 w-52 p-2 shadow">
 				<li><a href="/">Homepage</a></li>
+				<li><a target="_blank" href={AppConfig.links.roadmap}>Roadmap</a></li>
+				<li>
+					<a target="_blank" rel="noopener" href={AppConfig.links.about}>About</a>
+				</li>
 			</ul>
 		</div>
 		<a class="btn btn-ghost ml-2 text-xl md:text-2xl" href="/">
@@ -56,6 +61,14 @@
 	</div>
 
 	<div class="flex flex-shrink-0 items-center gap-2">
+		<!-- Configs -->
+		<!-- <button aria-label="Configs" class="btn btn-ghost btn-circle">
+			<div class="indicator">
+				<Bell class="h-5" />
+				<span class="badge badge-xs badge-primary indicator-item"></span>
+			</div>
+		</button> -->
+		<!-- Notifications  -->
 		<button aria-label="Notifications" class="btn btn-ghost btn-circle">
 			<div class="indicator">
 				<Bell class="h-5" />

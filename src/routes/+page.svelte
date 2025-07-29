@@ -187,7 +187,7 @@
 	<title>Bibliopath</title>
 	<meta
 		name="description"
-		content="Books for the Open Web. Discover, read, and connect with open books and authors on a community-driven platform built for the future of publishing."
+		content="Bibliopath is a tool and a platform for Open reading & Open publishing. We help authors publish Books for the Open Web and Readers to have control over their books."
 	/>
 </svelte:head>
 
@@ -208,7 +208,7 @@
 	<!-- Curated books -->
 	<div class="hero-content flex-col lg:flex-row-reverse">
 		<div>
-			<h2 class="text-5xl font-bold">Curated books</h2>
+			<h2 class="text-2xl font-bold md:text-4xl">Curated books (test)</h2>
 			<p class="py-6 text-center">👇 This will be markdown Github books</p>
 		</div>
 	</div>
@@ -252,7 +252,7 @@
 
 	<div class="hero-content mt-10 flex-col lg:flex-row-reverse">
 		<div>
-			<h2 class="text-5xl font-bold">Gutemberg books</h2>
+			<h2 class="text-2xl font-bold md:text-4xl">Gutemberg books</h2>
 			<p class="py-6">Books below are fetched from the Project Gutemberg library.</p>
 		</div>
 	</div>

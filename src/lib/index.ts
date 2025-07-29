@@ -33,3 +33,10 @@ export async function shareCurrentUrl() {
 		console.error('Web Share API not supported.');
 	}
 }
+
+export const AppConfig = {
+	links: {
+		about: 'https://github.com/minimo-io/bibliopath',
+		roadmap: 'https://github.com/minimo-io/bibliopath?tab=readme-ov-file#core-functionalities'
+	}
+};
