@@ -3,16 +3,8 @@
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
 	import { BookOpen, Trash2, Clock, Plus, ExternalLink } from '@lucide/svelte';
-
-	interface SavedBook {
-		id: string;
-		title: string;
-		author: string;
-		url: string;
-		fileType: 'markdown' | 'text';
-		savedAt: string;
-		lastRead?: string;
-	}
+	import type { SavedBook } from '$lib/types';
+	import { loadSavedBooks, removeBook as removeBookService } from '$lib/services/saved.services';
 
 	let savedBooks: SavedBook[] = $state([]);
 	let newBookUrl = $state('');
@@ -21,47 +13,19 @@
 	let searchQuery = $state('');
 
 	onMount(() => {
-		loadSavedBooks();
+		savedBooks = loadSavedBooks();
 	});
-
-	function loadSavedBooks() {
-		if (!browser) return;
-
-		const saved = localStorage.getItem('bibliopath-saved-books');
-		if (saved) {
-			try {
-				const books = JSON.parse(saved);
-				// Sort by last read date (most recent first)
-				savedBooks = books.sort((a: SavedBook, b: SavedBook) => {
-					const dateA = new Date(a.lastRead || a.savedAt).getTime();
-					const dateB = new Date(b.lastRead || b.savedAt).getTime();
-					return dateB - dateA;
-				});
-			} catch (e) {
-				console.error('Failed to parse saved books:', e);
-				savedBooks = [];
-			}
-		}
-	}
 
 	function generateBookUrl(book: SavedBook): string {
 		return `/book?book=${encodeURIComponent(book.url)}&type=${book.fileType}&author=${book.author}&title=${book.title}`;
 	}
 
-	function removeBook(bookId: string) {
+	function handleRemoveBook(bookId: string) {
 		if (!confirm('Are you sure you want to remove this book from your library?')) {
 			return;
 		}
-
+		removeBookService(bookId);
 		savedBooks = savedBooks.filter((book) => book.id !== bookId);
-
-		if (browser) {
-			try {
-				localStorage.setItem('bibliopath-saved-books', JSON.stringify(savedBooks));
-			} catch (e) {
-				console.error('Failed to update saved books:', e);
-			}
-		}
 	}
 
 	function formatDate(dateString: string): string {
@@ -170,7 +134,7 @@
 									</div>
 									<button
 										class="btn btn-ghost btn-xs btn-circle ml-2"
-										onclick={() => removeBook(book.id)}
+										onclick={() => handleRemoveBook(book.id)}
 										title="Remove from library"
 									>
 										<Trash2 size={14} />

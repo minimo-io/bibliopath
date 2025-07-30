@@ -19,6 +19,7 @@
 	import { page } from '$app/state';
 	import { changeTheme, shareCurrentUrl } from '$lib';
 	import { HTTP_STATUS_TEXT, type BookmarkEntry, type Chapter, type SavedBook } from '$lib/types';
+	import { loadSavedBooks, saveBook, removeBook } from '$lib/services/saved.services';
 
 	// --- Props ---
 	let { data }: { data: { title: string; author: string } } = $props();
@@ -40,6 +41,10 @@
 	let readerContainer: HTMLDivElement | null = $state(null);
 	let chapterElements: HTMLDivElement[] = $state([]);
 	let fileType: 'markdown' | 'text' = $state('markdown');
+
+	// --- Scroll position tracking ---
+	let scrollPositionSaveTimeout: number | null = $state(null);
+	let isRestoringPosition = $state(false);
 
 	// --- Lifecycle ---
 	onMount(async () => {
@@ -95,7 +100,7 @@
 
 			// Load saved state from localStorage
 			loadOtherSavedState();
-			loadSavedBooks();
+			loadSavedBooksState();
 
 			loading = false;
 			await tick(); // Wait for DOM to render
@@ -103,7 +108,7 @@
 			// Setup IntersectionObserver after content is rendered
 			setupIntersectionObserver();
 
-			// Restore reading position
+			// Restore reading position (now includes exact scroll position)
 			restoreReadingPosition();
 		} catch (err) {
 			console.error('Error loading book:', err);
@@ -214,73 +219,41 @@
 		}
 	}
 
-	function loadSavedBooks() {
+	function loadSavedBooksState() {
 		if (!browser) return;
 
-		const saved = localStorage.getItem('bibliopath-saved-books');
-		if (saved) {
-			try {
-				savedBooks = JSON.parse(saved);
-				const currentBookUrl = page.url.searchParams.get('book');
-				if (currentBookUrl) {
-					isBookSaved = savedBooks.some((book) => book.url === currentBookUrl);
-				}
-			} catch (e) {
-				console.error('Failed to parse saved books from localStorage:', e);
-				savedBooks = [];
-			}
+		const books = loadSavedBooks();
+		savedBooks = books;
+		const currentBookUrl = page.url.searchParams.get('book');
+		if (currentBookUrl) {
+			isBookSaved = savedBooks.some((book) => book.url === currentBookUrl);
 		}
 	}
 
-	function saveCurrentBook() {
-		if (!browser) return;
-
+	function handleSaveBook() {
 		const bookUrl = page.url.searchParams.get('book');
 		if (!bookUrl) {
 			alert('No book URL found to save');
 			return;
 		}
 
-		const existingBook = savedBooks.find((book) => book.url === bookUrl);
-		if (existingBook) {
-			existingBook.lastRead = new Date().toISOString();
-		} else {
-			const newSavedBook: SavedBook = {
-				id: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(),
-				title: data.title,
-				author: data.author,
-				url: bookUrl,
-				fileType: fileType,
-				savedAt: new Date().toISOString(),
-				lastRead: new Date().toISOString()
-			};
-			savedBooks = [...savedBooks, newSavedBook];
-		}
+		const bookToSave = {
+			title: data.title,
+			author: data.author,
+			url: bookUrl,
+			fileType: fileType
+		};
 
-		try {
-			localStorage.setItem('bibliopath-saved-books', JSON.stringify(savedBooks));
-			isBookSaved = true;
-		} catch (e) {
-			console.error('Failed to save book to localStorage:', e);
-			alert('Failed to save book. Please try again.');
-		}
+		saveBook(bookToSave);
+		isBookSaved = true;
 	}
 
-	function removeCurrentBook() {
-		if (!browser) return;
-
+	function handleRemoveBook() {
 		const bookUrl = page.url.searchParams.get('book');
 		if (!bookUrl) return;
 
-		savedBooks = savedBooks.filter((book) => book.url !== bookUrl);
-
-		try {
-			localStorage.setItem('bibliopath-saved-books', JSON.stringify(savedBooks));
-			isBookSaved = false;
-		} catch (e) {
-			console.error('Failed to remove book from localStorage:', e);
-			alert('Failed to remove book. Please try again.');
-		}
+		removeBook(bookUrl);
+		isBookSaved = false;
 	}
 
 	function saveBookmarks() {
@@ -293,24 +266,72 @@
 		}
 	}
 
-	function saveReadingPosition(index: number) {
-		if (browser) {
-			try {
-				localStorage.setItem('bookstr-position', index.toString());
-			} catch (e) {
-				console.error('Failed to save reading position to localStorage:', e);
-			}
+	// --- Enhanced Reading Position Management ---
+	function getBookKey(): string {
+		const bookUrl = page.url.searchParams.get('book');
+		return `bookstr-position-${bookUrl ? btoa(bookUrl).replace(/[^a-zA-Z0-9]/g, '') : 'default'}`;
+	}
+
+	function saveReadingPosition(chapterIndex: number, scrollTop: number) {
+		if (!browser) return;
+
+		try {
+			const positionData = {
+				chapterIndex,
+				scrollTop,
+				timestamp: Date.now()
+			};
+			localStorage.setItem(getBookKey(), JSON.stringify(positionData));
+		} catch (e) {
+			console.error('Failed to save reading position to localStorage:', e);
 		}
 	}
 
+	function saveScrollPositionDebounced() {
+		if (!readerContainer || isRestoringPosition) return;
+
+		// Clear existing timeout
+		if (scrollPositionSaveTimeout !== null) {
+			clearTimeout(scrollPositionSaveTimeout);
+		}
+
+		// Set new timeout to save position after user stops scrolling
+		scrollPositionSaveTimeout = setTimeout(() => {
+			const scrollTop = readerContainer?.scrollTop || 0;
+			saveReadingPosition(currentChapterIndex, scrollTop);
+			scrollPositionSaveTimeout = null;
+		}, 500); // Save 500ms after user stops scrolling
+	}
+
 	function restoreReadingPosition() {
-		if (!browser || chapters.length === 0) return;
-		const savedPosition = localStorage.getItem('bookstr-position');
-		if (savedPosition) {
-			const savedChapterIndex = parseInt(savedPosition, 10);
-			if (!isNaN(savedChapterIndex) && chapters[savedChapterIndex]) {
-				goToChapter(savedChapterIndex, 'auto');
+		if (!browser || chapters.length === 0 || !readerContainer) return;
+
+		try {
+			const savedPositionData = localStorage.getItem(getBookKey());
+			if (savedPositionData) {
+				const { chapterIndex, scrollTop } = JSON.parse(savedPositionData);
+
+				if (!isNaN(chapterIndex) && chapters[chapterIndex] && !isNaN(scrollTop)) {
+					isRestoringPosition = true;
+
+					// Set current chapter index
+					currentChapterIndex = chapterIndex;
+
+					// Use requestAnimationFrame to ensure DOM is fully rendered
+					requestAnimationFrame(() => {
+						if (readerContainer) {
+							readerContainer.scrollTop = scrollTop;
+							// Allow scroll events to be processed again after restoration
+							setTimeout(() => {
+								isRestoringPosition = false;
+							}, 100);
+						}
+					});
+				}
 			}
+		} catch (e) {
+			console.error('Failed to restore reading position:', e);
+			isRestoringPosition = false;
 		}
 	}
 
@@ -318,8 +339,29 @@
 	function goToChapter(chapterIndex: number, behavior: ScrollBehavior = 'smooth') {
 		const targetElement = chapterElements[chapterIndex];
 		if (targetElement) {
+			// Clear any pending scroll position saves
+			if (scrollPositionSaveTimeout !== null) {
+				clearTimeout(scrollPositionSaveTimeout);
+				scrollPositionSaveTimeout = null;
+			}
+
+			// Temporarily disable position saving during programmatic navigation
+			isRestoringPosition = true;
 			targetElement.scrollIntoView({ behavior, block: 'start' });
 			showSidebar = false;
+
+			// Re-enable position saving after navigation completes and save the new position
+			setTimeout(
+				() => {
+					isRestoringPosition = false;
+					// Save the new position after programmatic navigation
+					if (readerContainer) {
+						const scrollTop = readerContainer.scrollTop;
+						saveReadingPosition(chapterIndex, scrollTop);
+					}
+				},
+				behavior === 'smooth' ? 1000 : 100
+			);
 		}
 	}
 
@@ -340,12 +382,13 @@
 
 		observer = new IntersectionObserver((entries) => {
 			entries.forEach((entry) => {
-				if (entry.isIntersecting) {
+				if (entry.isIntersecting && !isRestoringPosition) {
 					const indexStr = (entry.target as HTMLElement).dataset.chapterIndex;
 					const index = indexStr ? parseInt(indexStr, 10) : -1;
 					if (!isNaN(index) && index >= 0) {
 						currentChapterIndex = index;
-						saveReadingPosition(index);
+						// Only save position if we're not in the middle of programmatic navigation
+						saveScrollPositionDebounced();
 					}
 				}
 			});
@@ -358,9 +401,13 @@
 
 	function handleScroll() {
 		if (!readerContainer) return;
+
 		const { scrollTop, scrollHeight, clientHeight } = readerContainer;
 		const scrollableHeight = scrollHeight - clientHeight;
 		readingProgress = scrollableHeight > 0 ? (scrollTop / scrollableHeight) * 100 : 0;
+
+		// Save scroll position with debouncing
+		saveScrollPositionDebounced();
 	}
 
 	// --- Bookmarks ---
@@ -426,9 +473,9 @@
 				<button class="btn btn-sm btn-ghost md:hidden" onclick={() => (showSidebar = false)}>
 					<X size={18} />
 				</button>
-				<a href="/" class="btn btn-sm btn-ghost">
+				<button onclick={() => window.history.back()} class="btn btn-xs btn-primary">
 					<ChevronLeft size={18} /> Back
-				</a>
+				</button>
 			</div>
 
 			<!-- Chapter list -->
@@ -521,7 +568,7 @@
 				<!-- Save/Remove book button -->
 				<button
 					class="btn btn-ghost btn-circle"
-					onclick={isBookSaved ? removeCurrentBook : saveCurrentBook}
+					onclick={isBookSaved ? handleRemoveBook : handleSaveBook}
 					title={isBookSaved ? 'Remove from Library' : 'Save to Library'}
 				>
 					{#if isBookSaved}

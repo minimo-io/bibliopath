@@ -1,5 +1,8 @@
 node_modules
 
+#ai
+GEMINI.md
+
 # Output
 .output
 .vercel

@@ -78,14 +78,15 @@ Have fun!
   - An author should be able to upload his own books (which will be hosted at Nostr).
   - Authors with no Nostr account it should be created on the fly.
 - Add changelog from git commits.
-- AI
-  - Enable read a chapter using something like ElevenLabs (paid).
+- AI: Enable read a chapter using something like ElevenLabs (paid).
+- Create a DockerFile + docker-compose so people can easily create instances.
 
 - Bug: Fix the changeTheme function mess.
 - Bug: On mobile pagination should be "Prev - Next" with the input switcher also.
 - Bug: Font-size not working on mobile.
 - Bug: No error message when downloading fails... no retry button.
-- Progress bar:
+
+- Download Progress bar:
 
 ```javascript
 <progress id="progress" value="0" max="100"></progress>

@@ -8,9 +8,7 @@
 	let {
 		searchQuery = $bindable(''),
 		onSearchClick,
-		onSearchKeydown,
-		loading = false,
-		searchCount
+		onSearchKeydown
 	} = $props();
 
 	let savedBooks: SavedBook[] = $state([]);
@@ -78,16 +76,12 @@
 					type="text"
 					placeholder="Search books, authors, subjects..."
 					class="input input-bordered input-sm md:input-md w-full pr-12"
-					class:input-disabled={loading}
 					bind:value={searchQuery}
 					onkeydown={onSearchKeydown}
-					disabled={loading && searchCount > 1}
 				/>
 				<button
 					class="btn btn-ghost btn-sm btn-square absolute top-1/2 right-2 z-10 -translate-y-1/2"
-					class:btn-disabled={loading}
 					onclick={onSearchClick}
-					disabled={loading}
 					aria-label="Execute search"
 				>
 					<Search class="h-5" />
@@ -120,16 +114,12 @@
 			type="text"
 			placeholder="Search books, authors, subjects..."
 			class="input input-bordered w-full pr-12"
-			class:input-disabled={loading}
 			bind:value={searchQuery}
 			onkeydown={onSearchKeydown}
-			disabled={loading && searchCount > 1}
 		/>
 		<button
 			class="btn btn-ghost btn-sm btn-square absolute top-1/2 right-2 z-10 -translate-y-1/2"
-			class:btn-disabled={loading}
 			onclick={onSearchClick}
-			disabled={loading}
 			aria-label="Execute mobile search"
 		>
 			<Search class="h-5" />
