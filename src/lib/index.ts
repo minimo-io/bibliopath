@@ -35,6 +35,8 @@ export async function shareCurrentUrl() {
 }
 
 export const AppConfig = {
+	base_index_url: 'https://gutendex.com/books',
+	books_per_page: 32,
 	links: {
 		about: 'https://github.com/minimo-io/bibliopath',
 		roadmap: 'https://github.com/minimo-io/bibliopath?tab=readme-ov-file#core-functionalities'

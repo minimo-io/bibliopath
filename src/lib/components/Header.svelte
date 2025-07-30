@@ -1,6 +1,8 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import { AppConfig } from '$lib';
-	import { Bell, Menu, Origami, Search } from '@lucide/svelte';
+	import type { SavedBook } from '$lib/types';
+	import { Bell, Heart, Menu, Origami, Search } from '@lucide/svelte';
 	import { onMount } from 'svelte';
 
 	let {
@@ -10,6 +12,32 @@
 		loading = false,
 		searchCount
 	} = $props();
+
+	let savedBooks: SavedBook[] = $state([]);
+
+	onMount(() => {
+		loadSavedBooks();
+	});
+
+	function loadSavedBooks() {
+		if (!browser) return;
+
+		const saved = localStorage.getItem('bibliopath-saved-books');
+		if (saved) {
+			try {
+				const books = JSON.parse(saved);
+				// Sort by last read date (most recent first)
+				savedBooks = books.sort((a: SavedBook, b: SavedBook) => {
+					const dateA = new Date(a.lastRead || a.savedAt).getTime();
+					const dateB = new Date(b.lastRead || b.savedAt).getTime();
+					return dateB - dateA;
+				});
+			} catch (e) {
+				console.error('Failed to parse saved books:', e);
+				savedBooks = [];
+			}
+		}
+	}
 
 	onMount(() => {});
 </script>
@@ -21,7 +49,15 @@
 				<Menu class="h-5" />
 			</div>
 			<ul class="menu menu-sm dropdown-content bg-base-100 rounded-box z-10 mt-3 w-52 p-2 shadow">
+				<li>
+					<a href="/saved" class="flex gap-1">
+						<Heart class="h-[15px] text-red-600" fill="red" />
+						Saved
+					</a>
+				</li>
+				<div class="divider my-0"></div>
 				<li><a href="/">Homepage</a></li>
+
 				<li><a target="_blank" href={AppConfig.links.roadmap}>Roadmap</a></li>
 				<li>
 					<a target="_blank" rel="noopener" href={AppConfig.links.about}>About</a>
@@ -61,18 +97,18 @@
 	</div>
 
 	<div class="flex flex-shrink-0 items-center gap-2">
-		<!-- Configs -->
-		<!-- <button aria-label="Configs" class="btn btn-ghost btn-circle">
+		<!-- Saved -->
+		<a href="/saved" aria-label="Configs" class="btn btn-ghost btn-circle">
 			<div class="indicator">
-				<Bell class="h-5" />
-				<span class="badge badge-xs badge-primary indicator-item"></span>
+				<Heart class="h-5" />
+				<span class="badge badge-xs badge-primary indicator-item">{savedBooks.length}</span>
 			</div>
-		</button> -->
+		</a>
 		<!-- Notifications  -->
 		<button aria-label="Notifications" class="btn btn-ghost btn-circle">
 			<div class="indicator">
 				<Bell class="h-5" />
-				<span class="badge badge-xs badge-primary indicator-item"></span>
+				<span class="badge badge-xs badge-primary indicator-item">0</span>
 			</div>
 		</button>
 	</div>

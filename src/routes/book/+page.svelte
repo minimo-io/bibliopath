@@ -13,25 +13,12 @@
 		CircleX,
 		RotateCcw,
 		Volume2,
-		Info
+		Info,
+		Heart
 	} from '@lucide/svelte';
 	import { page } from '$app/state';
 	import { changeTheme, shareCurrentUrl } from '$lib';
-	import { HTTP_STATUS_TEXT } from '$lib/types';
-
-	// --- Types ---
-	interface BookmarkEntry {
-		id: number;
-		chapterIndex: number;
-		timestamp: string;
-		preview: string;
-	}
-
-	interface Chapter {
-		title: string;
-		level: number; // 0 for no specific level, 1 for h1, 2 for h2, 3 for h3
-		paragraphs: string[];
-	}
+	import { HTTP_STATUS_TEXT, type BookmarkEntry, type Chapter, type SavedBook } from '$lib/types';
 
 	// --- Props ---
 	let { data }: { data: { title: string; author: string } } = $props();
@@ -46,12 +33,13 @@
 	let theme = $state('dark'); // Default, will be overridden by loadSavedState
 
 	let showSidebar = $state(false);
-	// let showSettings = $state(false); // REMOVED: Unused variable
 	let readingProgress = $state(0);
 	let bookmarks: BookmarkEntry[] = $state([]);
-	let readerContainer: HTMLDivElement | null = $state(null); // Use null for clarity
-	let chapterElements: HTMLDivElement[] = $state([]); // Make reactive if needed for binding
-	let fileType: 'markdown' | 'text' = $state('markdown'); // Reactive state for file type
+	let savedBooks: SavedBook[] = $state([]);
+	let isBookSaved = $state(false);
+	let readerContainer: HTMLDivElement | null = $state(null);
+	let chapterElements: HTMLDivElement[] = $state([]);
+	let fileType: 'markdown' | 'text' = $state('markdown');
 
 	// --- Lifecycle ---
 	onMount(async () => {
@@ -67,12 +55,6 @@
 				changeTheme(savedTheme, false); // false means don't save again, we just loaded it
 				theme = savedTheme; // Update local state variable for UI reactivity
 			}
-			// if (browser) {
-			// 	theme = localStorage.getItem('bibliopath-theme') || 'dark';
-
-			// 	// Apply theme immediately to prevent flash
-			// 	// changeTheme(savedTheme, false);
-			// }
 
 			// Get URL parameters
 			const bookUrl = page.url.searchParams.get('book');
@@ -88,9 +70,6 @@
 				const response = await fetch(bookUrl);
 				if (!response.ok) {
 					const statusText = HTTP_STATUS_TEXT[response.status] || 'Unknown Error';
-
-					// const statusText = statusTexts[response.status] || 'Unknown Error';
-
 					throw new Error(
 						`Failed to fetch markdown book content: ${response.status} ${statusText}`
 					);
@@ -114,9 +93,9 @@
 			}
 			chapters = parsedChapters;
 
-			// Load saved state from localStorage (includes theme)
-			// loadSavedState();
+			// Load saved state from localStorage
 			loadOtherSavedState();
+			loadSavedBooks();
 
 			loading = false;
 			await tick(); // Wait for DOM to render
@@ -198,7 +177,6 @@
 	}
 
 	function formatParagraphs(content: string) {
-		// FIXED: Split on blank lines (paragraph separators) - NOT /\s*/
 		return content
 			.split(/\n\s*\n/)
 			.map((p) => p.trim().replace(/\s+/g, ' '))
@@ -235,26 +213,75 @@
 			}
 		}
 	}
-	// function loadSavedState() {
-	// 	if (!browser) return;
-	// 	const savedTheme = localStorage.getItem('bibliopath-theme') || 'dark';
-	// 	// Use the imported changeTheme function for consistent theme application
-	// 	changeTheme(savedTheme, false);
-	// 	theme = savedTheme; // Update local state variable for UI reactivity (e.g., settings button)
 
-	// 	const savedFontSize = localStorage.getItem('bookstr-fontsize');
-	// 	if (savedFontSize) fontSize = parseInt(savedFontSize, 10);
+	function loadSavedBooks() {
+		if (!browser) return;
 
-	// 	const savedBookmarks = localStorage.getItem('bookstr-bookmarks');
-	// 	if (savedBookmarks) {
-	// 		try {
-	// 			bookmarks = JSON.parse(savedBookmarks);
-	// 		} catch (e) {
-	// 			console.error('Failed to parse bookmarks from localStorage:', e);
-	// 			bookmarks = []; // Reset on error
-	// 		}
-	// 	}
-	// }
+		const saved = localStorage.getItem('bibliopath-saved-books');
+		if (saved) {
+			try {
+				savedBooks = JSON.parse(saved);
+				const currentBookUrl = page.url.searchParams.get('book');
+				if (currentBookUrl) {
+					isBookSaved = savedBooks.some((book) => book.url === currentBookUrl);
+				}
+			} catch (e) {
+				console.error('Failed to parse saved books from localStorage:', e);
+				savedBooks = [];
+			}
+		}
+	}
+
+	function saveCurrentBook() {
+		if (!browser) return;
+
+		const bookUrl = page.url.searchParams.get('book');
+		if (!bookUrl) {
+			alert('No book URL found to save');
+			return;
+		}
+
+		const existingBook = savedBooks.find((book) => book.url === bookUrl);
+		if (existingBook) {
+			existingBook.lastRead = new Date().toISOString();
+		} else {
+			const newSavedBook: SavedBook = {
+				id: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(),
+				title: data.title,
+				author: data.author,
+				url: bookUrl,
+				fileType: fileType,
+				savedAt: new Date().toISOString(),
+				lastRead: new Date().toISOString()
+			};
+			savedBooks = [...savedBooks, newSavedBook];
+		}
+
+		try {
+			localStorage.setItem('bibliopath-saved-books', JSON.stringify(savedBooks));
+			isBookSaved = true;
+		} catch (e) {
+			console.error('Failed to save book to localStorage:', e);
+			alert('Failed to save book. Please try again.');
+		}
+	}
+
+	function removeCurrentBook() {
+		if (!browser) return;
+
+		const bookUrl = page.url.searchParams.get('book');
+		if (!bookUrl) return;
+
+		savedBooks = savedBooks.filter((book) => book.url !== bookUrl);
+
+		try {
+			localStorage.setItem('bibliopath-saved-books', JSON.stringify(savedBooks));
+			isBookSaved = false;
+		} catch (e) {
+			console.error('Failed to remove book from localStorage:', e);
+			alert('Failed to remove book. Please try again.');
+		}
+	}
 
 	function saveBookmarks() {
 		if (browser) {
@@ -296,18 +323,18 @@
 		}
 	}
 
-	let observer: IntersectionObserver | undefined; // Use undefined for clarity
+	let observer: IntersectionObserver | undefined;
 	function setupIntersectionObserver() {
 		if (observer) {
 			observer.disconnect();
-			observer = undefined; // Reset reference
+			observer = undefined;
 		}
 
 		if (!readerContainer) return;
 
 		const options = {
 			root: readerContainer,
-			rootMargin: '0px 0px -80% 0px', // Trigger when chapter top is at 20% viewport
+			rootMargin: '0px 0px -80% 0px',
 			threshold: 0.0
 		};
 
@@ -325,7 +352,7 @@
 		}, options);
 
 		chapterElements.forEach((el) => {
-			if (el) observer?.observe(el); // Optional chaining
+			if (el) observer?.observe(el);
 		});
 	}
 
@@ -339,12 +366,12 @@
 	// --- Bookmarks ---
 	function addBookmark() {
 		const newBookmark: BookmarkEntry = {
-			id: Date.now(), // Consider using crypto.randomUUID() if available
+			id: Date.now(),
 			chapterIndex: currentChapterIndex,
 			timestamp: new Date().toISOString(),
 			preview: chapters[currentChapterIndex]?.paragraphs[0]?.slice(0, 100) || 'Chapter start'
 		};
-		bookmarks = [...bookmarks, newBookmark]; // Immutability
+		bookmarks = [...bookmarks, newBookmark];
 		saveBookmarks();
 	}
 
@@ -354,7 +381,7 @@
 	}
 
 	function removeBookmark(bookmarkId: number) {
-		bookmarks = bookmarks.filter((b) => b.id !== bookmarkId); // Immutability
+		bookmarks = bookmarks.filter((b) => b.id !== bookmarkId);
 		saveBookmarks();
 	}
 
@@ -370,35 +397,15 @@
 		}
 	}
 
-	// This function name was changed to avoid conflict with imported `changeTheme`
-	// It now only updates the local state and calls the library function.
-	// Saving is handled by the library function or explicitly if needed.
 	function updateTheme(newTheme: string, save = true) {
-		theme = newTheme; // Update local state for UI reactivity
-		changeTheme(newTheme, save); // Apply theme via the imported lib function
-		// The lib function handles saving to localStorage if `save` is true.
-		// If you need to save the theme name specifically under 'bibliopath-theme',
-		// you can add that logic here, but `changeTheme` likely already does it.
-		// if (browser && save) {
-		// 	localStorage.setItem('bibliopath-theme', newTheme);
-		// }
+		theme = newTheme;
+		changeTheme(newTheme, save);
 	}
 
 	// --- UI Interactions ---
 	function showAudioSoonAlert() {
 		alert('Audio feature coming soon!');
-		// Consider using a toast notification or a modal for better UX
 	}
-
-	// --- Cleanup (Optional but good practice) ---
-	// Svelte 5 handles cleanup of effects automatically, but manual cleanup
-	// like disconnecting observers is still good.
-	// onDestroy(() => {
-	//     if (observer) {
-	//         observer.disconnect();
-	//         observer = undefined;
-	//     }
-	// });
 </script>
 
 <svelte:head>
@@ -511,6 +518,19 @@
 					<Bookmark size={20} />
 				</button>
 
+				<!-- Save/Remove book button -->
+				<button
+					class="btn btn-ghost btn-circle"
+					onclick={isBookSaved ? removeCurrentBook : saveCurrentBook}
+					title={isBookSaved ? 'Remove from Library' : 'Save to Library'}
+				>
+					{#if isBookSaved}
+						<Heart size={20} class="fill-current text-red-500" />
+					{:else}
+						<Heart size={20} />
+					{/if}
+				</button>
+
 				<!-- Settings dropdown -->
 				<div class="dropdown dropdown-end">
 					<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
@@ -576,7 +596,7 @@
 					onclick={() =>
 						(document.getElementById('my_modal_2') as HTMLDialogElement | null)?.showModal()}
 					class="btn btn-ghost btn-circle"
-					title="Share"
+					title="Book Info"
 				>
 					<Info size={20} />
 				</button>
@@ -615,7 +635,6 @@
 								<p class="text-lg font-medium">Error loading the book</p>
 								{#if errorDetails}
 									<p class="text-xs">{errorDetails}</p>
-									<!-- <p class="text-xs">Details: {errorDetails.replaceAll('Error:', '')}</p> -->
 								{/if}
 							</div>
 							<button onclick={() => window.location.reload()} class="btn btn-sm btn-primary">
@@ -653,7 +672,6 @@
 
 								{#if chapter.paragraphs.length > 0}
 									{#each chapter.paragraphs as paragraph, pIndex (pIndex)}
-										<!-- Added key -->
 										<p class="mb-6 text-justify indent-8 leading-relaxed">
 											{#if fileType === 'markdown'}
 												{@html renderMarkdownInline(paragraph)}
@@ -662,13 +680,10 @@
 											{/if}
 										</p>
 									{/each}
-								{:else}
-									<!-- Handle chapters with no paragraphs -->
-									{#if chapter.title === 'Introduction' || chapter.title === 'Beginning'}
-										<p class="text-base-content/70 mb-6 text-justify italic">
-											No content for this section.
-										</p>
-									{/if}
+								{:else if chapter.title === 'Introduction' || chapter.title === 'Beginning'}
+									<p class="text-base-content/70 mb-6 text-justify italic">
+										No content for this section.
+									</p>
 								{/if}
 							</div>
 						{/each}

@@ -10,3 +10,26 @@ export const HTTP_STATUS_TEXT: Record<number, string> = {
 	503: 'Service Unavailable',
 	504: 'Gateway Timeout'
 };
+
+export interface BookmarkEntry {
+	id: number;
+	chapterIndex: number;
+	timestamp: string;
+	preview: string;
+}
+
+export interface Chapter {
+	title: string;
+	level: number; // 0 for no specific level, 1 for h1, 2 for h2, 3 for h3
+	paragraphs: string[];
+}
+
+export interface SavedBook {
+	id: string;
+	title: string;
+	author: string;
+	url: string;
+	fileType: 'markdown' | 'text';
+	savedAt: string;
+	lastRead?: string;
+}
