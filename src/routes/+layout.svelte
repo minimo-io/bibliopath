@@ -37,6 +37,4 @@
 	<Header bind:searchQuery onSearchClick={executeSearch} onSearchKeydown={handleSearchKeydown} />
 {/if}
 
-<div>
-	{@render children()}
-</div>
+{@render children()}

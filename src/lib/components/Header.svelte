@@ -5,11 +5,7 @@
 	import { Bell, Heart, Menu, Origami, Search } from '@lucide/svelte';
 	import { onMount } from 'svelte';
 
-	let {
-		searchQuery = $bindable(''),
-		onSearchClick,
-		onSearchKeydown
-	} = $props();
+	let { searchQuery = $bindable(''), onSearchClick, onSearchKeydown } = $props();
 
 	let savedBooks: SavedBook[] = $state([]);
 
@@ -46,7 +42,9 @@
 			<div tabindex="0" role="button" aria-label="Open menu" class="btn btn-ghost btn-circle">
 				<Menu class="h-5" />
 			</div>
-			<ul class="menu menu-sm dropdown-content bg-base-100 rounded-box z-10 mt-3 w-52 p-2 shadow">
+			<ul
+				class="menu menu-sm dropdown-content bg-base-100 rounded-box border-accent z-10 mt-3 w-52 border p-2 shadow"
+			>
 				<li>
 					<a href="/saved" class="flex gap-1">
 						<Heart class="h-[15px] text-red-600" fill="red" />

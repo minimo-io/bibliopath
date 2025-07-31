@@ -1,14 +1,12 @@
 <!-- src/routes/+page.svelte -->
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { browser } from '$app/environment';
-	import { BookOpen, Trash2, Clock, Plus, ExternalLink } from '@lucide/svelte';
+	import { Trash2, Clock, Plus, ExternalLink, BookOpen } from '@lucide/svelte';
 	import type { SavedBook } from '$lib/types';
 	import { loadSavedBooks, removeBook as removeBookService } from '$lib/services/saved.services';
+	import BookOpenForm from '$lib/components/BookOpenForm.svelte';
 
 	let savedBooks: SavedBook[] = $state([]);
-	let newBookUrl = $state('');
-	let newBookType: 'markdown' | 'text' = $state('markdown');
 
 	let searchQuery = $state('');
 
@@ -48,22 +46,6 @@
 		if (diffInDays < 30) return `${Math.floor(diffInDays / 7)} weeks ago`;
 		return `${Math.floor(diffInDays / 30)} months ago`;
 	}
-
-	function openBook() {
-		if (!newBookUrl.trim()) {
-			alert('Please enter a book URL');
-			return;
-		}
-
-		const bookUrl = `/book?book=${encodeURIComponent(newBookUrl.trim())}&type=${newBookType}`;
-		window.location.href = bookUrl;
-	}
-
-	function handleKeydown(event: KeyboardEvent) {
-		if (event.key === 'Enter') {
-			openBook();
-		}
-	}
 </script>
 
 <svelte:head>
@@ -73,41 +55,7 @@
 
 <div class="bg-base-100 min-h-screen">
 	<main class="container mx-auto max-w-6xl px-4 py-8">
-		<!-- Quick Open Section -->
-		<section class="mb-12">
-			<h2 class="mb-6 text-2xl font-bold">Open a Book</h2>
-			<div class="card bg-base-200 shadow-sm">
-				<div class="card-body">
-					<div class="form-control">
-						<label class="label">
-							<span class="label-text font-medium">Book URL</span>
-						</label>
-						<div class="flex gap-2">
-							<input
-								type="url"
-								placeholder="https://example.com/book.md or https://gutenberg.org/files/..."
-								class="input input-bordered flex-1"
-								bind:value={newBookUrl}
-								onkeydown={handleKeydown}
-							/>
-							<select class="select select-bordered" bind:value={newBookType}>
-								<option value="markdown">Markdown</option>
-								<option value="text">Plain Text</option>
-							</select>
-							<button class="btn btn-primary" onclick={openBook}>
-								<BookOpen size={18} />
-								Open Book
-							</button>
-						</div>
-						<div class="label">
-							<span class="label-text-alt text-base-content/70">
-								Supports Markdown files (.md) and plain text books from Project Gutenberg
-							</span>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
+		<!-- <BookOpenForm /> -->
 
 		<!-- Saved Books Section -->
 		{#if savedBooks.length > 0}
