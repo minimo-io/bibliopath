@@ -22,7 +22,7 @@
 	let loading = $state(true);
 	let searchQuery = $state('');
 	let showOfflineOnly = $state(false);
-	let viewMode: 'grid' | 'list' = $state('grid');
+	let viewMode: 'grid' | 'list' = $state('list');
 
 	onMount(async () => {
 		try {

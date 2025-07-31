@@ -1,6 +1,6 @@
 # Bibliopath
 
-Bibliopath is a tool and a platform for Open reading & Open publishing.
+Bibliopath is a Nostr powered tool and a platform for Open reading & Open publishing.
 <br />
 We help authors publish **Books for the Open Web** and readers have control over their reading.
 
