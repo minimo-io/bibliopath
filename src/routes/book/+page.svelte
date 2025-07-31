@@ -25,7 +25,6 @@
 	import { loadSavedBooks, saveBook, removeBook } from '$lib/services/saved.services';
 	import { offlineBookService } from '$lib/services/offline.services';
 	import { getOfflineStats, isOfflineStorageSupported } from '$lib/utils/offline.utils';
-	import { epubService } from '$services/epub.services';
 
 	// --- Props ---
 	let { data }: { data: { title: string; author: string } } = $props();
@@ -92,29 +91,42 @@
 
 			let text: string;
 
-			// Try to load from offline first
+			// Try to load from offline storage first, as all book types can be stored there.
 			if (isBookDownloaded) {
-				try {
-					const offlineBook = await offlineBookService.getBook(bookUrl);
-					if (offlineBook) {
-						text = offlineBook.content;
-						isLoadedFromOffline = true;
-						bookContent = text;
-						console.log('📖 Loaded book from offline storage');
-					} else {
-						throw new Error('Offline book not found');
+				const offlineBook = await offlineBookService.getBook(bookUrl);
+
+				if (offlineBook) {
+					text = offlineBook.content;
+					isLoadedFromOffline = true;
+					bookContent = text;
+					console.log('📖 Loaded book from offline storage');
+				} else {
+					// This is an inconsistent state. The book was detected but couldn't be retrieved.
+					// For EPUBs, this is a fatal error as they can't be fetched from a network.
+					if (fileType === 'epub') {
+						throw new Error(
+							'Inconsistent state: EPUB book metadata found, but content is missing from offline storage.'
+						);
 					}
-				} catch (offlineError) {
-					console.warn('Failed to load from offline, fetching from network:', offlineError);
+					// For other types, we can try to fall back to a network fetch.
+					console.warn(
+						'Inconsistent state: Book was marked as downloaded, but not found. Fetching from network.'
+					);
 					isLoadedFromOffline = false;
 					text = await fetchBookFromNetwork(bookUrl);
 				}
-			} else if (fileType == 'epub') {
-				const epubBook = epubService.getEpubBook(bookUrl);
-				text = epubBook?.content ?? 'ERROR_FETCHING CONTENT';
 			} else {
-				// Fetch from network
-				text = await fetchBookFromNetwork(bookUrl);
+				// If the book is not in offline storage...
+				if (fileType === 'epub') {
+					// EPUBs *must* be in offline storage because they are uploaded by the user.
+					// They don't have a remote URL to fetch from.
+					throw new Error(
+						'EPUB content not found in offline storage. Please upload the file again.'
+					);
+				} else {
+					// For other book types, fetch them from their remote URL.
+					text = await fetchBookFromNetwork(bookUrl);
+				}
 			}
 
 			// Parse content based on file type
