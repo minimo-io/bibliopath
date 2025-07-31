@@ -3,7 +3,6 @@
 	import { onMount, tick } from 'svelte';
 	import { browser } from '$app/environment';
 	import {
-		Bookmark,
 		BookOpen,
 		Share2,
 		Menu,
@@ -14,12 +13,22 @@
 		RotateCcw,
 		Volume2,
 		Info,
-		Heart
+		Heart,
+		Download,
+		Trash2,
+		Wifi,
+		WifiOff
 	} from '@lucide/svelte';
 	import { page } from '$app/state';
 	import { changeTheme, shareCurrentUrl } from '$lib';
-	import { HTTP_STATUS_TEXT, type BookmarkEntry, type Chapter, type SavedBook } from '$lib/types';
+	import { HTTP_STATUS_TEXT, type Chapter, type SavedBook } from '$lib/types';
 	import { loadSavedBooks, saveBook, removeBook } from '$lib/services/saved.services';
+	import { offlineBookService } from '$lib/services/offline.services';
+	import {
+		getOfflineStats,
+		formatBytes,
+		isOfflineStorageSupported
+	} from '$lib/utils/offline.utils';
 
 	// --- Props ---
 	let { data }: { data: { title: string; author: string } } = $props();
@@ -35,12 +44,18 @@
 
 	let showSidebar = $state(false);
 	let readingProgress = $state(0);
-	let bookmarks: BookmarkEntry[] = $state([]);
 	let savedBooks: SavedBook[] = $state([]);
 	let isBookSaved = $state(false);
 	let readerContainer: HTMLDivElement | null = $state(null);
 	let chapterElements: HTMLDivElement[] = $state([]);
 	let fileType: 'markdown' | 'text' = $state('markdown');
+
+	// --- Offline functionality state ---
+	let isBookDownloaded = $state(false);
+	let isDownloading = $state(false);
+	let isLoadedFromOffline = $state(false);
+	let bookContent = $state(''); // Store raw book content
+	let offlineStats = $state({ count: 0, totalSize: '0 Bytes', totalSizeBytes: 0 });
 
 	// --- Scroll position tracking ---
 	let scrollPositionSaveTimeout: number | null = $state(null);
@@ -53,6 +68,10 @@
 			if (typeof window !== 'undefined' && window.speechSynthesis) {
 				window.speechSynthesis.cancel();
 			}
+
+			// Initialize IndexedDB
+			await offlineBookService.init();
+
 			if (browser) {
 				// Load theme first to prevent flash and apply immediately
 				const savedTheme = localStorage.getItem('bibliopath-theme') || 'dark';
@@ -69,24 +88,31 @@
 				throw new Error('No book URL provided');
 			}
 
-			// Fetch book content
+			// Check if book is already downloaded offline
+			isBookDownloaded = await offlineBookService.isBookDownloaded(bookUrl);
+
 			let text: string;
-			if (fileType === 'markdown') {
-				const response = await fetch(bookUrl);
-				if (!response.ok) {
-					const statusText = HTTP_STATUS_TEXT[response.status] || 'Unknown Error';
-					throw new Error(
-						`Failed to fetch markdown book content: ${response.status} ${statusText}`
-					);
+
+			// Try to load from offline first
+			if (isBookDownloaded) {
+				try {
+					const offlineBook = await offlineBookService.getBook(bookUrl);
+					if (offlineBook) {
+						text = offlineBook.content;
+						isLoadedFromOffline = true;
+						bookContent = text;
+						console.log('📖 Loaded book from offline storage');
+					} else {
+						throw new Error('Offline book not found');
+					}
+				} catch (offlineError) {
+					console.warn('Failed to load from offline, fetching from network:', offlineError);
+					isLoadedFromOffline = false;
+					text = await fetchBookFromNetwork(bookUrl);
 				}
-				text = await response.text();
 			} else {
-				// Use proxy for other files (like Project Gutenberg)
-				const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(bookUrl)}`;
-				const response = await fetch(proxyUrl);
-				if (!response.ok)
-					throw new Error(`Failed to fetch text book content via proxy: ${response.status}`);
-				text = await response.text();
+				// Fetch from network
+				text = await fetchBookFromNetwork(bookUrl);
 			}
 
 			// Parse content based on file type
@@ -101,6 +127,11 @@
 			// Load saved state from localStorage
 			loadOtherSavedState();
 			loadSavedBooksState();
+
+			// Load offline stats
+			if (isOfflineStorageSupported()) {
+				offlineStats = await getOfflineStats();
+			}
 
 			loading = false;
 			await tick(); // Wait for DOM to render
@@ -117,6 +148,86 @@
 			loading = false;
 		}
 	});
+
+	// --- Network fetch function ---
+	async function fetchBookFromNetwork(bookUrl: string): Promise<string> {
+		let text: string;
+		if (fileType === 'markdown') {
+			const response = await fetch(bookUrl);
+			if (!response.ok) {
+				const statusText = HTTP_STATUS_TEXT[response.status] || 'Unknown Error';
+				throw new Error(`Failed to fetch markdown book content: ${response.status} ${statusText}`);
+			}
+			text = await response.text();
+		} else {
+			// Use proxy for other files (like Project Gutenberg)
+			const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(bookUrl)}`;
+			const response = await fetch(proxyUrl);
+			if (!response.ok)
+				throw new Error(`Failed to fetch text book content via proxy: ${response.status}`);
+			text = await response.text();
+		}
+
+		bookContent = text; // Store the raw content
+		return text;
+	}
+
+	// --- Offline functionality ---
+	async function downloadBookOffline() {
+		const bookUrl = page.url.searchParams.get('book');
+		if (!bookUrl || !bookContent) {
+			alert('Cannot download: Book content not available');
+			return;
+		}
+
+		isDownloading = true;
+		try {
+			await offlineBookService.saveBook({
+				title: data.title,
+				author: data.author,
+				url: bookUrl,
+				fileType: fileType,
+				content: bookContent
+			});
+
+			isBookDownloaded = true;
+			console.log('📚 Book downloaded for offline reading');
+
+			// Update offline stats
+			offlineStats = await getOfflineStats();
+
+			// Show success message
+			if (browser) {
+				// Simple success indication - you could replace with a toast notification
+				const originalTitle = document.title;
+				document.title = '✓ Downloaded - ' + originalTitle;
+				setTimeout(() => {
+					document.title = originalTitle;
+				}, 2000);
+			}
+		} catch (error) {
+			console.error('Failed to download book:', error);
+			alert('Failed to download book for offline reading');
+		} finally {
+			isDownloading = false;
+		}
+	}
+
+	async function removeOfflineBook() {
+		const bookUrl = page.url.searchParams.get('book');
+		if (!bookUrl) return;
+
+		try {
+			await offlineBookService.removeBook(bookUrl);
+			isBookDownloaded = false;
+			// Update offline stats
+			offlineStats = await getOfflineStats();
+			console.log('🗑️ Offline book removed');
+		} catch (error) {
+			console.error('Failed to remove offline book:', error);
+			alert('Failed to remove offline book');
+		}
+	}
 
 	// --- Helper Functions for Parsing ---
 	function parseMarkdown(text: string): Chapter[] {
@@ -207,16 +318,6 @@
 
 		const savedFontSize = localStorage.getItem('bookstr-fontsize');
 		if (savedFontSize) fontSize = parseInt(savedFontSize, 10);
-
-		const savedBookmarks = localStorage.getItem('bookstr-bookmarks');
-		if (savedBookmarks) {
-			try {
-				bookmarks = JSON.parse(savedBookmarks);
-			} catch (e) {
-				console.error('Failed to parse bookmarks from localStorage:', e);
-				bookmarks = []; // Reset on error
-			}
-		}
 	}
 
 	function loadSavedBooksState() {
@@ -254,16 +355,6 @@
 
 		removeBook(bookUrl);
 		isBookSaved = false;
-	}
-
-	function saveBookmarks() {
-		if (browser) {
-			try {
-				localStorage.setItem('bookstr-bookmarks', JSON.stringify(bookmarks));
-			} catch (e) {
-				console.error('Failed to save bookmarks to localStorage:', e);
-			}
-		}
 	}
 
 	// --- Enhanced Reading Position Management ---
@@ -410,27 +501,27 @@
 		saveScrollPositionDebounced();
 	}
 
-	// --- Bookmarks ---
-	function addBookmark() {
-		const newBookmark: BookmarkEntry = {
-			id: Date.now(),
-			chapterIndex: currentChapterIndex,
-			timestamp: new Date().toISOString(),
-			preview: chapters[currentChapterIndex]?.paragraphs[0]?.slice(0, 100) || 'Chapter start'
-		};
-		bookmarks = [...bookmarks, newBookmark];
-		saveBookmarks();
-	}
+	// // --- Bookmarks ---
+	// function addBookmark() {
+	// 	const newBookmark: BookmarkEntry = {
+	// 		id: Date.now(),
+	// 		chapterIndex: currentChapterIndex,
+	// 		timestamp: new Date().toISOString(),
+	// 		preview: chapters[currentChapterIndex]?.paragraphs[0]?.slice(0, 100) || 'Chapter start'
+	// 	};
+	// 	bookmarks = [...bookmarks, newBookmark];
+	// 	saveBookmarks();
+	// }
 
-	function goToBookmark(bookmark: BookmarkEntry) {
-		goToChapter(bookmark.chapterIndex);
-		showSidebar = false;
-	}
+	// function goToBookmark(bookmark: BookmarkEntry) {
+	// 	goToChapter(bookmark.chapterIndex);
+	// 	showSidebar = false;
+	// }
 
-	function removeBookmark(bookmarkId: number) {
-		bookmarks = bookmarks.filter((b) => b.id !== bookmarkId);
-		saveBookmarks();
-	}
+	// function removeBookmark(bookmarkId: number) {
+	// 	bookmarks = bookmarks.filter((b) => b.id !== bookmarkId);
+	// 	saveBookmarks();
+	// }
 
 	// --- Settings ---
 	function changeFontSize(newSize: number) {
@@ -478,6 +569,30 @@
 				</button>
 			</div>
 
+			<!-- Connection status indicator -->
+			{#if isLoadedFromOffline}
+				<div class="alert alert-info mb-4 py-2">
+					<WifiOff size={16} />
+					<span class="text-sm">Reading offline</span>
+				</div>
+			{:else}
+				<div class="alert alert-success mb-4 py-2">
+					<Wifi size={16} />
+					<span class="text-sm">Online</span>
+				</div>
+			{/if}
+
+			<!-- Offline storage stats -->
+			{#if offlineStats.count > 0}
+				<div class="stats stats-vertical mb-4 w-full text-xs">
+					<div class="stat py-2">
+						<div class="stat-title text-xs">Offline Books</div>
+						<div class="stat-value text-lg">{offlineStats.count}</div>
+						<div class="stat-desc">{offlineStats.totalSize} stored</div>
+					</div>
+				</div>
+			{/if}
+
 			<!-- Chapter list -->
 			<div class="mb-6 space-y-1">
 				{#each chapters as chapter, index (index)}
@@ -499,38 +614,6 @@
 					</button>
 				{/each}
 			</div>
-
-			<!-- Bookmarks section -->
-			{#if bookmarks.length > 0}
-				<div class="border-base-300 border-t pt-6">
-					<h3 class="mb-4 text-base font-semibold">Bookmarks</h3>
-					<div class="space-y-2">
-						{#each bookmarks as bookmark (bookmark.id)}
-							<div class="card bg-base-100 shadow-sm">
-								<div class="card-body p-4">
-									<p class="mb-2 line-clamp-2 text-sm">{bookmark.preview}...</p>
-									<div class="flex items-center justify-between">
-										<span class="text-base-content/70 text-xs">
-											{new Date(bookmark.timestamp).toLocaleDateString()}
-										</span>
-										<div class="flex gap-1">
-											<button class="btn btn-xs btn-primary" onclick={() => goToBookmark(bookmark)}>
-												Go
-											</button>
-											<button
-												class="btn btn-xs btn-error btn-outline"
-												onclick={() => removeBookmark(bookmark.id)}
-											>
-												×
-											</button>
-										</div>
-									</div>
-								</div>
-							</div>
-						{/each}
-					</div>
-				</div>
-			{/if}
 		</aside>
 	</div>
 
@@ -561,9 +644,55 @@
 				</div>
 			</div>
 			<div class="navbar-end gap-0 md:gap-2">
-				<button class="btn btn-ghost btn-circle" onclick={addBookmark} title="Add Bookmark">
-					<Bookmark size={20} />
-				</button>
+				<!-- Download/Remove offline book button -->
+				{#if !loading && !error && bookContent}
+					{#if isBookDownloaded}
+						<div class="dropdown dropdown-end">
+							<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+							<div class="tooltip tooltip-bottom" data-tip="Available offline - Click for options">
+								<label tabindex="0" class="btn btn-ghost btn-circle">
+									<Download size={20} class="text-success" />
+								</label>
+							</div>
+							<div
+								class="dropdown-content card card-compact bg-base-100 border-base-300 z-[1] w-48 border p-2 shadow"
+							>
+								<div class="card-body">
+									<p class="text-success mb-2 text-sm">✓ Available offline</p>
+									<button
+										class="btn btn-sm btn-error btn-outline w-full"
+										onclick={removeOfflineBook}
+										title="Remove offline copy"
+									>
+										<Trash2 size={16} />
+										Remove offline
+									</button>
+								</div>
+							</div>
+						</div>
+					{:else}
+						<div class="tooltip tooltip-bottom" data-tip="Download for offline reading">
+							<button
+								class="btn btn-ghost btn-circle"
+								onclick={downloadBookOffline}
+								disabled={isDownloading}
+							>
+								{#if isDownloading}
+									<div class="loading loading-spinner loading-sm"></div>
+								{:else}
+									<Download size={20} />
+								{/if}
+							</button>
+						</div>
+					{/if}
+				{:else}
+					<!-- Disabled download button when book isn't loaded -->
+					<div class="tooltip tooltip-bottom" data-tip="Download unavailable">
+						<button class="btn btn-ghost btn-circle" disabled>
+							<Download size={20} class="opacity-30" />
+						</button>
+					</div>
+				{/if}
 
 				<!-- Save/Remove book button -->
 				<button
@@ -670,7 +799,9 @@
 					<div class="flex h-full flex-col items-center justify-center gap-6">
 						<div class="flex flex-col items-center gap-2">
 							<BookOpen size={48} class="text-base-content/50" />
-							<p class="text-lg font-medium">Downloading book...</p>
+							<p class="text-lg font-medium">
+								{isLoadedFromOffline ? 'Loading from offline storage...' : 'Downloading book...'}
+							</p>
 						</div>
 						<div class="loading loading-spinner loading-lg text-primary"></div>
 					</div>

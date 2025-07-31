@@ -43,7 +43,7 @@
 				<Menu class="h-5" />
 			</div>
 			<ul
-				class="menu menu-sm dropdown-content bg-base-100 rounded-box border-accent z-10 mt-3 w-52 border p-2 shadow"
+				class="menu menu-sm dropdown-content bg-base-100 rounded-box z-10 mt-3 w-52 border p-2 shadow"
 			>
 				<li>
 					<a href="/saved" class="flex gap-1">
@@ -106,12 +106,13 @@
 	</div>
 </div>
 
-<div class="p-4 sm:hidden">
+<div class="rounded-none px-0 sm:hidden">
 	<div class="relative w-full">
 		<input
+			id="search"
 			type="text"
 			placeholder="Search books, authors, subjects..."
-			class="input input-bordered w-full pr-12"
+			class="input w-full rounded-none border-x-0 pr-12"
 			bind:value={searchQuery}
 			onkeydown={onSearchKeydown}
 		/>
