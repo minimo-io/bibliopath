@@ -1,7 +1,7 @@
 <!-- src/routes/saved/+page.svelte -->
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Trash2, Clock, ExternalLink, BookOpen, WifiOff } from '@lucide/svelte';
+	import { Trash2, Clock, ExternalLink, BookOpen, WifiOff, LayoutGrid, List } from '@lucide/svelte';
 	import type { DisplayBook, SavedBook, OfflineBook } from '$lib/types';
 
 	// Services
@@ -13,6 +13,7 @@
 		formatBytes,
 		estimateContentSize
 	} from '$lib/utils/offline.utils';
+	import BookList from '$lib/components/BookList.svelte';
 
 	let savedBooks: SavedBook[] = $state([]);
 	let offlineBooks: OfflineBook[] = $state([]);
@@ -21,6 +22,7 @@
 	let loading = $state(true);
 	let searchQuery = $state('');
 	let showOfflineOnly = $state(false);
+	let viewMode: 'grid' | 'list' = $state('grid');
 
 	onMount(async () => {
 		try {
@@ -238,14 +240,35 @@
 					/>
 				</div>
 
-				{#if offlineCount > 0}
-					<div class="form-control">
-						<label class="label cursor-pointer">
-							<span class="label-text mr-2">Offline only</span>
-							<input type="checkbox" class="toggle toggle-primary" bind:checked={showOfflineOnly} />
-						</label>
+				<div class="flex items-center gap-2">
+					{#if offlineCount > 0}
+						<div class="form-control">
+							<label class="label cursor-pointer">
+								<span class="label-text mr-2">Offline only</span>
+								<input type="checkbox" class="toggle toggle-primary" bind:checked={showOfflineOnly} />
+							</label>
+						</div>
+					{/if}
+
+					<div class="join">
+						<button
+							class="btn join-item"
+							class:btn-active={viewMode === 'grid'}
+							onclick={() => (viewMode = 'grid')}
+							title="Grid view"
+						>
+							<LayoutGrid size={20} />
+						</button>
+						<button
+							class="btn join-item"
+							class:btn-active={viewMode === 'list'}
+							onclick={() => (viewMode = 'list')}
+							title="List view"
+						>
+							<List size={20} />
+						</button>
 					</div>
-				{/if}
+				</div>
 			</div>
 		</div>
 
@@ -255,69 +278,83 @@
 			</div>
 		{:else if filteredBooks.length > 0}
 			<!-- Books Grid -->
-			<section class="mb-12">
-				<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-					{#each filteredBooks as book (book.url)}
-						<div class="card bg-base-200 shadow-sm transition-shadow hover:shadow-md">
-							<div class="card-body p-4">
-								<div class="mb-3 flex items-start justify-between">
-									<div class="min-w-0 flex-1">
-										<h3 class="mb-1 line-clamp-2 text-base leading-tight font-semibold">
-											{book.title}
-										</h3>
-										<p class="text-base-content/70 truncate text-sm">
-											by {book.author}
-										</p>
+			{#if viewMode === 'grid'}
+				<section class="mb-12">
+					<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+						{#each filteredBooks as book (book.url)}
+							<div class="card bg-base-200 shadow-sm transition-shadow hover:shadow-md">
+								<div class="card-body p-4">
+									<div class="mb-3 flex items-start justify-between">
+										<div class="min-w-0 flex-1">
+											<h3 class="mb-1 line-clamp-2 text-base leading-tight font-semibold">
+												{book.title}
+											</h3>
+											<p class="text-base-content/70 truncate text-sm">
+												by {book.author}
+											</p>
+										</div>
+										<div class="ml-2 flex items-center gap-1">
+											{#if book.isOffline}
+												<div class="tooltip" data-tip="Available offline">
+													<WifiOff size={14} class="text-success" />
+												</div>
+											{/if}
+											<button
+												class="btn btn-ghost btn-xs btn-circle"
+												onclick={() => handleRemoveBook(book)}
+												title="Remove from library"
+											>
+												<Trash2 size={14} />
+											</button>
+										</div>
 									</div>
-									<div class="ml-2 flex items-center gap-1">
-										{#if book.isOffline}
-											<div class="tooltip" data-tip="Available offline">
-												<WifiOff size={14} class="text-success" />
-											</div>
-										{/if}
-										<button
-											class="btn btn-ghost btn-xs btn-circle"
-											onclick={() => handleRemoveBook(book)}
-											title="Remove from library"
-										>
-											<Trash2 size={14} />
-										</button>
-									</div>
-								</div>
 
-								<div class="text-base-content/60 mb-3 flex items-center gap-2 text-xs">
-									<Clock size={12} />
-									<span>{getLastActivity(book).text}</span>
-									<span class="badge badge-xs badge-outline">
-										{book.fileType}
-									</span>
-									{#if book.isOffline && book.contentSize}
-										<span class="badge badge-xs badge-success">
-											{formatBytes(book.contentSize)}
+									<div class="text-base-content/60 mb-3 flex items-center gap-2 text-xs">
+										<Clock size={12} />
+										<span>{getLastActivity(book).text}</span>
+										<span class="badge badge-xs badge-outline">
+											{book.fileType}
 										</span>
-									{/if}
-								</div>
+										{#if book.isOffline && book.contentSize}
+											<span class="badge badge-xs badge-success">
+												{formatBytes(book.contentSize)}
+											</span>
+										{/if}
+									</div>
 
-								<div class="card-actions justify-between">
-									<a href={generateBookUrl(book)} class="btn btn-primary btn-sm flex-1">
-										<BookOpen size={16} />
-										{book.lastRead || book.lastAccessed ? 'Continue Reading' : 'Start Reading'}
-									</a>
-									<a
-										href={book.url}
-										target="_blank"
-										rel="noopener noreferrer"
-										class="btn btn-ghost btn-sm btn-square"
-										title="Open original source"
-									>
-										<ExternalLink size={16} />
-									</a>
+									<div class="card-actions justify-between">
+										<a href={generateBookUrl(book)} class="btn btn-primary btn-sm flex-1">
+											<BookOpen size={16} />
+											{book.lastRead || book.lastAccessed ? 'Continue Reading' : 'Start Reading'}
+										</a>
+										<a
+											href={book.url}
+											target="_blank"
+											rel="noopener noreferrer"
+											class="btn btn-ghost btn-sm btn-square"
+											title="Open original source"
+										>
+											<ExternalLink size={16} />
+										</a>
+									</div>
 								</div>
 							</div>
-						</div>
-					{/each}
-				</div>
-			</section>
+						{/each}
+					</div>
+				</section>
+			{/if}
+
+			<!-- Books List -->
+			{#if viewMode === 'list'}
+				<section class="mb-12">
+					<BookList
+						books={filteredBooks}
+						{handleRemoveBook}
+						{generateBookUrl}
+						{getLastActivity}
+					/>
+				</section>
+			{/if}
 		{:else if searchQuery || showOfflineOnly}
 			<!-- No results for filter -->
 			<section class="mb-12">
