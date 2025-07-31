@@ -88,7 +88,6 @@ Have fun!
 
 ## Bugs
 
-- Total books not correctly calculated at Header.svelte component (it is ok in saved route).
 - Bug: Change theme is not working anymore (drak mode). Even when it is correctly stored.
 - Bug: Fix the changeTheme function mess.
 - Bug: Previous scroll position is remembered when reading a book, but it user switches from landscape to portrait then, position is messes up. Have a converter?

@@ -1,17 +1,36 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
-	import { AppConfig } from '$lib';
-	import type { SavedBook } from '$lib/types';
-	import { Bell, Heart, Menu, Origami, Search } from '@lucide/svelte';
 	import { onMount } from 'svelte';
+	import { Bell, Heart, Menu, Origami, Search } from '@lucide/svelte';
+	import { AppConfig } from '$lib';
 	import { loadSavedBooks } from '$services/saved.services';
+	import { offlineBookService } from '$services/offline.services';
+	import { epubService } from '$services/epub.services';
+	import { getOfflineBooksSorted } from '$lib/utils/offline.utils';
 
 	let { searchQuery = $bindable(''), onSearchClick, onSearchKeydown } = $props();
 
-	let savedBooks: SavedBook[] = $state([]);
+	let totalBookCount = $state(0);
 
-	onMount(() => {
-		savedBooks = loadSavedBooks();
+	onMount(async () => {
+		// Load from all sources
+		const savedBooks = loadSavedBooks();
+		await offlineBookService.init();
+		const offlineBooks = await getOfflineBooksSorted();
+		const epubBooks = epubService.getSavedEpubBooks();
+
+		// Merge and count unique books
+		const bookMap = new Map<string, any>();
+
+		savedBooks.forEach((book) => bookMap.set(book.url, book));
+		epubBooks.forEach((book) => bookMap.set(`epub_${book.id}`, book));
+		offlineBooks.forEach((book) => {
+			// Add only if it's not already in from savedBooks
+			if (!bookMap.has(book.url)) {
+				bookMap.set(book.url, book);
+			}
+		});
+
+		totalBookCount = bookMap.size;
 	});
 </script>
 
@@ -72,7 +91,7 @@
 		<a href="/saved" aria-label="Configs" class="btn btn-ghost btn-circle">
 			<div class="indicator">
 				<Heart class="h-5" />
-				<span class="badge badge-xs badge-primary indicator-item">{savedBooks.length}</span>
+				<span class="badge badge-xs badge-primary indicator-item">{totalBookCount}</span>
 			</div>
 		</a>
 		<!-- Notifications  -->
