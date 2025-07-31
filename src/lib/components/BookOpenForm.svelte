@@ -46,7 +46,7 @@
 
 		try {
 			const { title, author, content } = await epubService.parseEpubFile(file);
-			const savedBook = epubService.saveEpubBook(title, author, content);
+			const savedBook = await epubService.saveEpubAsOfflineBook(title, author, content);
 
 			// Navigate to your existing reader with the EPUB content
 			const bookUrl = `/book?book=${encodeURIComponent(savedBook.id)}&type=epub&author=${encodeURIComponent(author)}&title=${encodeURIComponent(title)}`;

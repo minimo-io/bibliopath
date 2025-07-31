@@ -4,7 +4,6 @@
 	import { AppConfig } from '$lib';
 	import { loadSavedBooks } from '$services/saved.services';
 	import { offlineBookService } from '$services/offline.services';
-	import { epubService } from '$services/epub.services';
 	import { getOfflineBooksSorted } from '$lib/utils/offline.utils';
 
 	let { searchQuery = $bindable(''), onSearchClick, onSearchKeydown } = $props();
@@ -16,13 +15,11 @@
 		const savedBooks = loadSavedBooks();
 		await offlineBookService.init();
 		const offlineBooks = await getOfflineBooksSorted();
-		const epubBooks = epubService.getSavedEpubBooks();
 
 		// Merge and count unique books
 		const bookMap = new Map<string, any>();
 
 		savedBooks.forEach((book) => bookMap.set(book.url, book));
-		epubBooks.forEach((book) => bookMap.set(`epub_${book.id}`, book));
 		offlineBooks.forEach((book) => {
 			// Add only if it's not already in from savedBooks
 			if (!bookMap.has(book.url)) {

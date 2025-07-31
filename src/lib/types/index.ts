@@ -36,21 +36,11 @@ export interface SavedBook {
 	lastRead?: string;
 }
 
-export interface EpubBook {
-	id: string;
-	title: string;
-	author: string;
-	content: string; // Combined content from all chapters
-	savedAt: string;
-	lastRead?: string;
-	fileType: 'epub';
-}
-
 export interface OfflineBook {
-	id: string; // URL-based key
+	id: string; // Can be URL or generated ID for local files
 	title: string;
 	author: string;
-	url: string;
+	url: string; // Can be URL or generated ID for local files
 	fileType: BookFileType;
 	content: string;
 	downloadedAt: number;
@@ -67,7 +57,6 @@ export interface DisplayBook {
 	savedAt?: string;
 	lastRead?: string;
 	isOffline: boolean;
-	isEpub?: boolean;
 	downloadedAt?: number;
 	lastAccessed?: number;
 	contentSize?: number;
