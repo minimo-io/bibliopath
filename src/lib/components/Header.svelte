@@ -4,36 +4,15 @@
 	import type { SavedBook } from '$lib/types';
 	import { Bell, Heart, Menu, Origami, Search } from '@lucide/svelte';
 	import { onMount } from 'svelte';
+	import { loadSavedBooks } from '$services/saved.services';
 
 	let { searchQuery = $bindable(''), onSearchClick, onSearchKeydown } = $props();
 
 	let savedBooks: SavedBook[] = $state([]);
 
 	onMount(() => {
-		loadSavedBooks();
+		savedBooks = loadSavedBooks();
 	});
-
-	function loadSavedBooks() {
-		if (!browser) return;
-
-		const saved = localStorage.getItem('bibliopath-saved-books');
-		if (saved) {
-			try {
-				const books = JSON.parse(saved);
-				// Sort by last read date (most recent first)
-				savedBooks = books.sort((a: SavedBook, b: SavedBook) => {
-					const dateA = new Date(a.lastRead || a.savedAt).getTime();
-					const dateB = new Date(b.lastRead || b.savedAt).getTime();
-					return dateB - dateA;
-				});
-			} catch (e) {
-				console.error('Failed to parse saved books:', e);
-				savedBooks = [];
-			}
-		}
-	}
-
-	onMount(() => {});
 </script>
 
 <div class="bg-base-100 flex h-16 items-center justify-between px-4 shadow-sm">
@@ -43,7 +22,7 @@
 				<Menu class="h-5" />
 			</div>
 			<ul
-				class="menu menu-sm dropdown-content bg-base-100 rounded-box z-10 mt-3 w-52 border p-2 shadow"
+				class="menu menu-sm dropdown-content bg-base-200 rounded-box border-base-300 z-10 mt-3 w-52 border p-2 shadow"
 			>
 				<li>
 					<a href="/saved" class="flex gap-1">

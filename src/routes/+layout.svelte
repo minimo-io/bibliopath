@@ -3,13 +3,16 @@
 	import '../app.css';
 	import { page } from '$app/state';
 	import { goto, afterNavigate } from '$app/navigation';
+	import Footer from '$lib/components/Footer.svelte';
 
 	let { children } = $props();
 
 	let searchQuery = $state('');
+	let isBookPage = $state(false);
 
 	$effect(() => {
 		const query = page.url.searchParams.get('q');
+		isBookPage = page.route.id == '/book';
 		if (query) {
 			searchQuery = query;
 		}
@@ -33,8 +36,12 @@
 	}
 </script>
 
-{#if page.route.id != '/book'}
+{#if !isBookPage}
 	<Header bind:searchQuery onSearchClick={executeSearch} onSearchKeydown={handleSearchKeydown} />
 {/if}
 
 {@render children()}
+
+{#if !isBookPage}
+	<Footer />
+{/if}

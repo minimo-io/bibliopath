@@ -17,7 +17,8 @@
 		Download,
 		Trash2,
 		Wifi,
-		WifiOff
+		WifiOff,
+		EllipsisVertical
 	} from '@lucide/svelte';
 	import { page } from '$app/state';
 	import { changeTheme, shareCurrentUrl } from '$lib';
@@ -649,7 +650,7 @@
 					{#if isBookDownloaded}
 						<div class="dropdown dropdown-end">
 							<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-							<div class="tooltip tooltip-bottom" data-tip="Available offline - Click for options">
+							<div class="tooltip tooltip-bottom" data-tip="Save locally">
 								<label tabindex="0" class="btn btn-ghost btn-circle">
 									<Download size={20} class="text-success" />
 								</label>
@@ -765,17 +766,50 @@
 					</div>
 				</div>
 
-				<button class="btn btn-ghost btn-circle" title="Share" onclick={() => shareCurrentUrl()}>
+				<!-- <button class="btn btn-ghost btn-circle" title="Share" onclick={() => shareCurrentUrl()}>
 					<Share2 size={20} />
-				</button>
-				<button
+				</button> -->
+
+				<!-- More actions -->
+				<!-- <button
 					onclick={() =>
 						(document.getElementById('my_modal_2') as HTMLDialogElement | null)?.showModal()}
 					class="btn btn-ghost btn-circle"
 					title="Book Info"
 				>
-					<Info size={20} />
-				</button>
+					<EllipsisVertical size={20} />
+				</button> -->
+
+				<div class="dropdown dropdown-end">
+					<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+					<label tabindex="0" class="btn btn-ghost btn-circle">
+						<EllipsisVertical size={20} />
+					</label>
+					<div
+						class="dropdown-content card card-compact bg-base-100 border-base-300 z-[1] w-48 border p-2 shadow"
+					>
+						<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+						<ul
+							tabindex="0"
+							class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
+						>
+							<li>
+								<button
+									onclick={() =>
+										(
+											document.getElementById('my_modal_2') as HTMLDialogElement | null
+										)?.showModal()}
+									title="Book Info"
+								>
+									Book Info
+								</button>
+							</li>
+							<li>
+								<button title="Share" onclick={() => shareCurrentUrl()}> Share </button>
+							</li>
+						</ul>
+					</div>
+				</div>
 			</div>
 
 			<!-- Progress bar -->

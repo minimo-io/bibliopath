@@ -16,6 +16,7 @@ It all started from this badly written note: <https://primal.net/e/nevent1qqs2q6
   - Have access to audiobooks.
   - Store their books in their local reader (indexDB?) for offline reading.
   - Access a curated list of books (Published under Creative Common or Public books should be allowed to flourish).
+  - Be able to share books and sync between devices offline (via Bluetooth or Wifi -- eg. Localshare)
 
 - **For Readers/Users**
   - Read any markdown book hosted on git repositories, just by placing the book url.
@@ -55,6 +56,8 @@ Have fun!
 
 ## Other ToDos
 
+- Offline books (stored on IndexDB) should appear on favorites / library (with they size in kb/mb)
+- Create a model book with audio capabilities as showcase.
 - Better homepage hero and menus, with config switcher (also on homepage).
 - Create a http proxy on our Futurewise API to handle the fetch, rate limiting, etc and substitute this <https://api.allorigins.win/raw?url=https://www.gutenberg.org/files/11/11-0.txt>
 - Create a store for theme state, use it in all routes.

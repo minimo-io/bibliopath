@@ -39,6 +39,7 @@ export const AppConfig = {
 	books_per_page: 32,
 	links: {
 		about: 'https://github.com/minimo-io/bibliopath',
-		roadmap: 'https://github.com/minimo-io/bibliopath?tab=readme-ov-file#core-functionalities'
+		roadmap: 'https://github.com/minimo-io/bibliopath?tab=readme-ov-file#core-functionalities',
+		nostr: 'https://njump.me/nprofile1qqs8wftkcz9achdy8ascqtnk0v3rrcevda2klm8wqyd6xrlk8skc22gekra89'
 	}
 };
