@@ -24,12 +24,51 @@ export interface Chapter {
 	paragraphs: string[];
 }
 
+export type BookFileType = 'markdown' | 'text' | 'epub';
+
 export interface SavedBook {
 	id: string;
 	title: string;
 	author: string;
 	url: string;
-	fileType: 'markdown' | 'text';
+	fileType: BookFileType;
 	savedAt: string;
 	lastRead?: string;
+}
+
+export interface EpubBook {
+	id: string;
+	title: string;
+	author: string;
+	content: string; // Combined content from all chapters
+	savedAt: string;
+	lastRead?: string;
+	fileType: 'epub';
+}
+
+export interface OfflineBook {
+	id: string; // URL-based key
+	title: string;
+	author: string;
+	url: string;
+	fileType: BookFileType;
+	content: string;
+	downloadedAt: number;
+	lastAccessed: number;
+}
+
+// Combined book type for unified display
+export interface DisplayBook {
+	id: string;
+	title: string;
+	author: string;
+	url: string;
+	fileType: BookFileType;
+	savedAt?: string;
+	lastRead?: string;
+	isOffline: boolean;
+	isEpub?: boolean;
+	downloadedAt?: number;
+	lastAccessed?: number;
+	contentSize?: number;
 }

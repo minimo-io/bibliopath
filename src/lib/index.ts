@@ -2,6 +2,7 @@ import { browser } from '$app/environment';
 
 // place files you want to import through the `$lib` alias in this folder.
 export function changeTheme(newTheme: string, save = true) {
+	console.log(`Changing theme... ${newTheme}`);
 	if (browser) {
 		document.documentElement.setAttribute('data-theme', newTheme);
 		if (save) {

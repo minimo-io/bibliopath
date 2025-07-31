@@ -4,7 +4,6 @@
 	import { browser } from '$app/environment';
 	import {
 		BookOpen,
-		Share2,
 		Menu,
 		X,
 		Settings,
@@ -22,14 +21,11 @@
 	} from '@lucide/svelte';
 	import { page } from '$app/state';
 	import { changeTheme, shareCurrentUrl } from '$lib';
-	import { HTTP_STATUS_TEXT, type Chapter, type SavedBook } from '$lib/types';
+	import { HTTP_STATUS_TEXT, type BookFileType, type Chapter, type SavedBook } from '$lib/types';
 	import { loadSavedBooks, saveBook, removeBook } from '$lib/services/saved.services';
 	import { offlineBookService } from '$lib/services/offline.services';
-	import {
-		getOfflineStats,
-		formatBytes,
-		isOfflineStorageSupported
-	} from '$lib/utils/offline.utils';
+	import { getOfflineStats, isOfflineStorageSupported } from '$lib/utils/offline.utils';
+	import { epubService } from '$services/epub.services';
 
 	// --- Props ---
 	let { data }: { data: { title: string; author: string } } = $props();
@@ -49,7 +45,7 @@
 	let isBookSaved = $state(false);
 	let readerContainer: HTMLDivElement | null = $state(null);
 	let chapterElements: HTMLDivElement[] = $state([]);
-	let fileType: 'markdown' | 'text' = $state('markdown');
+	let fileType: BookFileType = $state('markdown');
 
 	// --- Offline functionality state ---
 	let isBookDownloaded = $state(false);
@@ -76,16 +72,18 @@
 			if (browser) {
 				// Load theme first to prevent flash and apply immediately
 				const savedTheme = localStorage.getItem('bibliopath-theme') || 'dark';
+				console.log(`Saved theme... ${savedTheme}`);
 				// Apply theme immediately using the imported function
-				changeTheme(savedTheme, false); // false means don't save again, we just loaded it
+				changeTheme(savedTheme, false);
 				theme = savedTheme; // Update local state variable for UI reactivity
 			}
 
 			// Get URL parameters
 			const bookUrl = page.url.searchParams.get('book');
-			fileType = (page.url.searchParams.get('type') || 'markdown') as 'markdown' | 'text';
+			fileType = (page.url.searchParams.get('type') || 'markdown') as BookFileType;
 
 			if (!bookUrl) {
+				console.error('No book URL provided');
 				throw new Error('No book URL provided');
 			}
 
@@ -111,6 +109,9 @@
 					isLoadedFromOffline = false;
 					text = await fetchBookFromNetwork(bookUrl);
 				}
+			} else if (fileType == 'epub') {
+				const epubBook = epubService.getEpubBook(bookUrl);
+				text = epubBook?.content ?? 'ERROR_FETCHING CONTENT';
 			} else {
 				// Fetch from network
 				text = await fetchBookFromNetwork(bookUrl);
@@ -536,11 +537,6 @@
 		}
 	}
 
-	function updateTheme(newTheme: string, save = true) {
-		theme = newTheme;
-		changeTheme(newTheme, save);
-	}
-
 	// --- UI Interactions ---
 	function showAudioSoonAlert() {
 		alert('Audio feature coming soon!');
@@ -729,13 +725,19 @@
 								<div class="join join-horizontal w-full">
 									<button
 										class="btn join-item flex-1 {theme === 'light' ? 'btn-primary' : 'btn-outline'}"
-										onclick={() => updateTheme('light')}
+										onclick={() => {
+											theme = 'light';
+											changeTheme('light', true);
+										}}
 									>
 										Light
 									</button>
 									<button
 										class="btn join-item flex-1 {theme === 'dark' ? 'btn-primary' : 'btn-outline'}"
-										onclick={() => updateTheme('dark')}
+										onclick={() => {
+											theme = 'dark';
+											changeTheme('dark', true);
+										}}
 									>
 										Dark
 									</button>

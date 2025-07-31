@@ -56,7 +56,9 @@ Have fun!
 
 ## Other ToDos
 
-- Offline books (stored on IndexDB) should appear on favorites / library (with they size in kb/mb)
+- epubs:
+  - epub books are different type than offline books, when they should not (they are converted to text books and stored on IndexDB).
+  - When converted to text the chapters are not created as we expect in the reader.
 - Create a model book with audio capabilities as showcase.
 - Better homepage hero and menus, with config switcher (also on homepage).
 - Create a http proxy on our Futurewise API to handle the fetch, rate limiting, etc and substitute this <https://api.allorigins.win/raw?url=https://www.gutenberg.org/files/11/11-0.txt>
@@ -84,7 +86,12 @@ Have fun!
 - AI: Enable read a chapter using something like ElevenLabs (paid).
 - Create a DockerFile + docker-compose so people can easily create instances.
 
+## Bugs
+
+- Total books not correctly calculated at Header.svelte component (it is ok in saved route).
+- Bug: Change theme is not working anymore (drak mode). Even when it is correctly stored.
 - Bug: Fix the changeTheme function mess.
+- Bug: Previous scroll position is remembered when reading a book, but it user switches from landscape to portrait then, position is messes up. Have a converter?
 - Bug: On mobile pagination should be "Prev - Next" with the input switcher also.
 - Bug: Font-size not working on mobile.
 - Bug: No error message when downloading fails... no retry button.

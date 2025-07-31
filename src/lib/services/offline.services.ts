@@ -1,14 +1,6 @@
 // src/lib/services/offline.services.ts
-export interface OfflineBook {
-	id: string; // URL-based key
-	title: string;
-	author: string;
-	url: string;
-	fileType: 'markdown' | 'text';
-	content: string;
-	downloadedAt: number;
-	lastAccessed: number;
-}
+
+import type { OfflineBook } from '$lib/types';
 
 class OfflineBookService {
 	private db: IDBDatabase | null = null;

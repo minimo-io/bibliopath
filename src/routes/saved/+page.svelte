@@ -2,33 +2,24 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { Trash2, Clock, ExternalLink, BookOpen, WifiOff } from '@lucide/svelte';
-	import type { SavedBook } from '$lib/types';
+	import type { DisplayBook, SavedBook, EpubBook, OfflineBook } from '$lib/types';
+
+	// Services
 	import { loadSavedBooks, removeBook as removeBookService } from '$lib/services/saved.services';
-	import { offlineBookService, type OfflineBook } from '$lib/services/offline.services';
+	import { offlineBookService } from '$lib/services/offline.services';
+	import { epubService } from '$lib/services/epub.services';
+
 	import {
 		getOfflineBooksSorted,
 		formatBytes,
 		estimateContentSize
 	} from '$lib/utils/offline.utils';
 
-	// Combined book type for unified display
-	interface DisplayBook {
-		id: string;
-		title: string;
-		author: string;
-		url: string;
-		fileType: 'markdown' | 'text';
-		savedAt?: string;
-		lastRead?: string;
-		isOffline: boolean;
-		downloadedAt?: number;
-		lastAccessed?: number;
-		contentSize?: number;
-	}
-
 	let savedBooks: SavedBook[] = $state([]);
 	let offlineBooks: OfflineBook[] = $state([]);
 	let displayBooks: DisplayBook[] = $state([]);
+	let epubBooks: EpubBook[] = $state([]);
+
 	let loading = $state(true);
 	let searchQuery = $state('');
 	let showOfflineOnly = $state(false);
@@ -41,6 +32,9 @@
 			// Initialize and load offline books from IndexedDB
 			await offlineBookService.init();
 			offlineBooks = await getOfflineBooksSorted();
+
+			// Load EPUB books from localStorage
+			epubBooks = epubService.getSavedEpubBooks();
 
 			// Merge and deduplicate books
 			mergeBooks();
@@ -65,6 +59,22 @@
 				savedAt: book.savedAt,
 				lastRead: book.lastRead,
 				isOffline: false
+			});
+		});
+
+		// Add EPUB books
+		epubBooks.forEach((book) => {
+			bookMap.set(`epub_${book.id}`, {
+				id: book.id,
+				title: book.title,
+				author: book.author,
+				fileType: 'epub',
+				savedAt: book.savedAt,
+				lastRead: book.lastRead,
+				isOffline: true, // EPUB books are always "offline"
+				isEpub: true,
+				contentSize: book.content.length,
+				url: book.id ?? ''
 			});
 		});
 
@@ -128,8 +138,15 @@
 			.reduce((total, b) => total + (b.contentSize || 0), 0)
 	);
 
+	// function generateBookUrl(book: DisplayBook): string {
+
+	// 	return `/book?book=${encodeURIComponent(book.url)}&type=${book.fileType}&author=${book.author}&title=${book.title}`;
+	// }
 	function generateBookUrl(book: DisplayBook): string {
-		return `/book?book=${encodeURIComponent(book.url)}&type=${book.fileType}&author=${book.author}&title=${book.title}`;
+		if (book.isEpub) {
+			return `/book?book=${encodeURIComponent(book.id)}&type=epub&author=${encodeURIComponent(book.author)}&title=${encodeURIComponent(book.title)}`;
+		}
+		return `/book?book=${encodeURIComponent(book.url || '')}&type=${book.fileType}&author=${book.author}&title=${book.title}`;
 	}
 
 	async function handleRemoveBook(book: DisplayBook) {
@@ -149,6 +166,13 @@
 			if (book.isOffline) {
 				await offlineBookService.removeBook(book.url);
 				offlineBooks = offlineBooks.filter((ob) => ob.url !== book.url);
+			}
+
+			// Remove epub book
+			if (book.isEpub) {
+				// Remove EPUB book
+				epubService.removeEpubBook(book.id);
+				epubBooks = epubBooks.filter((eb) => eb.id !== book.id);
 			}
 
 			// Refresh the merged display
