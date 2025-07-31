@@ -93,7 +93,6 @@ Have fun!
 - Bug: Fix the changeTheme function mess.
 - Bug: Previous scroll position is remembered when reading a book, but it user switches from landscape to portrait then, position is messes up. Have a converter?
 - Bug: On mobile pagination should be "Prev - Next" with the input switcher also.
-- Bug: Font-size not working on mobile.
 - Bug: No error message when downloading fails... no retry button.
 
 - Download Progress bar:

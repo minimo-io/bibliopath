@@ -930,9 +930,6 @@
 	}
 	/* Mobile responsive adjustments */
 	@media (max-width: 768px) {
-		.prose {
-			font-size: 1rem;
-		}
 		.prose p {
 			text-indent: 1.5rem;
 		}
