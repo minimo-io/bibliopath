@@ -2,7 +2,7 @@
 title: About Bibliopath
 ---
 
-> Books themselves, as tools for freedom cannot have a better match than Nostr.
+> Books themselves, as tools for freedom could not have a better match than Nostr.
 
 Bibliopath is a Nostr-powered web-based ebook reader designed
 for freedom and a **platform for authors to permissionless publish Creative Common books for the open-web**,
