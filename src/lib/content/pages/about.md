@@ -14,13 +14,13 @@ There are two parts for the project.
 
 At its core, **Bibliopath** it's an ebook reader in the form of a PWA (Progressive Web App) designed for freedom, with offline reading and sharing of books stored locally on the device via IndexDB.
 
-Readers should be able run their our local version of Bibliopath (via Docker), upload their own ePubs or markdown books, share and sync them locally. In summary, have total control over their books.
+Readers should be able run their our local version of Bibliopath (via Docker), upload their own ePubs or markdown books, share and sync them locally. And why not, connect other book repositories over Tor... In summary, have total control over their books.
 
 Readers don’t even need an Internet connection, instead they can just download Bibliopath and use it as a local web reader in the browser (mobile and desktop).
 
 This is its main purpose.
 
-**Bibliopath** is also meant to be a community for Open Publishing and Open Funding of books and authors.
+**Bibliopath** is also meant to be a community for Open Publishing and Open Funding of books and authors, over Nostr.
 
 This online side of Bibliopath, the community, could not have a better match than Nostr.
 Books themselves, are tools for freedom. Nostr, the permisionless social protocol, too.
@@ -35,16 +35,16 @@ Readers who want an online experience can:
 - Fund authors and their books.
 - Discuss book ideas.
 
-Nostr should be transparent for the "normies" using Biblipath. Running under the hood, giving Biblipath social capabilities.
+Nostr should be transparent for the "normies" using Bibliopath. Running under the hood, giving Bibliopath social capabilities.
 
-### Core functionalities
+### Core functionalities for the
 
 - **For Bibliopaths** (project Supporters)
   - Have access to audiobooks.
   - Should be able to sync their books between devices using the PWA.
   - Ability to add their own books (from an local ePub upload to to git url -markdown).
-  - Store their books in their local reader (indexDB?) for offline reading.
-  - Access a curated list of books (Published under Creative Common or Public books should be allowed to flourish. We will curate this to optimize the experience, and host them on Github).
+  - Store their books in their local reader (indexDB) for offline reading.
+  - Access our curated list of books (Published under Creative Common or Public books should be allowed to flourish. We will curate this to optimize the experience, and host them on Github and Nostr).
   - Share books and sync between devices offline (via Bluetooth or Wifi -- eg. Localshare)
 
 - **For Readers/Users**
@@ -71,7 +71,11 @@ _**Are you an Author?** We will work closely with authors willing to publish the
 
 Cheers, and happy reading!
 
-🚨 **Disclaimer**: Bibliopath will not promote piracy, instead it will create tools so authors prefer open-publishing and open-funding options.
+🚨 **Disclaimers**:
+
+- Bibliopath will not promote piracy, instead it will create tools so authors prefer open-publishing and open-funding options.
+- We will fund the project by offering a great product, and great tools for Bilbiopaths, Supporters and book lovers.
+- It should be always possible to run the reader locally.
 
 ---
 
