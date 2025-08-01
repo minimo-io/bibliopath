@@ -74,7 +74,7 @@ Cheers, and happy reading!
 🚨 **Disclaimers**:
 
 - Bibliopath will not promote piracy, instead it will create tools so authors prefer open-publishing and open-funding options.
-- We will fund the project by offering a great product, and great tools for Bilbiopaths, Supporters and book lovers.
+- We will fund the project by offering a great product, and great tools for Bibliopaths, Supporters and Book lovers.
 - It should be always possible to run the reader locally.
 
 ---
