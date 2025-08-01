@@ -8,6 +8,8 @@ Bibliopath is a Nostr-powered web-based ebook reader designed
 for freedom and a **platform for authors to permissionless publish Creative Common books for the open-web**,
 so readers can fund them and their books via zaps.
 
+(Don't know What Nostr is? Read it [here](https://nostr.how/pt/what-is-nostr))
+
 There are two parts for the project.
 
 At its core, **Bibliopath** it's an ebook reader in the form of a PWA (Progressive Web App) designed for freedom, with offline reading and sharing of books stored locally on the device via IndexDB.
