@@ -9,7 +9,7 @@
 			Built with ❤️ for book lovers everywhere // <a
 				target="_blank"
 				rel="noopener"
-				href={AppConfig.links.nostr}>Nostr</a
+				href={AppConfig.links.nostr}>Say hi at Nostr!</a
 			>
 		</p>
 	</div>
