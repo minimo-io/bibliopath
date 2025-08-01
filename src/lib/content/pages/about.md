@@ -8,7 +8,7 @@ Bibliopath is a Nostr-powered web-based ebook reader designed
 for freedom and a **platform for authors to permissionless publish Creative Common books for the open-web**,
 so readers can fund them and their books via zaps.
 
-(Don't know What Nostr is? Read it [here](https://nostr.how/pt/what-is-nostr))
+_(Don't know What Nostr is? Read it [here](https://nostr.how/pt/what-is-nostr))_
 
 There are two parts for the project.
 
@@ -39,13 +39,14 @@ Nostr should be transparent for the "normies" using Bibliopath. Running under th
 
 ### Core functionalities for the
 
-- **For Bibliopaths** (project Supporters)
+- **For Bibliopaths** (Supporters)
   - Have access to audiobooks.
-  - Should be able to sync their books between devices using the PWA.
-  - Ability to add their own books (from an local ePub upload to to git url -markdown).
-  - Store their books in their local reader (indexDB) for offline reading.
-  - Access our curated list of books (Published under Creative Common or Public books should be allowed to flourish. We will curate this to optimize the experience, and host them on Github and Nostr).
-  - Share books and sync between devices offline (via Bluetooth or Wifi -- eg. Localshare)
+  - Sync their books between devices using the PWA (via Bluetooth or Wifi -- eg. Localshare)
+  - Add translation functionalities for paragraphs in books via AI.
+  - Add their own books (from a local ePub upload, a git -markdown- book, or a Nostr book).
+  - Store their books locally (indexDB) for offline reading.
+  - Access our curated list of books (Published under Creative Common or Public books should be allowed to flourish. We will curate this books to optimize the experience).
+  - Share books, notes and highlights with other Bibliopaths.
 
 - **For Readers/Users**
   - Read any markdown book hosted on an open git repository, just by placing the book url or finding it via our search.

@@ -23,6 +23,7 @@ We help authors publish **Books for the Open Web** and readers have control over
 - Disclaimer (only Creative Commons work)
 - Info button to get book and author data.
 - Centralize types at src/lib & componentize the thing.
+- Add translation functionalities for paragraphs in books via AI.
 - Multi-lingual support via paraglidejs.
 - Shortcuts: CMD + K, etc.
 - Footer: Add version & better github link.
