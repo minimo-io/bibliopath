@@ -41,6 +41,6 @@ export const AppConfig = {
 	links: {
 		about: 'https://github.com/minimo-io/bibliopath',
 		roadmap: 'https://github.com/minimo-io/bibliopath?tab=readme-ov-file#core-functionalities',
-		nostr: 'https://njump.me/nprofile1qqs8wftkcz9achdy8ascqtnk0v3rrcevda2klm8wqyd6xrlk8skc22gekra89'
+		nostr: 'https://nostr.band/npub1wujhdsytm3w6g0mpsqh8v7ezx83jcm64dlkwuqgm5v8lv0pds55ssudkw0'
 	}
 };
