@@ -67,7 +67,7 @@ _**Are you an Author?** We will work closely with authors willing to publish the
 
 Cheers, and happy reading!
 
-🚨 **Disclaimer**: Bibliopath will not promote piracy, instead it will create tools so authors prefer open-publishing options and readers funding capabilities.
+🚨 **Disclaimer**: Bibliopath will not promote piracy, instead it will create tools so authors prefer open-publishing and open-funding options.
 
 ---
 

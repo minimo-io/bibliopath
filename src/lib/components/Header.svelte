@@ -51,7 +51,7 @@
 
 				<li><a target="_blank" href={AppConfig.links.roadmap}>Roadmap</a></li>
 				<li>
-					<a target="_blank" rel="noopener" href={AppConfig.links.about}>About</a>
+					<a href="/p/about">About</a>
 				</li>
 			</ul>
 		</div>
