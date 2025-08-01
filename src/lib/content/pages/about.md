@@ -42,7 +42,7 @@ Nostr should be transparent for the "normies" using Bibliopath. Running under th
 - **For Bibliopaths** (Supporters)
   - Have access to audiobooks.
   - Sync their books between devices using the PWA (via Bluetooth or Wifi -- eg. Localshare)
-  - Add translation functionalities for paragraphs in books via AI.
+  - Translate paragraphs in books via AI.
   - Add their own books (from a local ePub upload, a git -markdown- book, or a Nostr book).
   - Store their books locally (indexDB) for offline reading.
   - Access our curated list of books (Published under Creative Common or Public books should be allowed to flourish. We will curate this books to optimize the experience).
