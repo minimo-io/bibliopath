@@ -17,7 +17,7 @@ We help authors publish **Books for the Open Web** and readers have control over
 - Create a store for theme state, use it in all routes.
 - Once a book is downloaded offer to save it in indexDB and bookmark it.
 - Search should change the query parameter.
-- Nostr login
+- Implement Nostr Login: https://github.com/nostrband/nostr-login (in the future we will need a more complex setup, so people with no Nostr know-how can signup and have a better onboarding).
 - Allow for github/nostrgit books written in markdown
   - Create a selection of curated books, with audio books.
 - Disclaimer (only Creative Commons work)
