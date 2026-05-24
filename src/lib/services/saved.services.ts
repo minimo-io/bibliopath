@@ -54,6 +54,9 @@ export function saveBook(bookToSave: Omit<SavedBook, 'id' | 'savedAt'> & { id?: 
 
 	if (existingBookIndex > -1) {
 		// Update existing book
+		savedBooks[existingBookIndex].title = bookToSave.title;
+		savedBooks[existingBookIndex].author = bookToSave.author;
+		if (bookToSave.fileType) savedBooks[existingBookIndex].fileType = bookToSave.fileType;
 		savedBooks[existingBookIndex].lastRead = new Date().toISOString();
 	} else {
 		// Add new book

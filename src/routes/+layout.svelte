@@ -12,7 +12,7 @@
 
 	$effect(() => {
 		const query = page.url.searchParams.get('q');
-		isBookPage = page.route.id == '/book';
+		isBookPage = page.route.id == '/book' || page.route.id == '/write';
 		if (query) {
 			searchQuery = query;
 		}

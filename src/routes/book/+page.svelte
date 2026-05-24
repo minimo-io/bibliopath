@@ -18,7 +18,9 @@
 		Wifi,
 		WifiOff,
 		EllipsisVertical,
-		Bookmark
+		Bookmark,
+		Pen,
+		FileDown
 	} from '@lucide/svelte';
 	import { page } from '$app/state';
 	import { changeTheme, shareCurrentUrl } from '$lib';
@@ -729,6 +731,18 @@
 	function showAudioSoonAlert() {
 		alert('Audio feature coming soon!');
 	}
+
+	function downloadBookAsMd() {
+		if (!bookContent) return;
+		const sanitized = data.title.replace(/[^a-zA-Z0-9 ]/g, '_');
+		const blob = new Blob([bookContent], { type: 'text/markdown' });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = `${sanitized}.md`;
+		a.click();
+		URL.revokeObjectURL(url);
+	}
 </script>
 
 <svelte:head>
@@ -848,6 +862,19 @@
 						<Bookmark size={20} />
 					</button>
 				</div>
+
+				{#if page.url.searchParams.get('book')?.startsWith('draft-') && !loading && !error}
+					<div class="tooltip tooltip-bottom" data-tip="Edit book">
+						<a href="/write?edit={encodeURIComponent(page.url.searchParams.get('book') || '')}" class="btn btn-ghost btn-circle">
+							<Pen size={20} />
+						</a>
+					</div>
+					<div class="tooltip tooltip-bottom" data-tip="Download .md">
+						<button class="btn btn-ghost btn-circle" onclick={downloadBookAsMd}>
+							<FileDown size={20} />
+						</button>
+					</div>
+				{/if}
 
 				<!-- Download/Remove offline book button -->
 				{#if !loading && !error && bookContent}

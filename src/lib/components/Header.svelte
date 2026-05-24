@@ -76,6 +76,7 @@
 				</li>
 				<div class="divider my-0"></div>
 				<li><a href="/">Homepage</a></li>
+				<li><a href="/write">Write</a></li>
 				<li><a target="_blank" href={AppConfig.links.roadmap}>Roadmap</a></li>
 				<li><a href="/p/about">About</a></li>
 			</ul>
@@ -90,6 +91,7 @@
 		<!-- Desktop navigation (hidden on mobile) - Removed Saved link -->
 		<nav class="ml-8 hidden items-center gap-1 lg:flex">
 			<a href="/" class="btn btn-ghost btn-sm">Homepage</a>
+			<a href="/write" class="btn btn-ghost btn-sm">Write</a>
 			<a target="_blank" href={AppConfig.links.roadmap} class="btn btn-ghost btn-sm">Roadmap</a>
 			<a href="/p/about" class="btn btn-ghost btn-sm">About</a>
 		</nav>

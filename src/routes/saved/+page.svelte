@@ -1,7 +1,7 @@
 <!-- src/routes/saved/+page.svelte -->
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Trash2, Clock, ExternalLink, BookOpen, WifiOff, LayoutGrid, List } from '@lucide/svelte';
+	import { Trash2, Clock, ExternalLink, BookOpen, WifiOff, LayoutGrid, List, Pen, FileDown } from '@lucide/svelte';
 	import type { DisplayBook, SavedBook, OfflineBook } from '$lib/types';
 
 	// Services
@@ -22,7 +22,7 @@
 	let loading = $state(true);
 	let searchQuery = $state('');
 	let showOfflineOnly = $state(false);
-	let viewMode: 'grid' | 'list' = $state('list');
+	let viewMode: 'grid' | 'list' = $state('grid');
 
 	onMount(async () => {
 		try {
@@ -64,6 +64,9 @@
 			const existing = bookMap.get(book.url);
 			if (existing) {
 				// Merge with existing saved book
+				existing.title = book.title;
+				existing.author = book.author;
+				existing.fileType = book.fileType;
 				existing.isOffline = true;
 				existing.downloadedAt = book.downloadedAt;
 				existing.lastAccessed = book.lastAccessed;
@@ -147,6 +150,27 @@
 		} catch (error) {
 			console.error('Failed to remove book:', error);
 			alert('Failed to remove book. Please try again.');
+		}
+	}
+
+	async function downloadBookAsMd(book: DisplayBook) {
+		try {
+			const offlineBook = await offlineBookService.getBook(book.url);
+			if (!offlineBook?.content) {
+				alert('Book content not found.');
+				return;
+			}
+			const sanitized = book.title.replace(/[^a-zA-Z0-9 ]/g, '_');
+			const blob = new Blob([offlineBook.content], { type: 'text/markdown' });
+			const url = URL.createObjectURL(blob);
+			const a = document.createElement('a');
+			a.href = url;
+			a.download = `${sanitized}.md`;
+			a.click();
+			URL.revokeObjectURL(url);
+		} catch (err) {
+			console.error('Failed to download book:', err);
+			alert('Failed to download book.');
 		}
 	}
 
@@ -327,15 +351,32 @@
 											<BookOpen size={16} />
 											{book.lastRead || book.lastAccessed ? 'Continue Reading' : 'Start Reading'}
 										</a>
-										<a
-											href={book.url}
-											target="_blank"
-											rel="noopener noreferrer"
-											class="btn btn-ghost btn-sm btn-square"
-											title="Open original source"
-										>
-											<ExternalLink size={16} />
-										</a>
+										{#if book.url?.startsWith('draft-')}
+											<a
+												href="/write?edit={encodeURIComponent(book.url)}"
+												class="btn btn-ghost btn-sm btn-square"
+												title="Edit book"
+											>
+												<Pen size={16} />
+											</a>
+											<button
+												class="btn btn-ghost btn-sm btn-square"
+												title="Download .md"
+												onclick={() => downloadBookAsMd(book)}
+											>
+												<FileDown size={16} />
+											</button>
+										{:else}
+											<a
+												href={book.url}
+												target="_blank"
+												rel="noopener noreferrer"
+												class="btn btn-ghost btn-sm btn-square"
+												title="Open original source"
+											>
+												<ExternalLink size={16} />
+											</a>
+										{/if}
 									</div>
 								</div>
 							</div>
